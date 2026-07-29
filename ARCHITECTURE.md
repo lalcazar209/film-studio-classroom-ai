@@ -120,6 +120,26 @@ every teacher in that org can push assignments through it. The same model
 holds Slack/Zapier webhook URLs and Infinite Campus's API key/secret in
 its `metadata` JSON field, since those aren't OAuth-token-shaped.
 
+### Export pipeline (`lib/export/`)
+
+Split by whether it needs an external API:
+
+- **Local generation, no API/credentials needed**: `project-pdf.tsx`
+  (`@react-pdf/renderer`), `project-docx.ts` (`docx`), `project-pptx.ts`
+  (`pptxgenjs`). These always work regardless of deployment
+  configuration, so they're the default "just download it" path.
+- **External API required**: `gamma.ts` (Gamma's public Generate API —
+  submit an outline, poll until done, get a shareable URL) and
+  `google-docs.ts` (Drive + Docs API). Both are real, ready-to-call
+  implementations; `google-docs.ts` is currently unreachable from the UI
+  because the `GOOGLE_WORKSPACE` OAuth connection that would supply a
+  docs/drive-scoped token isn't wired up yet (see ROADMAP.md Phase 11).
+
+Each export target has its own small "shape this record into export
+input" helper (e.g. `buildProjectOutline`) kept next to the
+renderer/API-caller it feeds — deterministic and independently testable
+without needing the external API to be live.
+
 ## Access control
 
 - `Role` enum (STUDENT, TEACHER, ADMIN, PARENT, MENTOR) lives on `User`,

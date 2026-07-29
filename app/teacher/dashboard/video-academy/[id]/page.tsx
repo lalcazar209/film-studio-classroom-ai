@@ -2,6 +2,7 @@ import { notFound, redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { GammaExportButton } from "@/components/gamma-export-button";
 import { TUTORIAL_CATEGORY_LABELS } from "@/lib/constants/tutorial-categories";
 import type { TutorialSegment } from "@/lib/ai/schemas";
 
@@ -33,6 +34,12 @@ export default async function TutorialDetailPage({ params }: { params: Promise<{
           <a href={`/api/video-academy/${tutorial.id}/captions`} className="text-studio-accent hover:underline">
             Download captions (.srt)
           </a>
+        </div>
+        <div className="mt-3">
+          <GammaExportButton
+            exportUrl={`/api/video-academy/${tutorial.id}/export/gamma`}
+            initialGammaUrl={tutorial.gammaUrl}
+          />
         </div>
       </header>
 

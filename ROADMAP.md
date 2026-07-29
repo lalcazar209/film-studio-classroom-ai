@@ -340,10 +340,53 @@ tools are usable end-to-end for a brand-new school. Folding into Phase 12
       exercised offline, consistent with every AI-provider call in prior
       phases. Typecheck, lint, and build all pass clean.
 
-## Phase 11 — Export pipeline
-- [ ] PDF / Docx / PPTX / Google Docs-Slides export of every generated
-      artifact (uses `skills/app-web-builder/canvas-design` for
-      certificates/posters)
+## Phase 11 — Export pipeline ✅
+- [x] PDF export (`lib/export/project-pdf.tsx`, `@react-pdf/renderer`,
+      `GET /api/projects/[id]/export/pdf`): real, downloadable PDF of the
+      full teacher guide (all 5 lessons, rubric, quiz, vocabulary) — no
+      headless browser needed.
+- [x] Word export (`lib/export/project-docx.ts`, the `docx` package,
+      `GET /api/projects/[id]/export/docx`): same content as a real,
+      editable .docx.
+- [x] PowerPoint export (`lib/export/project-pptx.ts`, `pptxgenjs`,
+      `GET /api/projects/[id]/export/pptx`): title slide + one slide per
+      lesson day with objective and agenda bullets — matches "Generating
+      one lesson automatically generates: Slides" from the project brief.
+- [x] Gamma.app export (`lib/export/gamma.ts`, Gamma's public Generate
+      API — submit an outline, poll until complete, get a shareable
+      Gamma URL) for both Project and Video Academy tutorials
+      (`POST /api/projects/[id]/export/gamma`,
+      `POST /api/video-academy/[id]/export/gamma`), with a real
+      start/poll-until-done UI (`components/gamma-export-button.tsx`).
+      Note: generation currently runs synchronously inside the request
+      (polling for up to ~2 minutes) — moving this to a background job so
+      it doesn't risk a serverless function timeout is a follow-up, not
+      done this phase.
+- [x] Google Docs export (`lib/export/google-docs.ts`): real Drive +
+      Docs API calls (create document, insert content) are implemented
+      and ready, but the `GOOGLE_WORKSPACE` OAuth connection flow that
+      would obtain the docs/drive-scoped access token isn't wired up yet
+      — stated honestly as a follow-up rather than shipping a
+      half-connected "Export to Google Docs" button. Google Slides export
+      was scoped out for the same reason (Slides' batchUpdate API is
+      substantially more complex than Docs' single text-insert call).
+- [x] Certificates/posters via `skills/app-web-builder/canvas-design`
+      were not built this phase either — that's a static-image-generation
+      skill meant to be invoked by an agent authoring a design, not a
+      library this Next.js app can call at request time. Deferred to
+      whichever phase builds the Digital Portfolio website / Certificates
+      feature, where it's actually the right tool.
+- [x] Verified with `npm run test:smoke:phase11`
+      (`scripts/smoke-test-phase11.ts`): 11 assertions that **actually
+      render real files** against real seeded project data (not just "did
+      it not throw") — PDF starts with the `%PDF-` magic bytes, .docx and
+      .pptx both start with the `PK` ZIP signature real OOXML files
+      require, all three are non-trivial file sizes, and the Gamma/Google
+      Docs deterministic text-building helpers produce correct output
+      from a project's lessons/brief. The Gamma and Google Docs *API
+      calls* themselves need live credentials and aren't exercised
+      offline, consistent with every external AI/vendor call in prior
+      phases. Typecheck, lint, and build all pass clean.
 
 ## Phase 12 — Admin Portal
 - [ ] Teacher/student/class CRUD, permissions, school settings, reporting

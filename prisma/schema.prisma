@@ -288,6 +288,9 @@ model Project {
   classPeriodId String
   weekOf        DateTime?
   brief         String          @db.Text // the generating prompt/brief
+  /// Set after a successful Gamma export (lib/export/gamma.ts) so the UI
+  /// can link back to it without regenerating. Null until exported.
+  gammaUrl      String?
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
 
@@ -663,6 +666,8 @@ model TutorialVideo {
   quiz              Json // { title, questions: [...] } — same shape as Quiz.questions
   transcript        String           @db.Text
   captionsSrt       String           @db.Text
+  /// Set after a successful Gamma export (lib/export/gamma.ts).
+  gammaUrl          String?
   createdAt         DateTime         @default(now())
 
   organization Organization @relation(fields: [organizationId], references: [id])

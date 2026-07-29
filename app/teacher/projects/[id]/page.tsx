@@ -4,6 +4,7 @@ import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { GammaExportButton } from "@/components/gamma-export-button";
 import { PROJECT_CATEGORY_LABELS } from "@/lib/constants/project-categories";
 
 const DAY_LABELS: Record<string, string> = {
@@ -87,6 +88,24 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
           </Card>
         ))}
       </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Export</CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-wrap items-center gap-4">
+          <a href={`/api/projects/${project.id}/export/pdf`} className="text-sm text-studio-accent hover:underline">
+            Download PDF
+          </a>
+          <a href={`/api/projects/${project.id}/export/docx`} className="text-sm text-studio-accent hover:underline">
+            Download Word
+          </a>
+          <a href={`/api/projects/${project.id}/export/pptx`} className="text-sm text-studio-accent hover:underline">
+            Download PowerPoint
+          </a>
+          <GammaExportButton exportUrl={`/api/projects/${project.id}/export/gamma`} initialGammaUrl={project.gammaUrl} />
+        </CardContent>
+      </Card>
 
       <div className="grid gap-6 md:grid-cols-2">
         {project.rubric && (
