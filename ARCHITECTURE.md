@@ -83,7 +83,19 @@ every teacher in that org can push assignments through it.
 
 ## Access control
 
-- `Role` enum (STUDENT, TEACHER, ADMIN, PARENT, MENTOR) lives on `User`.
+- `Role` enum (STUDENT, TEACHER, ADMIN, PARENT, MENTOR) lives on `User`,
+  defaulting to `STUDENT` (least privilege) for every new sign-in.
+- Every role promotion beyond that default goes through `lib/invites.ts`:
+  an ADMIN issues a token tied to one email address, and only accepting
+  that exact token (from a session whose email matches) promotes the user
+  — never a self-service role picker. Parent-to-student links work the
+  same way: an admin/teacher chooses the specific existing student when
+  creating the invite, so a parent can never attach themselves to an
+  arbitrary student record.
+- The one exception is `lib/organizations.ts`: a user with no
+  `organizationId` can bootstrap a brand-new `Organization` and becomes
+  its ADMIN, since someone has to be first. A user who already belongs to
+  an org cannot create/join a second one this way.
 - `middleware.ts` enforces role-prefixed routes (`/teacher/*`, `/student/*`,
   `/admin/*`, `/parent/*`, `/mentor/*`); ADMIN can traverse all portals for
   support/oversight, every other role is confined to its own prefix.

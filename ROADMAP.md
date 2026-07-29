@@ -45,10 +45,32 @@ what's done vs. pending, not a separate planning doc that drifts.
       `prisma db seed` (idempotent — re-running is a no-op), typecheck,
       lint, and build all pass clean
 
-## Phase 3 — Auth hardening & onboarding
-- [ ] Admin invite flow (org creation, teacher invites, student rostering)
-- [ ] Parent-to-student linking flow (verification, not self-service claim)
-- [ ] Microsoft/Apple sign-in providers
+## Phase 3 — Auth hardening & onboarding ✅
+- [x] Org bootstrap: a signed-in user with no organization can create one
+      (`/onboarding` -> `POST /api/organizations` -> `lib/organizations.ts`)
+      and becomes its ADMIN — the one role promotion in the system that
+      doesn't require an invite, since someone has to be first
+- [x] Invite model + `lib/invites.ts`: admins invite by email + role
+      (`/admin/dashboard/invites` -> `POST /api/invites`); every other role
+      promotion (TEACHER/ADMIN/MENTOR/PARENT) requires accepting a
+      token-based invite tied to that exact email (`/invite/[token]`) —
+      not self-service role claiming
+- [x] Parent-to-student linking is verification-based: an admin/teacher
+      picks the specific existing student when creating a PARENT invite;
+      accepting it creates the `ParentLink` automatically. A parent can
+      never link themselves to an arbitrary student.
+- [x] Microsoft Entra ID and Apple sign-in providers, enabled only when
+      their env vars are configured; `/login` renders a button per
+      actually-enabled provider instead of hardcoding Google
+- [x] Fixed a Phase-1 bug found while adding org-scoping: the admin
+      dashboard's stats were counting across all organizations, not just
+      the admin's own — now properly scoped by `organizationId`
+- [x] Verified against the real seeded database with an executable smoke
+      test (`npm run test:smoke:invites`, `scripts/smoke-test-invites.ts`):
+      org-bootstrap rejection when already in an org, teacher invite
+      create+accept, double-accept rejection, parent invite requires a
+      valid studentId, wrong-email acceptance rejection, and correct
+      `ParentLink` creation on accept — all 8 assertions pass
 
 ## Phase 4 — Teacher Portal
 - [ ] Lesson Builder, Rubric Builder, Quiz Builder standalone editors (not

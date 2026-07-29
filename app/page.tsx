@@ -4,7 +4,9 @@ import { redirect } from "next/navigation";
 
 export default async function HomePage() {
   const session = await auth();
-  if (session?.user) redirect(ROLE_HOME[session.user.role]);
+  if (session?.user) {
+    redirect(session.user.organizationId ? ROLE_HOME[session.user.role] : "/onboarding");
+  }
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center gap-6 px-4 text-center">

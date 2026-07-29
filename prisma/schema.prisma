@@ -40,14 +40,15 @@ model User {
   organizationId String?
   organization   Organization? @relation(fields: [organizationId], references: [id])
 
-  teacherOf      ClassPeriod[]      @relation("TeacherClasses")
+  teacherOf      ClassPeriod[]       @relation("TeacherClasses")
   enrollments    Enrollment[]
-  parentLinks    ParentLink[]       @relation("ParentUser")
-  studentLinks   ParentLink[]       @relation("StudentUser")
+  parentLinks    ParentLink[]        @relation("ParentUser")
+  studentLinks   ParentLink[]        @relation("StudentUser")
   submissions    Submission[]
   equipmentLoans EquipmentCheckout[]
   portfolio      PortfolioItem[]
   generationJobs AIGenerationJob[]
+  invitesSent    Invite[]            @relation("InviteCreatedBy")
 
   @@index([organizationId])
 }
@@ -101,6 +102,33 @@ model Organization {
   classPeriods     ClassPeriod[]
   equipment        EquipmentItem[]
   integrationLinks IntegrationConnection[]
+  invites          Invite[]
+}
+
+/// Invite-based onboarding. Roles are never self-assigned beyond the
+/// least-privilege STUDENT default (see User.role) — every promotion to
+/// TEACHER/ADMIN/MENTOR, and every parent-to-student link, happens through
+/// a token an existing org member issued, not by a user claiming it
+/// themselves. See lib/invites.ts.
+model Invite {
+  id             String    @id @default(cuid())
+  organizationId String
+  email          String
+  role           Role
+  token          String    @unique
+  /// Required and only meaningful when role = PARENT: the existing student
+  /// User this invite links the parent to once accepted.
+  studentId      String?
+  expiresAt      DateTime
+  acceptedAt     DateTime?
+  createdById    String
+  createdAt      DateTime  @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  createdBy    User         @relation("InviteCreatedBy", fields: [createdById], references: [id])
+
+  @@index([organizationId])
+  @@index([email])
 }
 
 model ClassPeriod {
@@ -225,22 +253,22 @@ model Project {
 
   classPeriod ClassPeriod @relation(fields: [classPeriodId], references: [id])
 
-  lessons          Lesson[]
-  rubric           Rubric?
-  quiz             Quiz?
-  vocabulary       VocabularyTerm[]
-  storyboard       Storyboard?
-  productionPlan   ProductionPlan?
-  standards        ProjectStandard[]
-  submissions      Submission[]
-  generationJob    AIGenerationJob?
-  portfolioItems   PortfolioItem[]
+  lessons        Lesson[]
+  rubric         Rubric?
+  quiz           Quiz?
+  vocabulary     VocabularyTerm[]
+  storyboard     Storyboard?
+  productionPlan ProductionPlan?
+  standards      ProjectStandard[]
+  submissions    Submission[]
+  generationJob  AIGenerationJob?
+  portfolioItems PortfolioItem[]
 
   @@index([classPeriodId])
 }
 
 model ProjectStandard {
-  id         String   @id @default(cuid())
+  id         String @id @default(cuid())
   projectId  String
   standardId String
 
@@ -259,20 +287,20 @@ enum LessonDay {
 }
 
 model Lesson {
-  id        String    @id @default(cuid())
-  projectId String
-  day       LessonDay
-  title     String
-  objective String    @db.Text
-  iCanStatement String @db.Text
-  agenda    Json // structured agenda blocks (hook, direct instruction, activity, etc.)
-  slidesUrl String?
-  worksheet Json? // structured worksheet content, exportable to PDF/Docx
+  id              String    @id @default(cuid())
+  projectId       String
+  day             LessonDay
+  title           String
+  objective       String    @db.Text
+  iCanStatement   String    @db.Text
+  agenda          Json // structured agenda blocks (hook, direct instruction, activity, etc.)
+  slidesUrl       String?
+  worksheet       Json? // structured worksheet content, exportable to PDF/Docx
   differentiation Json? // { accommodations: string[], extensions: string[], interventions: string[] }
-  createdAt DateTime  @default(now())
+  createdAt       DateTime  @default(now())
 
-  project    Project          @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  standards  LessonStandard[]
+  project   Project          @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  standards LessonStandard[]
 
   @@unique([projectId, day])
 }
@@ -307,10 +335,10 @@ model Quiz {
 }
 
 model VocabularyTerm {
-  id         String  @id @default(cuid())
+  id         String @id @default(cuid())
   projectId  String
   term       String
-  definition String  @db.Text
+  definition String @db.Text
 
   project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
 
@@ -327,12 +355,12 @@ model Storyboard {
 }
 
 model ProductionPlan {
-  id             String @id @default(cuid())
-  projectId      String @unique
-  callSheet      Json
-  crewRoles      Json // [{ role, studentId?, responsibilities }]
-  equipmentList  Json // [{ itemType, quantity }]
-  schedule       Json // shot-by-shot timeline for Wednesday production day
+  id            String @id @default(cuid())
+  projectId     String @unique
+  callSheet     Json
+  crewRoles     Json // [{ role, studentId?, responsibilities }]
+  equipmentList Json // [{ itemType, quantity }]
+  schedule      Json // shot-by-shot timeline for Wednesday production day
 
   project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
 }
@@ -401,13 +429,13 @@ model EquipmentItem {
 }
 
 model EquipmentCheckout {
-  id          String    @id @default(cuid())
-  equipmentId String
-  userId      String
-  checkedOutAt DateTime @default(now())
-  dueAt       DateTime?
-  returnedAt  DateTime?
-  damageNotes String?
+  id           String    @id @default(cuid())
+  equipmentId  String
+  userId       String
+  checkedOutAt DateTime  @default(now())
+  dueAt        DateTime?
+  returnedAt   DateTime?
+  damageNotes  String?
 
   equipment EquipmentItem @relation(fields: [equipmentId], references: [id])
   user      User          @relation(fields: [userId], references: [id])
@@ -463,16 +491,16 @@ enum IntegrationProviderType {
 }
 
 model IntegrationConnection {
-  id             String                   @id @default(cuid())
+  id             String                  @id @default(cuid())
   organizationId String
   provider       IntegrationProviderType
-  accessToken    String?                  @db.Text
-  refreshToken   String?                  @db.Text
+  accessToken    String?                 @db.Text
+  refreshToken   String?                 @db.Text
   expiresAt      DateTime?
   scopes         String[]
   metadata       Json?
-  createdAt      DateTime                 @default(now())
-  updatedAt      DateTime                 @updatedAt
+  createdAt      DateTime                @default(now())
+  updatedAt      DateTime                @updatedAt
 
   organization Organization @relation(fields: [organizationId], references: [id])
 
@@ -491,16 +519,16 @@ enum AIJobStatus {
 }
 
 model AIGenerationJob {
-  id         String      @id @default(cuid())
-  projectId  String?     @unique
+  id            String      @id @default(cuid())
+  projectId     String?     @unique
   requestedById String
-  status     AIJobStatus @default(QUEUED)
-  input      Json
-  output     Json?
-  error      String?
-  startedAt  DateTime?
-  finishedAt DateTime?
-  createdAt  DateTime    @default(now())
+  status        AIJobStatus @default(QUEUED)
+  input         Json
+  output        Json?
+  error         String?
+  startedAt     DateTime?
+  finishedAt    DateTime?
+  createdAt     DateTime    @default(now())
 
   project     Project? @relation(fields: [projectId], references: [id])
   requestedBy User     @relation(fields: [requestedById], references: [id])
