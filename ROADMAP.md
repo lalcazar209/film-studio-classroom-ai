@@ -149,11 +149,44 @@ tools are usable end-to-end for a brand-new school. Folding into Phase 12
       test; `resumeContentSchema` was verified separately against a
       sample payload. Typecheck, lint, and build all pass clean.
 
-## Phase 6 — Media pipeline
-- [ ] Cloudinary integration for student video uploads
-- [ ] AI Video Review (storytelling, composition, exposure, audio,
-      accessibility feedback) — new AI service following the
-      curriculum-service.ts pattern
+## Phase 6 — Media pipeline ✅
+- [x] Cloudinary integration for real video uploads: the browser uploads
+      the file *directly* to Cloudinary using a server-signed request
+      (`lib/integrations/cloudinary.ts`, `POST /api/uploads/sign`) — video
+      bytes never pass through our server/serverless function, so there's
+      no Next.js body-size limit to hit. `components/video-upload.tsx`
+      shows real upload progress via `XMLHttpRequest`. The submission form
+      still accepts a pasted link too (YouTube/Vimeo/Drive) for students
+      whose video already lives elsewhere.
+- [x] AI Video Review (`lib/ai/video-review-service.ts`,
+      `POST /api/submissions/[id]/review`, `/teacher/projects/[id]/submissions`):
+      follows the curriculum-service.ts generate-validate-persist pattern,
+      scored against `videoReviewSchema` (storytelling, composition,
+      lighting, exposure, white balance, audio, editing, pacing, graphics,
+      professionalism, copyright concerns, accessibility notes).
+- [x] To make the review genuinely see the video rather than guess from a
+      title: `lib/ai/provider.ts` grew multipart message support
+      (`AIContentBlock`: text | base64-image), implemented in all three
+      providers (Anthropic image blocks, OpenAI `image_url` parts, Gemini
+      `inlineData` parts). Cloudinary generates video-frame JPEG
+      thumbnails on the fly via URL transformation
+      (`getVideoThumbnailUrls`) — no separate extraction job — and those
+      frames are fetched and attached to the review request. For
+      non-Cloudinary video links (pasted YouTube/Vimeo URLs) there are no
+      frames to extract, so the review honestly falls back to metadata-only
+      analysis and says so (`analyzedVisualFrames: false`), rather than
+      inventing visual detail it can't see.
+- [x] Verified against the real seeded database *and* a real HTTP
+      round-trip (`npm run test:smoke:phase6`, `scripts/smoke-test-phase6.ts`):
+      11 assertions covering the Cloudinary signature against an
+      independently-reimplemented reference algorithm, thumbnail URL
+      construction (and correctly returning `null` for non-Cloudinary
+      URLs), a throwaway local HTTP server proving `fetchImageAsDataUri`
+      round-trips real bytes into a valid base64 data URI, and
+      `videoReviewSchema` validating a realistic payload. The AI call
+      itself needs a real `ANTHROPIC_API_KEY`/network access and isn't
+      exercised offline, consistent with Phases 4-5. Typecheck, lint, and
+      build all pass clean.
 
 ## Phase 7 — Video Academy
 - [ ] Instructional video generator (narration script, shot list, embedded

@@ -1,8 +1,32 @@
 import Anthropic from "@anthropic-ai/sdk";
 import type { AIGenerateOptions, AIGenerateResult, AIProvider } from "../provider";
-import { AIProviderError } from "../provider";
+import { AIProviderError, toContentBlocks, parseDataUri } from "../provider";
 
 const DEFAULT_MODEL = "claude-sonnet-4-5";
+
+function toAnthropicContent(
+  content: Parameters<typeof toContentBlocks>[0],
+): Array<Anthropic.TextBlockParam | Anthropic.ImageBlockParam> {
+  return toContentBlocks(content).map((block) =>
+    block.type === "text"
+      ? { type: "text", text: block.text }
+      : {
+          type: "image",
+          source: {
+            type: "base64",
+            media_type: parseDataUri(block.dataUri).mediaType as "image/jpeg" | "image/png" | "image/webp",
+            data: parseDataUri(block.dataUri).base64,
+          },
+        },
+  );
+}
+
+function textOnly(content: Parameters<typeof toContentBlocks>[0]): string {
+  return toContentBlocks(content)
+    .filter((b): b is { type: "text"; text: string } => b.type === "text")
+    .map((b) => b.text)
+    .join("\n");
+}
 
 export class AnthropicProvider implements AIProvider {
   readonly id = "anthropic";
@@ -16,10 +40,11 @@ export class AnthropicProvider implements AIProvider {
   }
 
   async generate(options: AIGenerateOptions): Promise<AIGenerateResult> {
-    const system = options.messages.find((m) => m.role === "system")?.content;
+    const systemMessage = options.messages.find((m) => m.role === "system");
+    const system = systemMessage ? textOnly(systemMessage.content) : undefined;
     const conversation = options.messages
       .filter((m) => m.role !== "system")
-      .map((m) => ({ role: m.role as "user" | "assistant", content: m.content }));
+      .map((m) => ({ role: m.role as "user" | "assistant", content: toAnthropicContent(m.content) }));
 
     try {
       const response = await this.client.messages.create({

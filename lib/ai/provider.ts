@@ -5,9 +5,14 @@
  * deployment without touching feature code.
  */
 
+export type AIContentBlock =
+  | { type: "text"; text: string }
+  | { type: "image"; dataUri: string };
+
 export interface AIMessage {
   role: "system" | "user" | "assistant";
-  content: string;
+  /** A plain string is shorthand for a single text block. */
+  content: string | AIContentBlock[];
 }
 
 export interface AIGenerateOptions {
@@ -39,4 +44,19 @@ export class AIProviderError extends Error {
     super(`[${providerId}] ${message}`);
     this.name = "AIProviderError";
   }
+}
+
+export function toContentBlocks(content: string | AIContentBlock[]): AIContentBlock[] {
+  return typeof content === "string" ? [{ type: "text", text: content }] : content;
+}
+
+const DATA_URI_PATTERN = /^data:([^;]+);base64,(.+)$/;
+
+export function parseDataUri(dataUri: string): { mediaType: string; base64: string } {
+  const match = dataUri.match(DATA_URI_PATTERN);
+  if (!match) {
+    throw new Error("Expected a base64 data URI (data:<mime>;base64,<data>)");
+  }
+  const [, mediaType, base64] = match;
+  return { mediaType: mediaType!, base64: base64! };
 }

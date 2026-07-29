@@ -17,7 +17,8 @@
     "db:seed": "tsx prisma/seed.ts",
     "test:smoke:invites": "tsx scripts/smoke-test-invites.ts",
     "test:smoke:phase4": "tsx scripts/smoke-test-phase4.ts",
-    "test:smoke:phase5": "tsx scripts/smoke-test-phase5.ts"
+    "test:smoke:phase5": "tsx scripts/smoke-test-phase5.ts",
+    "test:smoke:phase6": "node --env-file=.env ./node_modules/.bin/tsx scripts/smoke-test-phase6.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
@@ -27,6 +28,7 @@
     "@auth/prisma-adapter": "^2.7.4",
     "@google/generative-ai": "^0.21.0",
     "@prisma/client": "^5.22.0",
+    "cloudinary": "^2.10.0",
     "googleapis": "^144.0.0",
     "next": "^15.0.3",
     "next-auth": "^5.0.0-beta.25",

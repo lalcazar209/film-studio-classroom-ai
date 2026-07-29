@@ -1,8 +1,22 @@
 import OpenAI from "openai";
 import type { AIGenerateOptions, AIGenerateResult, AIProvider } from "../provider";
-import { AIProviderError } from "../provider";
+import { AIProviderError, toContentBlocks } from "../provider";
 
 const DEFAULT_MODEL = "gpt-4.1";
+
+function toOpenAIContent(
+  content: Parameters<typeof toContentBlocks>[0],
+): string | OpenAI.Chat.Completions.ChatCompletionContentPart[] {
+  const blocks = toContentBlocks(content);
+  if (blocks.every((b) => b.type === "text")) {
+    return blocks.map((b) => (b as { text: string }).text).join("\n");
+  }
+  return blocks.map((block) =>
+    block.type === "text"
+      ? { type: "text" as const, text: block.text }
+      : { type: "image_url" as const, image_url: { url: block.dataUri } },
+  );
+}
 
 export class OpenAIProvider implements AIProvider {
   readonly id = "openai";
@@ -21,7 +35,7 @@ export class OpenAIProvider implements AIProvider {
         model: DEFAULT_MODEL,
         max_tokens: options.maxTokens ?? 4096,
         temperature: options.temperature ?? 0.7,
-        messages: options.messages.map((m) => ({ role: m.role, content: m.content })),
+        messages: options.messages.map((m) => ({ role: m.role, content: toOpenAIContent(m.content) })) as OpenAI.Chat.Completions.ChatCompletionMessageParam[],
         response_format: options.jsonSchema
           ? {
               type: "json_schema",

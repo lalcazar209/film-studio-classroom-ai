@@ -61,6 +61,18 @@ AI call per artifact type; extend the bundle schema and the transaction.
 - `schemas.ts` — Zod schemas that are both the validation layer and the
   source of truth for what "one full generation" contains.
 - `curriculum-service.ts` — orchestrates generate → validate → persist.
+- `media.ts` — fetches a remote image (e.g. a Cloudinary video-frame
+  thumbnail) into a base64 data URI, the one format all three providers'
+  image support normalizes from.
+
+`AIMessage.content` accepts either a plain string or an array of
+`AIContentBlock` (`{type: "text"}` | `{type: "image", dataUri}`), so a
+service can attach images (video frames, uploaded stills) without any
+provider-specific code — each adapter converts the shared data-URI format
+into its own image-input shape (Anthropic base64 `source`, OpenAI
+`image_url`, Gemini `inlineData`). `video-review-service.ts` is the first
+consumer: it pulls Cloudinary-generated frame thumbnails via
+`lib/integrations/cloudinary.ts` and attaches them alongside text context.
 
 Adding a new AI Assistant (Director AI, Editor AI, Colorist AI, ...) means
 adding a new schema + a new service function that calls `getAIProvider()`,
@@ -139,13 +151,11 @@ film-studio-classroom-ai/
 
 Per the project brief's own instruction — build in phases, not one giant
 response — the following are designed-for in the schema/architecture but
-not yet implemented: real video file upload (submissions take a pasted
-video link today; binary upload needs the Cloudinary pipeline), digital
-portfolio *website* generation (the in-app portfolio list exists; a public
-shareable site does not), SkillsUSA competition mode, AI video review
-pipeline, most LMS adapters beyond Google Classroom, billing, and admin
-CRUD for organizations/class periods/rostering (there's still no UI to
-*create* a ClassPeriod outside the seed script). See `ROADMAP.md` for the
+not yet implemented: digital portfolio *website* generation (the in-app
+portfolio list exists; a public shareable site does not), SkillsUSA
+competition mode, most LMS adapters beyond Google Classroom, billing, and
+admin CRUD for organizations/class periods/rostering (there's still no UI
+to *create* a ClassPeriod outside the seed script). See `ROADMAP.md` for the
 phase plan and current status.
 
 Equipment checkout now has a real QR-based flow (Phase 4): the QR encodes

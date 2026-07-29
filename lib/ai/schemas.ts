@@ -116,3 +116,31 @@ export const projectBundleSchema = z.object({
 });
 
 export type ProjectBundle = z.infer<typeof projectBundleSchema>;
+
+const reviewCategorySchema = z.object({
+  score: z.number().min(1).max(10),
+  feedback: z.string(),
+});
+
+export const videoReviewSchema = z.object({
+  overallSummary: z.string(),
+  overallScore: z.number().min(1).max(10),
+  storytelling: reviewCategorySchema,
+  composition: reviewCategorySchema,
+  lighting: reviewCategorySchema,
+  exposure: reviewCategorySchema,
+  whiteBalance: reviewCategorySchema,
+  audio: reviewCategorySchema,
+  editing: reviewCategorySchema,
+  pacing: reviewCategorySchema,
+  graphics: reviewCategorySchema,
+  professionalism: reviewCategorySchema,
+  copyrightConcerns: z.array(z.string()),
+  accessibilityNotes: z.array(z.string()),
+  nextSteps: z.array(z.string()).min(1),
+  /** True when the review was based on actual extracted video frames vs.
+   * text-only metadata (no video file was uploaded through Cloudinary). */
+  analyzedVisualFrames: z.boolean(),
+});
+
+export type VideoReview = z.infer<typeof videoReviewSchema>;

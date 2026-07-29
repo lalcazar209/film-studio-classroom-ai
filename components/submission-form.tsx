@@ -4,6 +4,7 @@ import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input, Label, Textarea } from "@/components/ui/field";
+import { VideoUpload } from "@/components/video-upload";
 
 export function SubmissionForm({
   submissionId,
@@ -64,6 +65,7 @@ export function SubmissionForm({
           placeholder="https://..."
         />
       </div>
+      <VideoUpload submissionId={submissionId} onUploaded={(secureUrl) => setVideoUrl(secureUrl)} />
       <div>
         <Label htmlFor="reflection">Reflection</Label>
         <Textarea

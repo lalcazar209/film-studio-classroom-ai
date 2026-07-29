@@ -53,9 +53,14 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
           <h1 className="font-display text-3xl font-bold">{project.title}</h1>
           <p className="mt-1 text-black/60 dark:text-white/60">{project.classPeriod.name}</p>
         </div>
-        <Link href={`/teacher/projects/${project.id}/edit`}>
-          <Button variant="secondary">Edit</Button>
-        </Link>
+        <div className="flex gap-2">
+          <Link href={`/teacher/projects/${project.id}/submissions`}>
+            <Button variant="secondary">Submissions</Button>
+          </Link>
+          <Link href={`/teacher/projects/${project.id}/edit`}>
+            <Button variant="secondary">Edit</Button>
+          </Link>
+        </div>
       </header>
 
       <div className="grid gap-6 md:grid-cols-5">
