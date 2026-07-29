@@ -68,7 +68,7 @@ export function DemoReelBuilder({
       </div>
 
       {availableClips.length === 0 ? (
-        <p className="text-sm text-black/60 dark:text-white/60">
+        <p className="text-sm text-studio-ink/60 dark:text-white/60">
           No submitted work with a video link yet — submit a project first.
         </p>
       ) : (

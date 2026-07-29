@@ -46,10 +46,10 @@ export function TutorChat({ initialHistory }: { initialHistory: ChatMessage[] })
   }
 
   return (
-    <div className="flex h-[60vh] flex-col rounded-xl border border-black/10 dark:border-white/10">
+    <div className="flex h-[60vh] flex-col rounded-xl border border-studio-ink/10 dark:border-white/10">
       <div className="flex-1 space-y-3 overflow-y-auto p-4">
         {messages.length === 0 && (
-          <p className="text-sm text-black/50 dark:text-white/50">
+          <p className="text-sm text-studio-ink/50 dark:text-white/50">
             Ask about your project, a technique, or where you&apos;re stuck — I&apos;ll help you work
             through it rather than just give you the answer.
           </p>
@@ -60,7 +60,7 @@ export function TutorChat({ initialHistory }: { initialHistory: ChatMessage[] })
             className={`max-w-[80%] rounded-lg px-3 py-2 text-sm ${
               message.role === "USER"
                 ? "ml-auto bg-studio-accent text-white"
-                : "bg-black/5 dark:bg-white/10"
+                : "bg-studio-ink/5 dark:bg-white/10"
             }`}
           >
             {message.content}
@@ -74,7 +74,7 @@ export function TutorChat({ initialHistory }: { initialHistory: ChatMessage[] })
         </p>
       )}
 
-      <form onSubmit={handleSubmit} className="flex gap-2 border-t border-black/10 p-3 dark:border-white/10">
+      <form onSubmit={handleSubmit} className="flex gap-2 border-t border-studio-ink/10 p-3 dark:border-white/10">
         <Input
           value={input}
           onChange={(e) => setInput(e.target.value)}

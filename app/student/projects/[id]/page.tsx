@@ -48,8 +48,8 @@ export default async function StudentProjectPage({ params }: { params: Promise<{
         <p className="text-sm uppercase tracking-wide text-studio-accent">
           {PROJECT_CATEGORY_LABELS[project.category]}
         </p>
-        <h1 className="font-display text-3xl font-bold">{project.title}</h1>
-        <p className="mt-1 text-black/60 dark:text-white/60">{project.classPeriod.name}</p>
+        <h1 className="font-display text-3xl font-extrabold">{project.title}</h1>
+        <p className="mt-1 text-studio-ink/60 dark:text-white/60">{project.classPeriod.name}</p>
       </header>
 
       {lessons.map((lesson) => (
@@ -68,7 +68,7 @@ export default async function StudentProjectPage({ params }: { params: Promise<{
           <CardHeader>
             <CardTitle>Rubric — {project.rubric.title}</CardTitle>
           </CardHeader>
-          <CardContent className="text-sm text-black/70 dark:text-white/70">
+          <CardContent className="text-sm text-studio-ink/70 dark:text-white/70">
             {(project.rubric.criteria as Array<{ name: string; weightPercent: number }>).map((c) => (
               <div key={c.name} className="flex justify-between py-1">
                 <span>{c.name}</span>
@@ -91,7 +91,7 @@ export default async function StudentProjectPage({ params }: { params: Promise<{
               initialReflection={submission.reflection}
             />
           ) : (
-            <p className="text-sm text-black/60 dark:text-white/60">
+            <p className="text-sm text-studio-ink/60 dark:text-white/60">
               No submission record found for this project yet.
             </p>
           )}

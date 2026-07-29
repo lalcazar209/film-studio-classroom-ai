@@ -10,14 +10,14 @@ export default async function ReportsPage() {
 
   return (
     <main className="mx-auto max-w-2xl space-y-6 px-4 py-10">
-      <h1 className="font-display text-3xl font-bold">Reports</h1>
+      <h1 className="font-display text-3xl font-extrabold">Reports</h1>
 
       <Card>
         <CardHeader>
           <CardTitle>Roster</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="mb-3 text-sm text-black/60 dark:text-white/60">
+          <p className="mb-3 text-sm text-studio-ink/60 dark:text-white/60">
             Every enrolled student, their class period, and their teacher.
           </p>
           <a href="/api/admin/reports/roster" className="text-sm text-studio-accent hover:underline">
@@ -31,7 +31,7 @@ export default async function ReportsPage() {
           <CardTitle>Standards Coverage</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="mb-3 text-sm text-black/60 dark:text-white/60">
+          <p className="mb-3 text-sm text-studio-ink/60 dark:text-white/60">
             Every California CTE/VAPA/ISTE standard your generated projects have touched, and
             which project/class period covered it.
           </p>

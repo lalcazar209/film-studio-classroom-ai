@@ -59,12 +59,12 @@ export default async function GradebookPage({
   return (
     <main className="mx-auto max-w-5xl space-y-6 px-4 py-10">
       <div>
-        <h1 className="font-display text-3xl font-bold">Gradebook</h1>
-        <p className="text-black/60 dark:text-white/60">{classPeriod.name}</p>
+        <h1 className="font-display text-3xl font-extrabold">Gradebook</h1>
+        <p className="text-studio-ink/60 dark:text-white/60">{classPeriod.name}</p>
       </div>
 
       {columns.length === 0 ? (
-        <p className="text-sm text-black/60 dark:text-white/60">
+        <p className="text-sm text-studio-ink/60 dark:text-white/60">
           No projects generated for this class period yet.
         </p>
       ) : (

@@ -19,8 +19,8 @@ export default async function VideoAcademyPage() {
   return (
     <main className="mx-auto max-w-3xl space-y-6 px-4 py-10">
       <div>
-        <h1 className="font-display text-3xl font-bold">Video Academy</h1>
-        <p className="text-black/60 dark:text-white/60">
+        <h1 className="font-display text-3xl font-extrabold">Video Academy</h1>
+        <p className="text-studio-ink/60 dark:text-white/60">
           Generate instructional tutorials — narration, shot list, teacher script, practice
           activity, quiz, transcript, and captions — shared across your school.
         </p>
@@ -34,7 +34,7 @@ export default async function VideoAcademyPage() {
         </CardHeader>
         <CardContent>
           {tutorials.length === 0 ? (
-            <p className="text-sm text-black/60 dark:text-white/60">No tutorials generated yet.</p>
+            <p className="text-sm text-studio-ink/60 dark:text-white/60">No tutorials generated yet.</p>
           ) : (
             <ul className="space-y-2 text-sm">
               {tutorials.map((tutorial) => (
@@ -45,7 +45,7 @@ export default async function VideoAcademyPage() {
                   >
                     {tutorial.title}
                   </Link>
-                  <span className="text-xs text-black/50 dark:text-white/50">
+                  <span className="text-xs text-studio-ink/50 dark:text-white/50">
                     {TUTORIAL_CATEGORY_LABELS[tutorial.category]}
                   </span>
                 </li>

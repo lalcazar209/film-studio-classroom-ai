@@ -50,7 +50,7 @@ function Cell({ data }: { data: GradebookCellData }) {
         value={total}
         onChange={(e) => setTotal(e.target.value)}
         onBlur={save}
-        className="w-16 rounded border border-black/15 bg-white px-1 py-0.5 text-sm dark:border-white/15 dark:bg-studio-900"
+        className="w-16 rounded border border-studio-ink/15 bg-white px-1 py-0.5 text-sm dark:border-white/15 dark:bg-studio-900"
         placeholder="—"
       />
       <input
@@ -59,9 +59,9 @@ function Cell({ data }: { data: GradebookCellData }) {
         onChange={(e) => setFeedback(e.target.value)}
         onBlur={save}
         placeholder="feedback"
-        className="w-32 rounded border border-black/15 bg-white px-1 py-0.5 text-xs dark:border-white/15 dark:bg-studio-900"
+        className="w-32 rounded border border-studio-ink/15 bg-white px-1 py-0.5 text-xs dark:border-white/15 dark:bg-studio-900"
       />
-      <span className="text-[10px] text-black/40 dark:text-white/40">
+      <span className="text-[10px] text-studio-ink/40 dark:text-white/40">
         {state === "saving" ? "saving…" : state === "saved" ? "saved" : state === "error" ? "error" : data.status}
       </span>
     </div>
@@ -74,11 +74,11 @@ export function GradebookGrid({ columns, rows }: { columns: GradebookColumn[]; r
       <table className="w-full border-collapse text-left text-sm">
         <thead>
           <tr>
-            <th className="border-b border-black/10 p-2 dark:border-white/10">Student</th>
+            <th className="border-b border-studio-ink/10 p-2 dark:border-white/10">Student</th>
             {columns.map((col) => (
-              <th key={col.projectId} className="border-b border-black/10 p-2 dark:border-white/10">
+              <th key={col.projectId} className="border-b border-studio-ink/10 p-2 dark:border-white/10">
                 {col.title}
-                <div className="text-xs font-normal text-black/50 dark:text-white/50">
+                <div className="text-xs font-normal text-studio-ink/50 dark:text-white/50">
                   /{col.maxPoints}
                 </div>
               </th>
@@ -88,12 +88,12 @@ export function GradebookGrid({ columns, rows }: { columns: GradebookColumn[]; r
         <tbody>
           {rows.map((row) => (
             <tr key={row.studentId}>
-              <td className="border-b border-black/5 p-2 align-top dark:border-white/5">{row.studentName}</td>
+              <td className="border-b border-studio-ink/5 p-2 align-top dark:border-white/5">{row.studentName}</td>
               {columns.map((col) => {
                 const cell = row.cells[col.projectId];
                 return (
-                  <td key={col.projectId} className="border-b border-black/5 p-2 align-top dark:border-white/5">
-                    {cell ? <Cell data={cell} /> : <span className="text-black/30">—</span>}
+                  <td key={col.projectId} className="border-b border-studio-ink/5 p-2 align-top dark:border-white/5">
+                    {cell ? <Cell data={cell} /> : <span className="text-studio-ink/30">—</span>}
                   </td>
                 );
               })}

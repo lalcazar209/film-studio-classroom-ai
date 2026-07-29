@@ -13,7 +13,7 @@ function Bar({ label, value, total, colorClass }: { label: string; value: number
           {value} ({pct}%)
         </span>
       </div>
-      <div className="h-2 w-full rounded bg-black/10 dark:bg-white/10">
+      <div className="h-2 w-full rounded bg-studio-ink/10 dark:bg-white/10">
         <div className={`h-2 rounded ${colorClass}`} style={{ width: `${pct}%` }} />
       </div>
     </div>
@@ -35,10 +35,10 @@ export default async function TeacherAnalyticsPage() {
 
   return (
     <main className="mx-auto max-w-4xl space-y-6 px-4 py-10">
-      <h1 className="font-display text-3xl font-bold">Analytics</h1>
+      <h1 className="font-display text-3xl font-extrabold">Analytics</h1>
 
       {classPeriods.length === 0 ? (
-        <p className="text-sm text-black/60 dark:text-white/60">No class periods yet.</p>
+        <p className="text-sm text-studio-ink/60 dark:text-white/60">No class periods yet.</p>
       ) : (
         classPeriods.map((cp) => {
           const submissions = cp.projects.flatMap((p) => p.submissions);
@@ -65,7 +65,7 @@ export default async function TeacherAnalyticsPage() {
                 <Bar label="Graded" value={graded} total={submissionTotal} colorClass="bg-studio-gold" />
                 <Bar label="Attendance (present, last 30 days)" value={present} total={attendanceTotal} colorClass="bg-green-600" />
                 {avgGrade !== null && (
-                  <p className="text-sm text-black/60 dark:text-white/60">Average grade: {avgGrade}/100</p>
+                  <p className="text-sm text-studio-ink/60 dark:text-white/60">Average grade: {avgGrade}/100</p>
                 )}
               </CardContent>
             </Card>

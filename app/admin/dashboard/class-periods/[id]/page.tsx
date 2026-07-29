@@ -36,7 +36,7 @@ export default async function ClassPeriodDetailPage({ params }: { params: Promis
 
   return (
     <main className="mx-auto max-w-2xl space-y-6 px-4 py-10">
-      <h1 className="font-display text-3xl font-bold">{classPeriod.name}</h1>
+      <h1 className="font-display text-3xl font-extrabold">{classPeriod.name}</h1>
 
       <Card>
         <CardHeader>

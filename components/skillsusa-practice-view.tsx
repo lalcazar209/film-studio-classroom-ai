@@ -23,8 +23,8 @@ export function SkillsUsaPracticeView({
     <div className="space-y-6">
       <header>
         <p className="text-sm uppercase tracking-wide text-studio-accent">SkillsUSA Practice</p>
-        <h1 className="font-display text-3xl font-bold">{contestName}</h1>
-        <p className="mt-1 text-black/60 dark:text-white/60">{competitionOverview}</p>
+        <h1 className="font-display text-3xl font-extrabold">{contestName}</h1>
+        <p className="mt-1 text-studio-ink/60 dark:text-white/60">{competitionOverview}</p>
       </header>
 
       <Card>
@@ -76,7 +76,7 @@ export function SkillsUsaPracticeView({
                 <span>{c.name}</span>
                 <span>{c.maxPoints} pts</span>
               </div>
-              <p className="text-black/60 dark:text-white/60">{c.guidance}</p>
+              <p className="text-studio-ink/60 dark:text-white/60">{c.guidance}</p>
             </div>
           ))}
         </CardContent>
@@ -104,7 +104,7 @@ export function SkillsUsaPracticeView({
           {scenarioBank.map((s, i) => (
             <div key={i}>
               <p className="font-medium">{s.title}</p>
-              <p className="text-black/60 dark:text-white/60">{s.prompt}</p>
+              <p className="text-studio-ink/60 dark:text-white/60">{s.prompt}</p>
             </div>
           ))}
         </CardContent>

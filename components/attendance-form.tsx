@@ -80,7 +80,7 @@ export function AttendanceForm({
                   type="button"
                   onClick={() => setStatus(student.id, status)}
                   className={`rounded px-2 py-1 text-xs font-medium ${
-                    student.status === status ? STATUS_STYLES[status] : "bg-black/5 dark:bg-white/10"
+                    student.status === status ? STATUS_STYLES[status] : "bg-studio-ink/5 dark:bg-white/10"
                   }`}
                 >
                   {status[0]}

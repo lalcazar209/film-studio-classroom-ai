@@ -45,7 +45,7 @@ export function CountdownTimer({ minutes }: { minutes: number }) {
   const isTimeUp = remaining === 0;
 
   return (
-    <div className="flex items-center gap-4 rounded-lg border border-black/10 p-4 dark:border-white/10">
+    <div className="flex items-center gap-4 rounded-2xl border border-studio-ink/10 bg-white p-4 shadow-soft dark:border-white/10 dark:bg-studio-900">
       <span
         className={`font-display text-4xl tabular-nums ${isTimeUp ? "text-red-600 dark:text-red-400" : ""}`}
       >

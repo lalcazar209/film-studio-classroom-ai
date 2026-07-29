@@ -56,7 +56,7 @@ export function VideoReviewPanel({
       <Button variant="secondary" onClick={handleRun} isLoading={isRunning} disabled={!hasVideo}>
         {review ? "Re-run AI Review" : "Run AI Review"}
       </Button>
-      {!hasVideo && <p className="text-xs text-black/50 dark:text-white/50">No video submitted yet.</p>}
+      {!hasVideo && <p className="text-xs text-studio-ink/50 dark:text-white/50">No video submitted yet.</p>}
       {error && (
         <p role="alert" className="text-sm text-red-600 dark:text-red-400">
           {error}
@@ -64,7 +64,7 @@ export function VideoReviewPanel({
       )}
 
       {review && (
-        <div className="space-y-3 rounded-lg border border-black/10 p-4 text-sm dark:border-white/10">
+        <div className="space-y-3 rounded-2xl border border-studio-ink/10 bg-white p-4 text-sm shadow-soft dark:border-white/10 dark:bg-studio-900">
           <p className="font-medium">
             Overall: {review.overallScore}/10
             {!review.analyzedVisualFrames && (
@@ -73,7 +73,7 @@ export function VideoReviewPanel({
               </span>
             )}
           </p>
-          <p className="text-black/70 dark:text-white/70">{review.overallSummary}</p>
+          <p className="text-studio-ink/70 dark:text-white/70">{review.overallSummary}</p>
 
           <div className="grid gap-2 sm:grid-cols-2">
             {Object.entries(CATEGORY_LABELS).map(([key, label]) => {
@@ -83,7 +83,7 @@ export function VideoReviewPanel({
                   <p className="font-medium">
                     {label}: {category.score}/10
                   </p>
-                  <p className="text-xs text-black/60 dark:text-white/60">{category.feedback}</p>
+                  <p className="text-xs text-studio-ink/60 dark:text-white/60">{category.feedback}</p>
                 </div>
               );
             })}

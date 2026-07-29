@@ -33,7 +33,7 @@ export default async function StudentDashboardPage() {
 
       {enrollments.length === 0 ? (
         <Card>
-          <CardContent className="py-8 text-center text-black/60 dark:text-white/60">
+          <CardContent className="py-8 text-center text-studio-ink/60 dark:text-white/60">
             You&apos;re not enrolled in a class period yet. Ask your teacher to add you.
           </CardContent>
         </Card>
@@ -45,7 +45,7 @@ export default async function StudentDashboardPage() {
             </CardHeader>
             <CardContent>
               {classPeriod.projects.length === 0 ? (
-                <p className="text-sm text-black/60 dark:text-white/60">
+                <p className="text-sm text-studio-ink/60 dark:text-white/60">
                   No projects assigned yet.
                 </p>
               ) : (
@@ -55,7 +55,7 @@ export default async function StudentDashboardPage() {
                       <Link href={`/student/projects/${project.id}`} className="hover:text-studio-accent">
                         {project.title}
                       </Link>
-                      <span className="text-xs text-black/50 dark:text-white/50">
+                      <span className="text-xs text-studio-ink/50 dark:text-white/50">
                         {PROJECT_CATEGORY_LABELS[project.category]}
                       </span>
                     </li>

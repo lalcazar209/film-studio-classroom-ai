@@ -55,7 +55,7 @@ export function VideoUpload({
         />
       </label>
       {isUploading && (
-        <div className="h-1.5 w-full max-w-xs rounded bg-black/10 dark:bg-white/10">
+        <div className="h-1.5 w-full max-w-xs rounded bg-studio-ink/10 dark:bg-white/10">
           <div className="h-1.5 rounded bg-studio-accent transition-all" style={{ width: `${progress}%` }} />
         </div>
       )}

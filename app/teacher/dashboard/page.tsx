@@ -33,7 +33,7 @@ export default async function TeacherDashboardPage() {
 
       {classPeriods.length === 0 ? (
         <Card>
-          <CardContent className="py-8 text-center text-black/60 dark:text-white/60">
+          <CardContent className="py-8 text-center text-studio-ink/60 dark:text-white/60">
             No class periods yet. Set one up to start generating projects.
           </CardContent>
         </Card>
@@ -67,7 +67,7 @@ export default async function TeacherDashboardPage() {
             </CardHeader>
             <CardContent>
               {cp.projects.length === 0 ? (
-                <p className="text-sm text-black/60 dark:text-white/60">No projects generated yet.</p>
+                <p className="text-sm text-studio-ink/60 dark:text-white/60">No projects generated yet.</p>
               ) : (
                 <ul className="space-y-2 text-sm">
                   {cp.projects.map((project) => (
@@ -75,7 +75,7 @@ export default async function TeacherDashboardPage() {
                       <Link href={`/teacher/projects/${project.id}`} className="hover:text-studio-accent">
                         {project.title}
                       </Link>
-                      <span className="flex items-center gap-2 text-xs text-black/50 dark:text-white/50">
+                      <span className="flex items-center gap-2 text-xs text-studio-ink/50 dark:text-white/50">
                         {PROJECT_CATEGORY_LABELS[project.category]} · {project.status}
                         <Link href={`/teacher/projects/${project.id}/edit`} className="text-studio-accent hover:underline">
                           Edit

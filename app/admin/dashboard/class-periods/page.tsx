@@ -26,7 +26,7 @@ export default async function ClassPeriodsPage() {
 
   return (
     <main className="mx-auto max-w-3xl space-y-6 px-4 py-10">
-      <h1 className="font-display text-3xl font-bold">Class Periods</h1>
+      <h1 className="font-display text-3xl font-extrabold">Class Periods</h1>
 
       <Card>
         <CardHeader>
@@ -43,7 +43,7 @@ export default async function ClassPeriodsPage() {
         </CardHeader>
         <CardContent>
           {classPeriods.length === 0 ? (
-            <p className="text-sm text-black/60 dark:text-white/60">None yet.</p>
+            <p className="text-sm text-studio-ink/60 dark:text-white/60">None yet.</p>
           ) : (
             <ul className="space-y-2 text-sm">
               {classPeriods.map((cp) => (
@@ -51,7 +51,7 @@ export default async function ClassPeriodsPage() {
                   <Link href={`/admin/dashboard/class-periods/${cp.id}`} className="hover:text-studio-accent">
                     {cp.name} · Grade {cp.gradeLevel}
                   </Link>
-                  <span className="text-xs text-black/50 dark:text-white/50">
+                  <span className="text-xs text-studio-ink/50 dark:text-white/50">
                     {cp.teacher.name ?? cp.teacher.email} · {cp._count.enrollments} students
                   </span>
                 </li>

@@ -22,7 +22,7 @@ export default async function MentorDashboardPage() {
       <div>
         <p className="text-sm font-bold uppercase tracking-wide text-studio-sky">Welcome back</p>
         <h1 className="font-display text-3xl font-extrabold">Industry Mentor Portal</h1>
-        <p className="mt-1 text-black/60 dark:text-white/60">
+        <p className="mt-1 text-studio-ink/60 dark:text-white/60">
           Recent student work you can review and give industry feedback on.
         </p>
       </div>
@@ -33,13 +33,13 @@ export default async function MentorDashboardPage() {
         </CardHeader>
         <CardContent>
           {organizationProjects.length === 0 ? (
-            <p className="text-sm text-black/60 dark:text-white/60">Nothing to review yet.</p>
+            <p className="text-sm text-studio-ink/60 dark:text-white/60">Nothing to review yet.</p>
           ) : (
             <ul className="space-y-2 text-sm">
               {organizationProjects.map((project) => (
                 <li key={project.id} className="flex justify-between">
                   <span>{project.title}</span>
-                  <span className="text-xs text-black/50 dark:text-white/50">
+                  <span className="text-xs text-studio-ink/50 dark:text-white/50">
                     {PROJECT_CATEGORY_LABELS[project.category]} · {project.classPeriod.name}
                   </span>
                 </li>

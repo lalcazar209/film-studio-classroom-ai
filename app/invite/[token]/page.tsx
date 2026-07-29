@@ -52,7 +52,7 @@ export default async function InviteAcceptPage({ params }: { params: Promise<{ t
           <CardTitle>Join {invite.organization.name}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <p className="text-sm text-black/60 dark:text-white/60">
+          <p className="text-sm text-studio-ink/60 dark:text-white/60">
             You&apos;ve been invited to join as a <strong>{invite.role.toLowerCase()}</strong>.
           </p>
           <form action={accept}>
@@ -68,8 +68,8 @@ function StatusPage({ title, message }: { title: string; message: string }) {
   return (
     <main className="flex min-h-screen items-center justify-center px-4 text-center">
       <div>
-        <h1 className="font-display text-2xl font-bold">{title}</h1>
-        <p className="mt-2 text-black/60 dark:text-white/60">{message}</p>
+        <h1 className="font-display text-2xl font-extrabold">{title}</h1>
+        <p className="mt-2 text-studio-ink/60 dark:text-white/60">{message}</p>
       </div>
     </main>
   );

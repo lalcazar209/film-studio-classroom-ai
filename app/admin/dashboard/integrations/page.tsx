@@ -37,8 +37,8 @@ export default async function IntegrationsPage() {
   return (
     <main className="mx-auto max-w-3xl space-y-6 px-4 py-10">
       <div>
-        <h1 className="font-display text-3xl font-bold">Integrations</h1>
-        <p className="text-black/60 dark:text-white/60">
+        <h1 className="font-display text-3xl font-extrabold">Integrations</h1>
+        <p className="text-studio-ink/60 dark:text-white/60">
           Connect the tools your school already uses.
         </p>
       </div>
@@ -48,7 +48,7 @@ export default async function IntegrationsPage() {
           <CardTitle>Slack</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="mb-3 text-sm text-black/60 dark:text-white/60">
+          <p className="mb-3 text-sm text-studio-ink/60 dark:text-white/60">
             Get a notification in Slack whenever a project is generated. Create an{" "}
             <span className="font-mono">Incoming Webhook</span> in your Slack workspace and paste
             the URL here.
@@ -67,7 +67,7 @@ export default async function IntegrationsPage() {
           <CardTitle>Zapier / Make</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="mb-3 text-sm text-black/60 dark:text-white/60">
+          <p className="mb-3 text-sm text-studio-ink/60 dark:text-white/60">
             Send platform events to a Zapier (or Make) webhook to build your own automations.
           </p>
           <WebhookIntegrationForm
@@ -84,7 +84,7 @@ export default async function IntegrationsPage() {
           <CardTitle>Infinite Campus</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="mb-3 text-sm text-black/60 dark:text-white/60">
+          <p className="mb-3 text-sm text-studio-ink/60 dark:text-white/60">
             Infinite Campus is a Student Information System, not an LMS — this connects for
             roster lookups and grade passback, not assignment creation. Your district&apos;s IT
             team issues the API key/secret.
@@ -101,9 +101,9 @@ export default async function IntegrationsPage() {
         </CardHeader>
         <CardContent className="space-y-3 text-sm">
           {OAUTH_LMS_PROVIDERS.map(({ provider, label, envHint }) => (
-            <div key={provider} className="flex items-center justify-between border-b border-black/5 pb-2 last:border-0 dark:border-white/5">
+            <div key={provider} className="flex items-center justify-between border-b border-studio-ink/5 pb-2 last:border-0 dark:border-white/5">
               <span>{label}</span>
-              <span className="text-xs text-black/50 dark:text-white/50">
+              <span className="text-xs text-studio-ink/50 dark:text-white/50">
                 {connectionByProvider.has(provider) ? "Connected" : `Not connected — needs ${envHint}`}
               </span>
             </div>
@@ -117,9 +117,9 @@ export default async function IntegrationsPage() {
         </CardHeader>
         <CardContent className="space-y-3 text-sm">
           {VIDEO_HOST_PROVIDERS.map(({ provider, label, envHint }) => (
-            <div key={provider} className="flex items-center justify-between border-b border-black/5 pb-2 last:border-0 dark:border-white/5">
+            <div key={provider} className="flex items-center justify-between border-b border-studio-ink/5 pb-2 last:border-0 dark:border-white/5">
               <span>{label}</span>
-              <span className="text-xs text-black/50 dark:text-white/50">
+              <span className="text-xs text-studio-ink/50 dark:text-white/50">
                 {connectionByProvider.has(provider) ? "Connected" : `Not connected — needs ${envHint}`}
               </span>
             </div>

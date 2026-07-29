@@ -90,7 +90,7 @@ export function InviteForm({ students }: { students: StudentOption[] }) {
         <div>
           <Label htmlFor="studentId">Link to student</Label>
           {students.length === 0 ? (
-            <p className="text-sm text-black/60 dark:text-white/60">
+            <p className="text-sm text-studio-ink/60 dark:text-white/60">
               No students in your organization yet.
             </p>
           ) : (
@@ -112,7 +112,7 @@ export function InviteForm({ students }: { students: StudentOption[] }) {
       )}
 
       {inviteLink && (
-        <p className="break-all rounded-lg bg-black/5 p-3 text-sm dark:bg-white/10">
+        <p className="break-all rounded-lg bg-studio-ink/5 p-3 text-sm dark:bg-white/10">
           Invite link: <span className="font-mono">{inviteLink}</span>
         </p>
       )}

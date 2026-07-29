@@ -51,8 +51,8 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
           <p className="text-sm uppercase tracking-wide text-studio-accent">
             {PROJECT_CATEGORY_LABELS[project.category]}
           </p>
-          <h1 className="font-display text-3xl font-bold">{project.title}</h1>
-          <p className="mt-1 text-black/60 dark:text-white/60">{project.classPeriod.name}</p>
+          <h1 className="font-display text-3xl font-extrabold">{project.title}</h1>
+          <p className="mt-1 text-studio-ink/60 dark:text-white/60">{project.classPeriod.name}</p>
         </div>
         <div className="flex gap-2">
           <Link href={`/teacher/projects/${project.id}/submissions`}>
@@ -80,7 +80,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
                 {lesson.iCanStatement}
               </p>
               {lesson.standards.length > 0 && (
-                <p className="text-xs text-black/50 dark:text-white/50">
+                <p className="text-xs text-studio-ink/50 dark:text-white/50">
                   Standards: {lesson.standards.map((s) => s.standard.code).join(", ")}
                 </p>
               )}
@@ -113,7 +113,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
             <CardHeader>
               <CardTitle>Rubric — {project.rubric.title}</CardTitle>
             </CardHeader>
-            <CardContent className="text-sm text-black/70 dark:text-white/70">
+            <CardContent className="text-sm text-studio-ink/70 dark:text-white/70">
               {(project.rubric.criteria as Array<{ name: string; weightPercent: number }>).map(
                 (criterion) => (
                   <div key={criterion.name} className="flex justify-between py-1">
@@ -131,7 +131,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
             <CardHeader>
               <CardTitle>Quiz — {project.quiz.title}</CardTitle>
             </CardHeader>
-            <CardContent className="text-sm text-black/70 dark:text-white/70">
+            <CardContent className="text-sm text-studio-ink/70 dark:text-white/70">
               {(project.quiz.questions as Array<{ prompt: string }>).length} questions generated
             </CardContent>
           </Card>
@@ -159,7 +159,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
           <CardHeader>
             <CardTitle>Storyboard</CardTitle>
           </CardHeader>
-          <CardContent className="text-sm text-black/70 dark:text-white/70">
+          <CardContent className="text-sm text-studio-ink/70 dark:text-white/70">
             {(project.storyboard.shots as Array<{ number: number; description: string }>).map(
               (shot) => (
                 <p key={shot.number}>
@@ -177,7 +177,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
           <CardHeader>
             <CardTitle>Production Plan</CardTitle>
           </CardHeader>
-          <CardContent className="text-sm text-black/70 dark:text-white/70">
+          <CardContent className="text-sm text-studio-ink/70 dark:text-white/70">
             {(project.productionPlan.crewRoles as Array<{ role: string; responsibilities: string }>).map(
               (crew) => (
                 <p key={crew.role}>

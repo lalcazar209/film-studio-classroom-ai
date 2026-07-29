@@ -14,7 +14,7 @@ export default async function SettingsPage() {
 
   return (
     <main className="mx-auto max-w-lg space-y-6 px-4 py-10">
-      <h1 className="font-display text-3xl font-bold">School Settings</h1>
+      <h1 className="font-display text-3xl font-extrabold">School Settings</h1>
 
       <Card>
         <CardHeader>

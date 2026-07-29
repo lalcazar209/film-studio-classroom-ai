@@ -34,7 +34,7 @@ export default async function ParentDashboardPage() {
 
       {links.length === 0 ? (
         <Card>
-          <CardContent className="py-8 text-center text-black/60 dark:text-white/60">
+          <CardContent className="py-8 text-center text-studio-ink/60 dark:text-white/60">
             No students linked to your account yet. Contact your school to connect your child&apos;s
             record.
           </CardContent>
@@ -54,7 +54,7 @@ export default async function ParentDashboardPage() {
                 <div>
                   <p className="font-medium">Recent submissions</p>
                   {student.submissions.map((s) => (
-                    <p key={s.id} className="text-black/60 dark:text-white/60">
+                    <p key={s.id} className="text-studio-ink/60 dark:text-white/60">
                       {s.project.title} — {s.status}
                     </p>
                   ))}
@@ -68,7 +68,7 @@ export default async function ParentDashboardPage() {
                     e.classPeriod.messages.map((m) => (
                       <div key={m.id} className="mt-1 border-l-2 border-studio-accent pl-2">
                         <p className="font-medium">{m.subject}</p>
-                        <p className="text-black/60 dark:text-white/60">{m.body}</p>
+                        <p className="text-studio-ink/60 dark:text-white/60">{m.body}</p>
                       </div>
                     )),
                   )}

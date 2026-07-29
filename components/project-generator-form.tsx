@@ -53,7 +53,7 @@ export function ProjectGeneratorForm({ classPeriods }: { classPeriods: ClassPeri
     <Card>
       <CardHeader>
         <CardTitle>Generate a Project</CardTitle>
-        <p className="mt-1 text-sm text-black/60 dark:text-white/60">
+        <p className="mt-1 text-sm text-studio-ink/60 dark:text-white/60">
           One brief becomes a full Monday–Friday PBL week: lessons, rubric, quiz, vocabulary,
           storyboard, and production plan — standards-aligned automatically.
         </p>

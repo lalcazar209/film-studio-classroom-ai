@@ -57,8 +57,8 @@ export default async function EquipmentPage() {
 
   return (
     <main className="mx-auto max-w-3xl space-y-6 px-4 py-10">
-      <h1 className="font-display text-3xl font-bold">Equipment Manager</h1>
-      <p className="text-black/60 dark:text-white/60">
+      <h1 className="font-display text-3xl font-extrabold">Equipment Manager</h1>
+      <p className="text-studio-ink/60 dark:text-white/60">
         Each item&apos;s QR code encodes its asset tag — scan with a USB/handheld scanner (it types
         the tag like a keyboard) or print the code for a physical checkout log.
       </p>
@@ -69,7 +69,7 @@ export default async function EquipmentPage() {
         </CardHeader>
         <CardContent>
           {rows.length === 0 ? (
-            <p className="text-sm text-black/60 dark:text-white/60">No equipment registered yet.</p>
+            <p className="text-sm text-studio-ink/60 dark:text-white/60">No equipment registered yet.</p>
           ) : (
             rows.map((item) => <EquipmentRow key={item.id} item={item} users={users} />)
           )}

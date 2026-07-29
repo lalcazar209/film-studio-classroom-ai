@@ -16,15 +16,15 @@ export default async function StudentSkillsUsaPage() {
 
   return (
     <main className="mx-auto max-w-3xl space-y-6 px-4 py-10">
-      <h1 className="font-display text-3xl font-bold">SkillsUSA Mode</h1>
-      <p className="text-black/60 dark:text-white/60">
+      <h1 className="font-display text-3xl font-extrabold">SkillsUSA Mode</h1>
+      <p className="text-studio-ink/60 dark:text-white/60">
         Practice for your competition: timed challenges, rubrics, and extra scenarios.
       </p>
 
       <Card>
         <CardContent className="pt-6">
           {practices.length === 0 ? (
-            <p className="text-sm text-black/60 dark:text-white/60">No practice packages available yet.</p>
+            <p className="text-sm text-studio-ink/60 dark:text-white/60">No practice packages available yet.</p>
           ) : (
             <ul className="space-y-2 text-sm">
               {practices.map((practice) => (

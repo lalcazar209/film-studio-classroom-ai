@@ -22,13 +22,13 @@ export default async function PortfolioPage() {
 
   return (
     <main className="mx-auto max-w-3xl space-y-6 px-4 py-10">
-      <h1 className="font-display text-3xl font-bold">Digital Portfolio</h1>
-      <p className="text-black/60 dark:text-white/60">
+      <h1 className="font-display text-3xl font-extrabold">Digital Portfolio</h1>
+      <p className="text-studio-ink/60 dark:text-white/60">
         Automatically archived whenever you submit a project, plus your resume and demo reel.
       </p>
 
       {items.length === 0 ? (
-        <p className="text-sm text-black/60 dark:text-white/60">
+        <p className="text-sm text-studio-ink/60 dark:text-white/60">
           Nothing here yet — submit a project to start building your portfolio.
         </p>
       ) : (
@@ -52,7 +52,7 @@ export default async function PortfolioPage() {
                     View
                   </a>
                 ) : (
-                  <p className="text-sm text-black/50 dark:text-white/50">
+                  <p className="text-sm text-studio-ink/50 dark:text-white/50">
                     {item.createdAt.toLocaleDateString()}
                   </p>
                 )}

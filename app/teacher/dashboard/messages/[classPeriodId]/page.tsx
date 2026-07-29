@@ -26,8 +26,8 @@ export default async function ClassMessagesPage({
   return (
     <main className="mx-auto max-w-2xl space-y-6 px-4 py-10">
       <div>
-        <h1 className="font-display text-3xl font-bold">Parent Communication</h1>
-        <p className="text-black/60 dark:text-white/60">{classPeriod.name}</p>
+        <h1 className="font-display text-3xl font-extrabold">Parent Communication</h1>
+        <p className="text-studio-ink/60 dark:text-white/60">{classPeriod.name}</p>
       </div>
 
       <Card>
@@ -45,13 +45,13 @@ export default async function ClassMessagesPage({
         </CardHeader>
         <CardContent className="space-y-3">
           {classPeriod.messages.length === 0 ? (
-            <p className="text-sm text-black/60 dark:text-white/60">No messages sent yet.</p>
+            <p className="text-sm text-studio-ink/60 dark:text-white/60">No messages sent yet.</p>
           ) : (
             classPeriod.messages.map((message) => (
-              <div key={message.id} className="border-b border-black/10 pb-3 text-sm dark:border-white/10">
+              <div key={message.id} className="border-b border-studio-ink/10 pb-3 text-sm dark:border-white/10">
                 <p className="font-medium">{message.subject}</p>
-                <p className="text-black/60 dark:text-white/60">{message.body}</p>
-                <p className="mt-1 text-xs text-black/40 dark:text-white/40">
+                <p className="text-studio-ink/60 dark:text-white/60">{message.body}</p>
+                <p className="mt-1 text-xs text-studio-ink/40 dark:text-white/40">
                   {message.createdAt.toLocaleString()}
                 </p>
               </div>

@@ -104,7 +104,7 @@ export function SisIntegrationForm({ initialBaseUrl }: { initialBaseUrl?: string
         </Button>
       </form>
 
-      <div className="flex items-end gap-2 border-t border-black/10 pt-4 dark:border-white/10">
+      <div className="flex items-end gap-2 border-t border-studio-ink/10 pt-4 dark:border-white/10">
         <div className="flex-1">
           <Label htmlFor="ic-schoolId">School SIS ID (to test)</Label>
           <Input id="ic-schoolId" value={schoolSisId} onChange={(e) => setSchoolSisId(e.target.value)} />
@@ -114,7 +114,7 @@ export function SisIntegrationForm({ initialBaseUrl }: { initialBaseUrl?: string
         </Button>
       </div>
       {preview && (
-        <p className="text-sm text-black/70 dark:text-white/70">
+        <p className="text-sm text-studio-ink/70 dark:text-white/70">
           {preview.sectionCount} sections, {preview.studentCount} students found.
         </p>
       )}

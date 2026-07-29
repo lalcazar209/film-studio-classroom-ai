@@ -48,7 +48,7 @@ export function FilmStudioGeneratorForm({ basePath }: { basePath: string }) {
     <Card>
       <CardHeader>
         <CardTitle>Generate a production package</CardTitle>
-        <p className="mt-1 text-sm text-black/60 dark:text-white/60">
+        <p className="mt-1 text-sm text-studio-ink/60 dark:text-white/60">
           Screenplay, shot list, call sheet, budget, equipment list, location plan, casting
           sheet, and marketing plan — all at once.
         </p>

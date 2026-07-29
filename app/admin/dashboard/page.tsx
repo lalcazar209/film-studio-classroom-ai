@@ -37,7 +37,7 @@ export default async function AdminDashboardPage() {
             <CardHeader className="border-b-0 pb-0">
               <CardTitle className={cn("text-3xl", stat.color)}>{stat.value}</CardTitle>
             </CardHeader>
-            <CardContent className="pt-1 text-sm text-black/60 dark:text-white/60">
+            <CardContent className="pt-1 text-sm text-studio-ink/60 dark:text-white/60">
               {stat.label}
             </CardContent>
           </Card>

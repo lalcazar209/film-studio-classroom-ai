@@ -196,7 +196,7 @@ export function ProjectEditForm({
                 onChange={(e) => updateCriterion(i, { weightPercent: Number(e.target.value) })}
                 className="w-20"
               />
-              <span className="text-sm text-black/50 dark:text-white/50">%</span>
+              <span className="text-sm text-studio-ink/50 dark:text-white/50">%</span>
             </div>
           ))}
         </CardContent>
@@ -208,7 +208,7 @@ export function ProjectEditForm({
         </CardHeader>
         <CardContent className="space-y-4">
           {quiz.questions.map((question, i) => (
-            <div key={i} className="space-y-1 border-b border-black/10 pb-3 dark:border-white/10">
+            <div key={i} className="space-y-1 border-b border-studio-ink/10 pb-3 dark:border-white/10">
               <Textarea value={question.prompt} onChange={(e) => updateQuestion(i, { prompt: e.target.value })} />
               <Label>Answer</Label>
               <Input value={question.answer} onChange={(e) => updateQuestion(i, { answer: e.target.value })} />

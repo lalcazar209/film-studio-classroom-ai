@@ -35,8 +35,8 @@ export function FilmStudioProjectView({
     <div className="space-y-6">
       <header>
         <p className="text-sm uppercase tracking-wide text-studio-accent">{genre}</p>
-        <h1 className="font-display text-3xl font-bold">{title}</h1>
-        <p className="mt-1 text-black/60 dark:text-white/60">{logline}</p>
+        <h1 className="font-display text-3xl font-extrabold">{title}</h1>
+        <p className="mt-1 text-studio-ink/60 dark:text-white/60">{logline}</p>
       </header>
 
       <Card>
@@ -45,7 +45,7 @@ export function FilmStudioProjectView({
         </CardHeader>
         <CardContent className="space-y-4 text-sm">
           {screenplay.scenes.map((scene) => (
-            <div key={scene.sceneNumber} className="border-b border-black/10 pb-3 last:border-0 dark:border-white/10">
+            <div key={scene.sceneNumber} className="border-b border-studio-ink/10 pb-3 last:border-0 dark:border-white/10">
               <p className="font-mono font-medium">{scene.heading}</p>
               <p className="mt-1">{scene.action}</p>
               {scene.dialogue.map((line, i) => (
@@ -96,7 +96,7 @@ export function FilmStudioProjectView({
               {c.role} — {c.callTime}
             </p>
           ))}
-          <p className="text-black/60 dark:text-white/60">{callSheet.notes}</p>
+          <p className="text-studio-ink/60 dark:text-white/60">{callSheet.notes}</p>
         </CardContent>
       </Card>
 

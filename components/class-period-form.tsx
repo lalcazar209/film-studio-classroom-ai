@@ -72,7 +72,7 @@ export function ClassPeriodForm({ teachers }: { teachers: TeacherOption[] }) {
         <div>
           <Label htmlFor="teacherId">Teacher</Label>
           {teachers.length === 0 ? (
-            <p className="text-sm text-black/60 dark:text-white/60">No teachers yet — invite one first.</p>
+            <p className="text-sm text-studio-ink/60 dark:text-white/60">No teachers yet — invite one first.</p>
           ) : (
             <Select id="teacherId" value={teacherId} onChange={(e) => setTeacherId(e.target.value)}>
               {teachers.map((t) => (

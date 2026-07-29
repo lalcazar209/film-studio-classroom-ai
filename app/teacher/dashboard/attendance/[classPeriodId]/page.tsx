@@ -50,8 +50,8 @@ export default async function AttendancePage({
   return (
     <main className="mx-auto max-w-2xl space-y-6 px-4 py-10">
       <div>
-        <h1 className="font-display text-3xl font-bold">Attendance</h1>
-        <p className="text-black/60 dark:text-white/60">
+        <h1 className="font-display text-3xl font-extrabold">Attendance</h1>
+        <p className="text-studio-ink/60 dark:text-white/60">
           {classPeriod.name} · {targetDate}
         </p>
       </div>

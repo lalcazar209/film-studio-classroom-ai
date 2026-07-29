@@ -11,7 +11,7 @@ export function AssistantsDirectory({ basePath }: { basePath: string }) {
             <CardHeader>
               <CardTitle className="text-base">{assistant.name}</CardTitle>
             </CardHeader>
-            <CardContent className="text-sm text-black/60 dark:text-white/60">{assistant.tagline}</CardContent>
+            <CardContent className="text-sm text-studio-ink/60 dark:text-white/60">{assistant.tagline}</CardContent>
           </Card>
         </Link>
       ))}

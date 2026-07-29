@@ -17,8 +17,8 @@ export default async function MentorAssistantChatPage({ params }: { params: Prom
   return (
     <main className="mx-auto max-w-2xl space-y-4 px-4 py-10">
       <div>
-        <h1 className="font-display text-2xl font-bold">{assistant.name}</h1>
-        <p className="text-black/60 dark:text-white/60">{assistant.tagline}</p>
+        <h1 className="font-display text-2xl font-extrabold">{assistant.name}</h1>
+        <p className="text-studio-ink/60 dark:text-white/60">{assistant.tagline}</p>
       </div>
       <AssistantChat
         assistantId={id}

@@ -18,8 +18,8 @@ export default async function MentorFilmStudioPage() {
   return (
     <main className="mx-auto max-w-3xl space-y-6 px-4 py-10">
       <div>
-        <h1 className="font-display text-3xl font-bold">AI Film Studio</h1>
-        <p className="text-black/60 dark:text-white/60">
+        <h1 className="font-display text-3xl font-extrabold">AI Film Studio</h1>
+        <p className="text-studio-ink/60 dark:text-white/60">
           Full production packages you can help students plan — festival entries, extracurricular
           shoots, anything outside the weekly class cycle.
         </p>
@@ -33,7 +33,7 @@ export default async function MentorFilmStudioPage() {
         </CardHeader>
         <CardContent>
           {projects.length === 0 ? (
-            <p className="text-sm text-black/60 dark:text-white/60">No productions generated yet.</p>
+            <p className="text-sm text-studio-ink/60 dark:text-white/60">No productions generated yet.</p>
           ) : (
             <ul className="space-y-2 text-sm">
               {projects.map((project) => (
@@ -41,7 +41,7 @@ export default async function MentorFilmStudioPage() {
                   <Link href={`/mentor/dashboard/film-studio/${project.id}`} className="hover:text-studio-accent">
                     {project.title}
                   </Link>
-                  <span className="text-xs text-black/50 dark:text-white/50">{project.genre}</span>
+                  <span className="text-xs text-studio-ink/50 dark:text-white/50">{project.genre}</span>
                 </li>
               ))}
             </ul>

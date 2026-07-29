@@ -24,8 +24,8 @@ export default async function StudentTutorialDetailPage({ params }: { params: Pr
         <p className="text-sm uppercase tracking-wide text-studio-accent">
           {TUTORIAL_CATEGORY_LABELS[tutorial.category]}
         </p>
-        <h1 className="font-display text-3xl font-bold">{tutorial.title}</h1>
-        <p className="mt-1 text-black/60 dark:text-white/60">{tutorial.learningObjective}</p>
+        <h1 className="font-display text-3xl font-extrabold">{tutorial.title}</h1>
+        <p className="mt-1 text-studio-ink/60 dark:text-white/60">{tutorial.learningObjective}</p>
         <div className="mt-3 flex gap-4 text-sm">
           <a href={`/api/video-academy/${tutorial.id}/transcript`} className="text-studio-accent hover:underline">
             Read transcript
@@ -53,7 +53,7 @@ export default async function StudentTutorialDetailPage({ params }: { params: Pr
         </CardHeader>
         <CardContent className="text-sm">
           <p>{practiceActivity.instructions}</p>
-          <p className="mt-1 text-black/60 dark:text-white/60">~{practiceActivity.estimatedMinutes} minutes</p>
+          <p className="mt-1 text-studio-ink/60 dark:text-white/60">~{practiceActivity.estimatedMinutes} minutes</p>
         </CardContent>
       </Card>
 

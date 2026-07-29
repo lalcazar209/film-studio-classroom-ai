@@ -26,8 +26,8 @@ export default async function ProjectSubmissionsPage({ params }: { params: Promi
   return (
     <main className="mx-auto max-w-3xl space-y-6 px-4 py-10">
       <div>
-        <h1 className="font-display text-2xl font-bold">Submissions: {project.title}</h1>
-        <p className="text-black/60 dark:text-white/60">{project.classPeriod.name}</p>
+        <h1 className="font-display text-2xl font-extrabold">Submissions: {project.title}</h1>
+        <p className="text-studio-ink/60 dark:text-white/60">{project.classPeriod.name}</p>
       </div>
 
       {project.submissions.map((submission) => (
@@ -35,7 +35,7 @@ export default async function ProjectSubmissionsPage({ params }: { params: Promi
           <CardHeader>
             <CardTitle className="flex items-center justify-between text-base">
               <span>{submission.student.name ?? submission.student.email}</span>
-              <span className="text-xs font-normal text-black/50 dark:text-white/50">{submission.status}</span>
+              <span className="text-xs font-normal text-studio-ink/50 dark:text-white/50">{submission.status}</span>
             </CardTitle>
           </CardHeader>
           <CardContent>

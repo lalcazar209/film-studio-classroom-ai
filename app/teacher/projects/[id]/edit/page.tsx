@@ -22,8 +22,8 @@ export default async function ProjectEditPage({ params }: { params: Promise<{ id
   return (
     <main className="mx-auto max-w-3xl space-y-6 px-4 py-10">
       <div>
-        <h1 className="font-display text-2xl font-bold">Edit: {project.title}</h1>
-        <p className="text-black/60 dark:text-white/60">
+        <h1 className="font-display text-2xl font-extrabold">Edit: {project.title}</h1>
+        <p className="text-studio-ink/60 dark:text-white/60">
           Everything the AI generated is a starting point — change anything below.
         </p>
       </div>

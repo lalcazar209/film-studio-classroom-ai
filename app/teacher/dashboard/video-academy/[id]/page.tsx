@@ -25,8 +25,8 @@ export default async function TutorialDetailPage({ params }: { params: Promise<{
         <p className="text-sm uppercase tracking-wide text-studio-accent">
           {TUTORIAL_CATEGORY_LABELS[tutorial.category]}
         </p>
-        <h1 className="font-display text-3xl font-bold">{tutorial.title}</h1>
-        <p className="mt-1 text-black/60 dark:text-white/60">{tutorial.learningObjective}</p>
+        <h1 className="font-display text-3xl font-extrabold">{tutorial.title}</h1>
+        <p className="mt-1 text-studio-ink/60 dark:text-white/60">{tutorial.learningObjective}</p>
         <div className="mt-3 flex gap-4 text-sm">
           <a href={`/api/video-academy/${tutorial.id}/transcript`} className="text-studio-accent hover:underline">
             Download transcript
@@ -56,18 +56,18 @@ export default async function TutorialDetailPage({ params }: { params: Promise<{
         </CardHeader>
         <CardContent className="space-y-4">
           {segments.map((segment, i) => (
-            <div key={i} className="border-b border-black/10 pb-3 text-sm last:border-0 dark:border-white/10">
+            <div key={i} className="border-b border-studio-ink/10 pb-3 text-sm last:border-0 dark:border-white/10">
               <p className="font-medium">
                 {formatTime(segment.startSeconds)}–{formatTime(segment.endSeconds)}
                 {segment.shotType ? ` · ${segment.shotType}` : ""}
               </p>
               <p className="mt-1">{segment.narration}</p>
-              <p className="mt-1 text-black/60 dark:text-white/60">Visual: {segment.visualGuide}</p>
+              <p className="mt-1 text-studio-ink/60 dark:text-white/60">Visual: {segment.visualGuide}</p>
               {segment.graphicsNote && (
-                <p className="text-black/60 dark:text-white/60">Graphics: {segment.graphicsNote}</p>
+                <p className="text-studio-ink/60 dark:text-white/60">Graphics: {segment.graphicsNote}</p>
               )}
               {segment.animationSuggestion && (
-                <p className="text-black/60 dark:text-white/60">Animation: {segment.animationSuggestion}</p>
+                <p className="text-studio-ink/60 dark:text-white/60">Animation: {segment.animationSuggestion}</p>
               )}
             </div>
           ))}
@@ -80,7 +80,7 @@ export default async function TutorialDetailPage({ params }: { params: Promise<{
         </CardHeader>
         <CardContent className="text-sm">
           <p>{practiceActivity.instructions}</p>
-          <p className="mt-1 text-black/60 dark:text-white/60">~{practiceActivity.estimatedMinutes} minutes</p>
+          <p className="mt-1 text-studio-ink/60 dark:text-white/60">~{practiceActivity.estimatedMinutes} minutes</p>
         </CardContent>
       </Card>
 

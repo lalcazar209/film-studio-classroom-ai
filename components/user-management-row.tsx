@@ -44,7 +44,7 @@ export function UserManagementRow({
   }
 
   return (
-    <tr className="border-b border-black/5 dark:border-white/5">
+    <tr className="border-b border-studio-ink/5 dark:border-white/5">
       <td className="py-2 pr-4">{user.name ?? user.email}</td>
       <td className="py-2 pr-4">
         <Select

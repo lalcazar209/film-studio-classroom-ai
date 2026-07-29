@@ -9,8 +9,8 @@ export default async function TeacherAssistantsPage() {
   return (
     <main className="mx-auto max-w-3xl space-y-6 px-4 py-10">
       <div>
-        <h1 className="font-display text-3xl font-bold">AI Assistants</h1>
-        <p className="text-black/60 dark:text-white/60">
+        <h1 className="font-display text-3xl font-extrabold">AI Assistants</h1>
+        <p className="text-studio-ink/60 dark:text-white/60">
           Nineteen role-specific experts, each scoped to their lane.
         </p>
       </div>

@@ -75,15 +75,15 @@ export function EquipmentRow({ item, users }: { item: EquipmentRowData; users: U
   }
 
   return (
-    <div className="flex items-start gap-4 border-b border-black/10 py-4 dark:border-white/10">
+    <div className="flex items-start gap-4 border-b border-studio-ink/10 py-4 dark:border-white/10">
       {/* eslint-disable-next-line @next/next/no-img-element -- data: URI QR code, not an optimizable remote asset */}
       <img src={item.qrDataUrl} alt={`QR code for ${item.assetTag}`} width={72} height={72} />
 
       <div className="flex-1">
         <p className="font-medium">
-          {item.name} <span className="text-xs text-black/50 dark:text-white/50">({item.assetTag})</span>
+          {item.name} <span className="text-xs text-studio-ink/50 dark:text-white/50">({item.assetTag})</span>
         </p>
-        <p className="text-xs text-black/50 dark:text-white/50">Status: {item.status}</p>
+        <p className="text-xs text-studio-ink/50 dark:text-white/50">Status: {item.status}</p>
 
         {item.activeCheckout ? (
           <div className="mt-2 space-y-2">
@@ -118,7 +118,7 @@ export function EquipmentRow({ item, users }: { item: EquipmentRowData; users: U
             </Button>
           </div>
         ) : (
-          <p className="mt-2 text-sm text-black/50 dark:text-white/50">Not available for checkout.</p>
+          <p className="mt-2 text-sm text-studio-ink/50 dark:text-white/50">Not available for checkout.</p>
         )}
 
         {error && (

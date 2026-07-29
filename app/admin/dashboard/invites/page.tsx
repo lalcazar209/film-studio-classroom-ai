@@ -24,7 +24,7 @@ export default async function InvitesPage() {
 
   return (
     <main className="mx-auto max-w-2xl space-y-6 px-4 py-10">
-      <h1 className="font-display text-3xl font-bold">Invites</h1>
+      <h1 className="font-display text-3xl font-extrabold">Invites</h1>
 
       <Card>
         <CardHeader>
@@ -41,7 +41,7 @@ export default async function InvitesPage() {
         </CardHeader>
         <CardContent>
           {invites.length === 0 ? (
-            <p className="text-sm text-black/60 dark:text-white/60">No invites sent yet.</p>
+            <p className="text-sm text-studio-ink/60 dark:text-white/60">No invites sent yet.</p>
           ) : (
             <ul className="space-y-2 text-sm">
               {invites.map((invite) => (
@@ -49,7 +49,7 @@ export default async function InvitesPage() {
                   <span>
                     {invite.email} · {invite.role}
                   </span>
-                  <span className="text-xs text-black/50 dark:text-white/50">
+                  <span className="text-xs text-studio-ink/50 dark:text-white/50">
                     {invite.acceptedAt
                       ? "Accepted"
                       : invite.expiresAt < new Date()
