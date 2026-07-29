@@ -250,8 +250,32 @@ tools are usable end-to-end for a brand-new school. Folding into Phase 12
       and rejecting one with a missing required field. Typecheck, lint,
       and build all pass clean.
 
-## Phase 9 — SkillsUSA Mode
-- [ ] Competition practice generator, judge sheets, timed challenges
+## Phase 9 — SkillsUSA Mode ✅
+- [x] Competition practice generator (`lib/ai/skillsusa-service.ts`,
+      `SkillsUsaPractice` model, `POST /api/skillsusa/generate`,
+      `/{teacher,student}/dashboard/skillsusa`): one contest name becomes
+      a timed challenge scenario, a formative teacher rubric, a
+      point-based competition-day judge sheet, a mock competition
+      schedule, and a bank of 3+ additional practice scenarios.
+      `contestName` is free text, not a hardcoded enum — SkillsUSA's
+      exact contest roster varies by state/year and we don't assert a
+      list we can't guarantee is current.
+- [x] Judge sheets are deliberately a separate artifact from the rubric:
+      the rubric is formative coaching feedback, the judge sheet is a
+      numeric point-based scoring instrument matching how a real
+      competition judge scores, with `maxPoints` per criterion summing to
+      `totalPossiblePoints`.
+- [x] Timed challenges are genuinely interactive, not just described text:
+      `components/countdown-timer.tsx` is a real start/pause/reset
+      countdown timer students can run against the AI-generated time
+      limit while practicing.
+- [x] Verified with `npm run test:smoke:phase9`
+      (`scripts/smoke-test-phase9.ts`): 5 assertions covering schema
+      validation of a realistic bundle, rejecting fewer than 3 practice
+      scenarios, rejecting a non-positive time limit, and a real Postgres
+      round-trip proving nested JSON (the judge sheet's point totals)
+      survives persistence intact. Typecheck, lint, and build all pass
+      clean.
 
 ## Phase 10 — Integrations beyond Google Classroom
 - [ ] Canvas, Schoology, Blackboard adapters (same `IntegrationAdapter`

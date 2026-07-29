@@ -57,6 +57,7 @@ model User {
   tutorialVideos      TutorialVideo[]
   assistantMessages   AssistantMessage[]
   filmStudioProjects  FilmStudioProject[]
+  skillsUsaPractices  SkillsUsaPractice[]
 
   @@index([organizationId])
 }
@@ -113,6 +114,7 @@ model Organization {
   invites            Invite[]
   tutorialVideos     TutorialVideo[]
   filmStudioProjects FilmStudioProject[]
+  skillsUsaPractices SkillsUsaPractice[]
 }
 
 /// Invite-based onboarding. Roles are never self-assigned beyond the
@@ -713,6 +715,33 @@ model FilmStudioProject {
   castingSheet   Json // [{ character, description, notes }]
   marketingPlan  Json // { targetAudience, keyMessages: [], channels: [], posterConcept, trailerConcept }
   createdAt      DateTime @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+  createdBy    User         @relation(fields: [createdById], references: [id])
+
+  @@index([organizationId])
+}
+
+// ---------------------------------------------------------------------------
+// SkillsUSA Mode
+// ---------------------------------------------------------------------------
+
+/// Competition-practice package for a SkillsUSA contest area. `contestName`
+/// is free text rather than a fixed enum deliberately — SkillsUSA's exact
+/// roster of contest names/formats changes and varies by state, so we
+/// don't hardcode a list we can't guarantee is current and accurate.
+model SkillsUsaPractice {
+  id                      String   @id @default(cuid())
+  organizationId          String
+  createdById             String
+  contestName             String
+  competitionOverview     String   @db.Text
+  timedChallenge          Json // { title, scenario, timeLimitMinutes, deliverable, constraints: [] }
+  rubric                  Json // { title, criteria: [...] } — same shape as lib/ai/schemas.ts rubricSchema, teacher-facing formative rubric
+  judgeSheet              Json // { criteria: [{ name, maxPoints, guidance }], totalPossiblePoints } — competition-day scoring sheet
+  mockCompetitionSchedule Json // [{ time, activity }]
+  scenarioBank            Json // [{ title, prompt }] — extra practice scenarios beyond the timed challenge
+  createdAt               DateTime @default(now())
 
   organization Organization @relation(fields: [organizationId], references: [id])
   createdBy    User         @relation(fields: [createdById], references: [id])

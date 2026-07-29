@@ -239,3 +239,30 @@ export const filmStudioBundleSchema = z.object({
 });
 
 export type FilmStudioBundle = z.infer<typeof filmStudioBundleSchema>;
+
+export const skillsUsaBundleSchema = z.object({
+  contestName: z.string(),
+  competitionOverview: z.string(),
+  timedChallenge: z.object({
+    title: z.string(),
+    scenario: z.string(),
+    timeLimitMinutes: z.number().int().positive(),
+    deliverable: z.string(),
+    constraints: z.array(z.string()),
+  }),
+  rubric: rubricSchema,
+  judgeSheet: z.object({
+    criteria: z.array(
+      z.object({
+        name: z.string(),
+        maxPoints: z.number().positive(),
+        guidance: z.string().describe("What separates a top score from a low score on this criterion"),
+      }),
+    ),
+    totalPossiblePoints: z.number().positive(),
+  }),
+  mockCompetitionSchedule: z.array(z.object({ time: z.string(), activity: z.string() })),
+  scenarioBank: z.array(z.object({ title: z.string(), prompt: z.string() })).min(3),
+});
+
+export type SkillsUsaBundle = z.infer<typeof skillsUsaBundleSchema>;
