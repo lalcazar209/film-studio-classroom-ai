@@ -54,6 +54,7 @@ model User {
   attendanceRecorded  AttendanceRecord[] @relation("AttendanceRecordedBy")
   messagesSent        TeacherMessage[]   @relation("TeacherMessageSentBy")
   tutorMessages       TutorMessage[]
+  tutorialVideos      TutorialVideo[]
 
   @@index([organizationId])
 }
@@ -108,6 +109,7 @@ model Organization {
   equipment        EquipmentItem[]
   integrationLinks IntegrationConnection[]
   invites          Invite[]
+  tutorialVideos   TutorialVideo[]
 }
 
 /// Invite-based onboarding. Roles are never self-assigned beyond the
@@ -611,4 +613,50 @@ model AIGenerationJob {
 
   project     Project? @relation(fields: [projectId], references: [id])
   requestedBy User     @relation(fields: [requestedById], references: [id])
+}
+
+// ---------------------------------------------------------------------------
+// Video Academy
+// ---------------------------------------------------------------------------
+
+enum TutorialCategory {
+  CAMERA_OPERATION
+  LIGHTING
+  AUDIO
+  EDITING
+  DIRECTING
+  SCREENWRITING
+  BROADCAST_JOURNALISM
+  ANIMATION
+  SAFETY
+  CAREER
+  OTHER
+}
+
+/// A standalone instructional tutorial (distinct from a Project's weekly
+/// lesson cycle) — the org's shared library of how-to videos. `segments`
+/// hold the AI-generated narration/visual-guide/shot-list content;
+/// transcript and captionsSrt are deterministically derived from segments
+/// by lib/captions.ts rather than generated separately, so they can never
+/// drift out of sync with the narration.
+model TutorialVideo {
+  id                String           @id @default(cuid())
+  organizationId    String
+  createdById       String
+  title             String
+  topic             String
+  category          TutorialCategory
+  learningObjective String           @db.Text
+  teacherScript     String           @db.Text
+  segments          Json // [{ startSeconds, endSeconds, narration, visualGuide, shotType?, graphicsNote?, animationSuggestion? }]
+  practiceActivity  Json // { title, instructions, estimatedMinutes }
+  quiz              Json // { title, questions: [...] } — same shape as Quiz.questions
+  transcript        String           @db.Text
+  captionsSrt       String           @db.Text
+  createdAt         DateTime         @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+  createdBy    User         @relation(fields: [createdById], references: [id])
+
+  @@index([organizationId])
 }

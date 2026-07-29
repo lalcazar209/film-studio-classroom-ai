@@ -18,7 +18,8 @@
     "test:smoke:invites": "tsx scripts/smoke-test-invites.ts",
     "test:smoke:phase4": "tsx scripts/smoke-test-phase4.ts",
     "test:smoke:phase5": "tsx scripts/smoke-test-phase5.ts",
-    "test:smoke:phase6": "node --env-file=.env ./node_modules/.bin/tsx scripts/smoke-test-phase6.ts"
+    "test:smoke:phase6": "node --env-file=.env ./node_modules/.bin/tsx scripts/smoke-test-phase6.ts",
+    "test:smoke:phase7": "tsx scripts/smoke-test-phase7.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

@@ -188,9 +188,28 @@ tools are usable end-to-end for a brand-new school. Folding into Phase 12
       exercised offline, consistent with Phases 4-5. Typecheck, lint, and
       build all pass clean.
 
-## Phase 7 — Video Academy
-- [ ] Instructional video generator (narration script, shot list, embedded
-      quiz, captions/transcript) — reuses `lib/ai/schemas.ts` pattern
+## Phase 7 — Video Academy ✅
+- [x] Instructional video generator (`lib/ai/video-academy-service.ts`,
+      `TutorialVideo` model, `POST /api/video-academy/generate`): one
+      topic becomes a teacher script, timed narration/shot-list segments
+      (with visual guide, shot type, graphics/animation notes), a practice
+      activity, and an embedded quiz — same generate-validate-persist
+      pattern as `curriculum-service.ts`.
+- [x] Transcript and SRT captions are **computed, not AI-generated** —
+      `lib/captions.ts` derives both deterministically from the segment
+      timestamps/narration, so they can never drift out of sync with what
+      the narration actually says or have malformed SRT syntax. Downloadable
+      via `GET /api/video-academy/[id]/transcript` and `.../captions`.
+- [x] Shared library per organization: `/teacher/dashboard/video-academy`
+      (generate + browse) and `/student/dashboard/video-academy`
+      (read-only, learner-facing framing of the same content).
+- [x] Verified with `npm run test:smoke:phase7`
+      (`scripts/smoke-test-phase7.ts`): 8 assertions covering transcript
+      joining, SRT timestamp formatting (including sub-second precision
+      and the hours field beyond 60 minutes), segment
+      end-before-start rejection, and a realistic bundle validating
+      against `tutorialVideoBundleSchema`. Typecheck, lint, and build all
+      pass clean.
 
 ## Phase 8 — AI Film Studio & AI Assistants
 - [ ] Per-assistant system prompts (Director AI, Producer AI, Screenwriter

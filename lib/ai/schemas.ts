@@ -144,3 +144,35 @@ export const videoReviewSchema = z.object({
 });
 
 export type VideoReview = z.infer<typeof videoReviewSchema>;
+
+export const tutorialSegmentSchema = z
+  .object({
+    startSeconds: z.number().nonnegative(),
+    endSeconds: z.number().positive(),
+    narration: z.string().describe("Voiceover script for this segment"),
+    visualGuide: z.string().describe("What should be on screen during this segment"),
+    shotType: z.string().optional(),
+    graphicsNote: z.string().optional(),
+    animationSuggestion: z.string().optional(),
+  })
+  .refine((segment) => segment.endSeconds > segment.startSeconds, {
+    message: "endSeconds must be after startSeconds",
+    path: ["endSeconds"],
+  });
+
+export const tutorialVideoBundleSchema = z.object({
+  title: z.string(),
+  topic: z.string(),
+  learningObjective: z.string(),
+  teacherScript: z.string().describe("Talking points for a teacher presenting this live instead of playing a video"),
+  segments: z.array(tutorialSegmentSchema).min(3),
+  practiceActivity: z.object({
+    title: z.string(),
+    instructions: z.string(),
+    estimatedMinutes: z.number().int().positive(),
+  }),
+  quiz: quizSchema,
+});
+
+export type TutorialSegment = z.infer<typeof tutorialSegmentSchema>;
+export type TutorialVideoBundle = z.infer<typeof tutorialVideoBundleSchema>;
