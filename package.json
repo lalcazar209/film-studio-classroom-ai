@@ -16,7 +16,8 @@
     "db:studio": "prisma studio",
     "db:seed": "tsx prisma/seed.ts",
     "test:smoke:invites": "tsx scripts/smoke-test-invites.ts",
-    "test:smoke:phase4": "tsx scripts/smoke-test-phase4.ts"
+    "test:smoke:phase4": "tsx scripts/smoke-test-phase4.ts",
+    "test:smoke:phase5": "tsx scripts/smoke-test-phase5.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

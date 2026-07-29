@@ -114,12 +114,40 @@ ClassPeriod (only the seed script does today) — needed before Phase 4's
 tools are usable end-to-end for a brand-new school. Folding into Phase 12
 (Admin Portal CRUD) rather than growing Phase 4 further.
 
-## Phase 5 — Student Portal
-- [ ] Assignment view + submission flow (video upload)
-- [ ] Digital Portfolio (auto-archive on project completion)
-- [ ] Resume Builder, Demo Reel Builder
-- [ ] AI Tutor chat surface (uses `skills/education/ai-learning-science/*`
-      as prompting guidance)
+## Phase 5 — Student Portal ✅
+- [x] Assignment view + submission flow: `/student/projects/[id]` shows the
+      week's lessons/rubric and a submission form (video *link* for now —
+      real file upload needs the Cloudinary pipeline in Phase 6; a student
+      pastes a YouTube/Vimeo/Drive URL today). `PATCH /api/submissions/[id]/submit`
+      (`lib/submissions.ts`).
+- [x] Digital Portfolio auto-archives on submission — not a separate step
+      the student has to remember. Submitting work upserts a
+      `PROJECT_ARCHIVE` `PortfolioItem` in the same transaction as the
+      submission update. `/student/dashboard/portfolio` lists everything.
+- [x] Resume Builder (`/student/dashboard/resume`): AI-generated from the
+      student's completed project history via `lib/ai/resume-service.ts`,
+      same generate-validate-persist pattern as the curriculum engine
+      (Zod schema, one living resume per student, regenerate any time).
+- [x] Demo Reel Builder (`/student/dashboard/demo-reel`): a curation tool,
+      not video processing — students pick and order their own submitted
+      clips into a named reel (`lib/demo-reel.ts`). Ownership is enforced
+      (can't include a clip that isn't your own submission).
+- [x] AI Tutor (`/student/dashboard/tutor`, `TutorMessage` model,
+      `lib/ai/tutor-service.ts`): system prompt is directly grounded in
+      `skills/education/ai-learning-science/adaptive-hint-sequence-designer`
+      (cascading hints, never the answer first), `intelligent-tutoring-dialogue-designer`
+      (Socratic, mixed-initiative dialogue), and `ai-feedback-design-principles`
+      (specific, task-focused feedback, not generic praise) — cited inline
+      in the service file, not paraphrased from memory.
+- [x] Verified against the real seeded database with an executable smoke
+      test (`npm run test:smoke:phase5`, `scripts/smoke-test-phase5.ts`):
+      10 assertions covering the submission -> portfolio-archive cascade,
+      archive upsert on resubmission, rejecting submission of someone
+      else's work, demo reel ownership enforcement, and demo reel upsert.
+      The AI-dependent flows (resume generation, tutor replies) need a
+      real `ANTHROPIC_API_KEY` and aren't exercised by this offline smoke
+      test; `resumeContentSchema` was verified separately against a
+      sample payload. Typecheck, lint, and build all pass clean.
 
 ## Phase 6 — Media pipeline
 - [ ] Cloudinary integration for student video uploads

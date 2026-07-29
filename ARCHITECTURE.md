@@ -139,8 +139,10 @@ film-studio-classroom-ai/
 
 Per the project brief's own instruction — build in phases, not one giant
 response — the following are designed-for in the schema/architecture but
-not yet implemented: student-facing submission/portfolio flow, digital
-portfolio site generation, SkillsUSA competition mode, AI video review
+not yet implemented: real video file upload (submissions take a pasted
+video link today; binary upload needs the Cloudinary pipeline), digital
+portfolio *website* generation (the in-app portfolio list exists; a public
+shareable site does not), SkillsUSA competition mode, AI video review
 pipeline, most LMS adapters beyond Google Classroom, billing, and admin
 CRUD for organizations/class periods/rostering (there's still no UI to
 *create* a ClassPeriod outside the seed script). See `ROADMAP.md` for the

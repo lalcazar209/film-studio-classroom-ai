@@ -53,6 +53,7 @@ model User {
   attendanceAsStudent AttendanceRecord[] @relation("StudentAttendance")
   attendanceRecorded  AttendanceRecord[] @relation("AttendanceRecordedBy")
   messagesSent        TeacherMessage[]   @relation("TeacherMessageSentBy")
+  tutorMessages       TutorMessage[]
 
   @@index([organizationId])
 }
@@ -522,6 +523,32 @@ model PortfolioItem {
   project Project? @relation(fields: [projectId], references: [id])
 
   @@index([userId])
+}
+
+// ---------------------------------------------------------------------------
+// AI Tutor
+// ---------------------------------------------------------------------------
+
+enum ChatRole {
+  USER
+  ASSISTANT
+}
+
+/// One running conversation per student (no separate thread model yet —
+/// see ROADMAP.md if multi-thread history becomes necessary). Grounded by
+/// lib/ai/tutor-service.ts in the pedagogical principles from
+/// skills/education/ai-learning-science/*: progressive hints instead of
+/// answers, Socratic scaffolding, and timely specific formative feedback.
+model TutorMessage {
+  id        String   @id @default(cuid())
+  studentId String
+  role      ChatRole
+  content   String   @db.Text
+  createdAt DateTime @default(now())
+
+  student User @relation(fields: [studentId], references: [id])
+
+  @@index([studentId, createdAt])
 }
 
 // ---------------------------------------------------------------------------
