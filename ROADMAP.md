@@ -29,10 +29,21 @@ what's done vs. pending, not a separate planning doc that drifts.
 - [x] Minimal functional dashboards for all five roles (not stubs — real
       queries, no data yet because no seed data exists)
 
-## Phase 2 — Database seeding & standards library
-- [ ] Seed script: California CTE AME + VAPA Media Arts + ISTE standard
-      sets (real codes/descriptions, not AI-invented ones)
-- [ ] Seed script: demo Organization, ClassPeriods, Users per role
+## Phase 2 — Database seeding & standards library ✅
+- [x] Seed script (`prisma/seed.ts`): 14 California CTE AME standards
+      (11 Foundation Standards + 3 Production and Managerial Arts pathway
+      standards), 7 California VAPA Media Arts anchor standards (HS
+      Proficient), and 7 ISTE Standards for Students — transcribed from
+      official public sources, cited inline, not AI-invented. This is a
+      curated subset, not the complete official documents; expanding it is
+      an admin-tools task (Phase 12), and the curriculum engine
+      auto-registers any additional codes the AI cites at generation time.
+- [x] Seed script: demo Organization ("Riverside Media Arts Academy"), 1
+      class period, 1 teacher, 1 admin, 1 mentor, 1 parent (linked to a
+      student), 5 students, 6 equipment items
+- [x] Verified against a real local Postgres 16 instance: `prisma db push`,
+      `prisma db seed` (idempotent — re-running is a no-op), typecheck,
+      lint, and build all pass clean
 
 ## Phase 3 — Auth hardening & onboarding
 - [ ] Admin invite flow (org creation, teacher invites, student rostering)
