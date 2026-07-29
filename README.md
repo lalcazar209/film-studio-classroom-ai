@@ -53,8 +53,22 @@ Only a curated subset of each source repo was copied in (not the full repos).
 Original repos should be consulted for updates; this is a point-in-time snapshot
 adapted for this project's needs.
 
-## Status
+## Application
 
-This repo currently contains the skill library only. Application code
-(Next.js/Supabase architecture, database schema, APIs, UI) has not yet been
-built — see project brief for full scope.
+This repo also contains the Next.js 15 app itself — see
+[`ARCHITECTURE.md`](./ARCHITECTURE.md) for the system design and
+[`ROADMAP.md`](./ROADMAP.md) for what's built vs. planned.
+
+```bash
+npm install
+cp .env.example .env   # fill in DATABASE_URL, AUTH_SECRET, Google + AI provider keys
+npx prisma generate
+npx prisma db push     # or `npm run db:migrate` once you have a real Postgres instance
+npm run dev
+```
+
+Phase 1 (architecture, schema, auth, and a working end-to-end "Project
+Generator" vertical slice) is complete. Everything else — the full Teacher/
+Student/Admin portals, equipment management, portfolio, SkillsUSA mode,
+additional LMS integrations, exports, and deployment — is tracked
+phase-by-phase in `ROADMAP.md`.

@@ -1,0 +1,43 @@
+import { ProjectCategory } from "@prisma/client";
+
+export const PROJECT_CATEGORY_LABELS: Record<ProjectCategory, string> = {
+  COMMERCIAL: "Commercial",
+  MOVIE_TRAILER: "Movie Trailer",
+  MUSIC_VIDEO: "Music Video",
+  DOCUMENTARY: "Documentary",
+  PSA: "Public Service Announcement",
+  NEWS_BROADCAST: "News Broadcast",
+  SPORTS_BROADCAST: "Sports Broadcast",
+  WEATHER_REPORT: "Weather Report",
+  INTERVIEW: "Interview",
+  PODCAST: "Podcast",
+  STOP_MOTION: "Stop Motion",
+  ANIMATION: "Animation",
+  SHORT_FILM: "Short Film",
+  FEATURE_UNIT: "Feature Film Unit",
+  TRAVEL_VIDEO: "Travel Video",
+  PRODUCT_VIDEO: "Product Video",
+  YOUTUBE_VIDEO: "YouTube Video",
+  SOCIAL_VIDEO: "Social Media Video",
+  VERTICAL_VIDEO: "Vertical Video",
+  EXPERIMENTAL: "Experimental Film",
+  HORROR: "Horror",
+  COMEDY_GENRE: "Comedy",
+  SCI_FI: "Sci-Fi",
+  MYSTERY: "Mystery",
+  WESTERN: "Western",
+  FILM_NOIR: "Film Noir",
+  HISTORICAL: "Historical",
+  GREEN_SCREEN: "Green Screen",
+  VIRTUAL_PRODUCTION: "Virtual Production",
+  MULTI_CAM_STUDIO: "Multi-Camera Studio",
+  LIVE_STREAM: "Live Streaming",
+  DRONE: "Drone Cinematography",
+  VIDEO_360: "360 Video",
+  VR_PRODUCTION: "VR Production",
+  AR_PRODUCTION: "AR Production",
+};
+
+export const PROJECT_CATEGORY_OPTIONS = Object.entries(PROJECT_CATEGORY_LABELS).map(
+  ([value, label]) => ({ value: value as ProjectCategory, label }),
+);
