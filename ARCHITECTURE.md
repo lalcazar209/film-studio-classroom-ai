@@ -169,6 +169,57 @@ without needing the external API to be live.
   `app/api/projects/generate/route.ts` verifies the requesting teacher
   actually teaches the target `ClassPeriod`) — middleware is a routing
   convenience, not the authorization boundary.
+- `middleware.ts` sets `export const config = { runtime: "nodejs" }`
+  because `auth()` resolves sessions through `PrismaAdapter`, and Prisma
+  Client cannot run on Next's default Edge middleware runtime without
+  Accelerate/driver adapters. This only surfaces when middleware handles
+  a real HTTP request with a real session cookie — no unit or integration
+  test calling library functions directly exercises it, which is exactly
+  how it stayed unnoticed until the Phase 13 Playwright e2e test sent an
+  actual browser request through it.
+
+## Testing
+
+Three layers, split by what each is actually able to verify:
+
+- **Unit** (`tests/unit/`, `npm run test:unit`) — pure logic with no I/O:
+  Zod schema accept/reject cases (`lib/ai/schemas.ts`), deterministic
+  transforms (`lib/captions.ts`, `lib/utils/*`), and integration adapters
+  with `fetch` mocked via `vi.stubGlobal("fetch", vi.fn())` — these verify
+  the exact request shape sent to a vendor (Canvas, Infinite Campus)
+  without a real network call or real credentials.
+- **Integration** (`tests/integration/`, `npm run test:integration`) —
+  anything that reads or writes real data goes through a real local
+  Postgres instance via `PrismaClient` directly, seeded with the same
+  `demo-org` every `prisma/seed.ts` run produces. This is the same
+  generate-nothing-fake principle the Phase 4–12 `scripts/smoke-test-*.ts`
+  scripts used, just formalized into Vitest with proper
+  `beforeEach`/`afterEach` teardown instead of one-shot scripts.
+- **E2E** (`tests/e2e/`, `npm run test:e2e`, Playwright) — a real browser
+  driving a real `next dev` server. Auth is handled by creating a real
+  `Session` row in Postgres for the seeded demo teacher and injecting the
+  matching `authjs.session-token` cookie as Playwright storage state
+  (`tests/e2e/global-setup.ts`) — the same mechanism NextAuth itself uses
+  after a real OAuth callback, so no test-only auth bypass exists in
+  production code. The only thing stubbed is the outbound AI call, via
+  `page.route()` intercepting the browser's `POST /api/projects/generate`
+  request — there's no way to fake an outbound server-to-Anthropic call
+  from the browser layer, and no `ANTHROPIC_API_KEY` exists in CI/dev
+  sandboxes, so the test creates its own project directly in Postgres and
+  has the intercepted response point at it, keeping the page that renders
+  afterward (and everything server-side) real.
+
+All three env-load the same way non-Prisma scripts have since Phase 6:
+`node --env-file=.env ./node_modules/.bin/<tool> ...`, since Prisma
+Client's own dotenv side effect only fires once a `PrismaClient` is
+instantiated, which is too late for tools that read other env vars first.
+Next itself (`next dev`/`next build`) loads `.env` natively, so
+`playwright.config.ts`'s `webServer` needs no such wrapper.
+
+`.github/workflows/ci.yml` runs the same sequence — typecheck, lint,
+Vitest, build, Playwright — against a real `postgres:16` service
+container on every push/PR, so CI is verifying the exact commands a
+developer runs locally, not a separate CI-only path.
 
 ## Folder structure
 
@@ -196,7 +247,14 @@ film-studio-classroom-ai/
 │   └── db.ts                          Prisma client singleton
 ├── prisma/schema.prisma
 ├── skills/                            Agent Skills library (see README.md)
+├── tests/
+│   ├── unit/                          Vitest — pure logic, mocked fetch
+│   ├── integration/                   Vitest — real local Postgres
+│   └── e2e/                           Playwright — real browser + server
+├── .github/workflows/ci.yml
 ├── middleware.ts
+├── playwright.config.ts
+├── vitest.config.ts
 ├── ARCHITECTURE.md
 └── ROADMAP.md
 ```

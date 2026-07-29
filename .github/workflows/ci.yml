@@ -1,0 +1,121 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+env:
+  DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/film_studio_classroom_ai"
+  AUTH_SECRET: "ci-secret-do-not-use-in-production-aaaaaaaaaaaaaaaaaaaaaaaaaa"
+  GOOGLE_CLIENT_ID: "ci-google-client-id"
+  GOOGLE_CLIENT_SECRET: "ci-google-client-secret"
+  GOOGLE_WORKSPACE_DOMAIN: ""
+  MICROSOFT_ENTRA_ID_CLIENT_ID: ""
+  MICROSOFT_ENTRA_ID_CLIENT_SECRET: ""
+  MICROSOFT_ENTRA_ID_TENANT_ID: ""
+  APPLE_CLIENT_ID: ""
+  APPLE_CLIENT_SECRET: ""
+  DEFAULT_AI_PROVIDER: "anthropic"
+  ANTHROPIC_API_KEY: "ci-key"
+  OPENAI_API_KEY: ""
+  GOOGLE_GENERATIVE_AI_API_KEY: ""
+  CLOUDINARY_CLOUD_NAME: ""
+  CLOUDINARY_API_KEY: ""
+  CLOUDINARY_API_SECRET: ""
+  CANVAS_BASE_URL: ""
+  CANVAS_CLIENT_ID: ""
+  CANVAS_CLIENT_SECRET: ""
+  SCHOOLOGY_CLIENT_ID: ""
+  SCHOOLOGY_CLIENT_SECRET: ""
+  BLACKBOARD_BASE_URL: ""
+  BLACKBOARD_APP_KEY: ""
+  BLACKBOARD_APP_SECRET: ""
+  VIMEO_CLIENT_ID: ""
+  VIMEO_CLIENT_SECRET: ""
+  ADOBE_CLIENT_ID: ""
+  ADOBE_CLIENT_SECRET: ""
+  FRAME_IO_ACCOUNT_ID: ""
+  FRAME_IO_ROOT_FOLDER_ID: ""
+  GAMMA_API_KEY: ""
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: film_studio_classroom_ai
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Write .env for local tooling that doesn't inherit job env
+        run: |
+          {
+            for name in DATABASE_URL AUTH_SECRET GOOGLE_CLIENT_ID GOOGLE_CLIENT_SECRET \
+              GOOGLE_WORKSPACE_DOMAIN MICROSOFT_ENTRA_ID_CLIENT_ID MICROSOFT_ENTRA_ID_CLIENT_SECRET \
+              MICROSOFT_ENTRA_ID_TENANT_ID APPLE_CLIENT_ID APPLE_CLIENT_SECRET DEFAULT_AI_PROVIDER \
+              ANTHROPIC_API_KEY OPENAI_API_KEY GOOGLE_GENERATIVE_AI_API_KEY CLOUDINARY_CLOUD_NAME \
+              CLOUDINARY_API_KEY CLOUDINARY_API_SECRET CANVAS_BASE_URL CANVAS_CLIENT_ID \
+              CANVAS_CLIENT_SECRET SCHOOLOGY_CLIENT_ID SCHOOLOGY_CLIENT_SECRET BLACKBOARD_BASE_URL \
+              BLACKBOARD_APP_KEY BLACKBOARD_APP_SECRET VIMEO_CLIENT_ID VIMEO_CLIENT_SECRET \
+              ADOBE_CLIENT_ID ADOBE_CLIENT_SECRET FRAME_IO_ACCOUNT_ID FRAME_IO_ROOT_FOLDER_ID GAMMA_API_KEY; do
+              echo "$name=${!name}"
+            done
+          } > .env
+
+      - name: Prisma generate + push schema
+        run: |
+          npx prisma generate
+          npx prisma db push
+
+      - name: Seed demo data
+        run: npx prisma db seed
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Unit + integration tests (Vitest)
+        run: npm run test
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Build
+        run: npm run build
+
+      - name: End-to-end tests (Playwright)
+        run: npm run test:e2e
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7

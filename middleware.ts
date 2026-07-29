@@ -38,5 +38,6 @@ export default auth((req) => {
 });
 
 export const config = {
+  runtime: "nodejs",
   matcher: ["/student/:path*", "/teacher/:path*", "/admin/:path*", "/parent/:path*", "/mentor/:path*"],
 };

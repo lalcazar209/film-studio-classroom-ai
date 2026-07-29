@@ -29,3 +29,6 @@ prisma/dev.db-journal
 
 # testing
 coverage/
+playwright-report/
+test-results/
+tests/e2e/.auth/

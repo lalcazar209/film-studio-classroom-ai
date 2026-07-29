@@ -427,11 +427,100 @@ tools are usable end-to-end for a brand-new school. Folding into Phase 12
       self-deactivation guard, and both CSV reports' header rows and
       content. Typecheck, lint, and build all pass clean.
 
-## Phase 13 — Testing & CI/CD
-- [ ] Vitest unit tests for `lib/ai/schemas.ts` validation and
-      `lib/integrations/*` adapters (mocked)
-- [ ] Playwright e2e for the project-generation vertical slice
-- [ ] GitHub Actions: typecheck, lint, test, build on every PR
+## Phase 13 — Testing & CI/CD ✅
+- [x] Vitest set up (`vitest.config.ts`, `tests/setup.ts`) with a
+      unit/integration split: `npm run test:unit` runs `tests/unit/**`,
+      `npm run test:integration` runs `tests/integration/**`, `npm run
+      test` runs both. All three are invoked via `node --env-file=.env
+      ./node_modules/.bin/vitest run ...` — the same pattern established
+      in Phase 6 for any non-Prisma script that needs env vars, since
+      Prisma Client's own dotenv side effect only fires once a
+      `PrismaClient` is instantiated.
+- [x] Vitest unit tests for `lib/ai/schemas.ts` validation
+      (`tests/unit/schemas.test.ts`): both accept- and reject-path
+      assertions for `projectBundleSchema`, `videoReviewSchema`,
+      `tutorialSegmentSchema`, `tutorialVideoBundleSchema`,
+      `filmStudioBundleSchema`, and `skillsUsaBundleSchema` — fewer than 5
+      lessons/vocab terms, an invalid lesson-day enum, a score outside
+      1–10, an empty `nextSteps`, `endSeconds` before `startSeconds`,
+      fewer than 3 tutorial segments/SkillsUSA scenarios, a non-positive
+      time limit. Also unit-tests the pure transforms `lib/captions.ts`
+      (`segmentsToTranscript`/`segmentsToSrt`, including exact SRT
+      timestamp formatting and hour rollover) and
+      `lib/utils/{slugify,cn}.ts`.
+- [x] Vitest unit tests for `lib/integrations/*` adapters, mocked
+      (`tests/unit/integrations/{canvas,infinite-campus}.test.ts`) via
+      `vi.stubGlobal("fetch", vi.fn())` / `vi.unstubAllGlobals()`:
+      verifies the exact request shape sent to each vendor (Canvas's
+      `grant_type=authorization_code` token exchange and Bearer-token
+      assignment POST; Infinite Campus's HTTP Basic auth header built
+      from the district's key/secret and its roster/grade-passback
+      payload shapes), a non-2xx response throwing rather than failing
+      silently, and `CanvasAdapter` refusing to construct without a base
+      URL.
+- [x] Vitest integration tests against the real local Postgres instance
+      (`tests/integration/*.test.ts`, via `PrismaClient` directly against
+      the seeded `demo-org`), reusing assertions already proven correct
+      in the Phase 4–12 `scripts/smoke-test-*.ts` scripts but formalized
+      into `describe`/`it` with proper `beforeEach`/`afterEach` teardown
+      so runs are repeatable: webhook dispatch (Slack/Zapier payload
+      shapes, dispatch to both, a broken webhook's fetch rejection
+      swallowed rather than thrown), class-period CRUD and its deletion
+      guard, user role/active management and both self-protection guards,
+      submission archiving and demo-reel ownership checks, the full
+      invite lifecycle (including the parent-invite/`ParentLink` path and
+      email-mismatch rejection), CSV report headers/content/escaping, and
+      the export pipeline actually rendering real files (`%PDF-` magic
+      bytes, `PK` OOXML signature for `.docx`/`.pptx`) plus the
+      deterministic Gamma/Google-Docs outline builders.
+- [x] Playwright e2e for the project-generation vertical slice
+      (`playwright.config.ts`, `tests/e2e/`): a real Auth.js database
+      session is created directly in Postgres for the seeded demo
+      teacher (the same mechanism NextAuth uses after a real OAuth
+      callback — a `Session` row plus a matching `authjs.session-token`
+      cookie) and saved as Playwright storage state in
+      `globalSetup`/`globalTeardown`, so the browser is genuinely
+      logged in rather than bypassing auth. The one thing stubbed is the
+      outbound AI call itself, since no `ANTHROPIC_API_KEY` exists in
+      this environment: the test creates a real Project (with a lesson)
+      directly via Prisma, intercepts the browser's `POST
+      /api/projects/generate` with `page.route()` to return that
+      project's id, then drives the actual form (title/brief fields,
+      submit button) and asserts the resulting `/teacher/projects/[id]`
+      page — a real server-rendered page reading real Postgres data —
+      shows the generated title and lesson. This caught a real bug: `auth()`
+      in `middleware.ts` uses the Prisma database-session adapter, and
+      Prisma Client cannot run on Next's default Edge middleware runtime
+      without Accelerate/driver adapters (`PrismaClientKnownRequestError`
+      surfaced as an `AdapterError`/`SessionTokenError` on every
+      middleware-gated request). None of the prior phases' smoke tests
+      caught this because they called library functions directly and
+      never sent a real HTTP request through `middleware.ts`. Fixed by
+      adding `export const config = { runtime: "nodejs", matcher: [...] }`
+      to `middleware.ts` — Next.js 15.5's stable Node.js middleware
+      runtime, which runs the same Prisma Client every route handler
+      already uses.
+- [x] GitHub Actions (`.github/workflows/ci.yml`): on every push to
+      `main` and every PR — spins up a real `postgres:16` service
+      container, `prisma generate`/`db push`/`db seed`, then typecheck,
+      lint, the full Vitest suite (unit + integration, against the
+      service container), `next build`, and the Playwright e2e suite
+      (installing Chromium via `playwright install --with-deps`), with
+      the Playwright HTML report uploaded as a build artifact on failure.
+      All env vars are dummy/non-secret CI values matching `.env.example`
+      — no real credentials are needed since every external vendor call
+      is either mocked (unit) or simply not exercised (build/e2e use the
+      stubbed AI path, matching local dev).
+- [x] Verified for real: `npx tsc --noEmit` passes clean across the
+      entire codebase including every new test file; `npx eslint .` and
+      `npx next build` both pass clean; `npm run test` passes all 74
+      Vitest tests (34 unit + 40 integration) against the real local
+      Postgres instance; `npx playwright test` passes the e2e spec
+      against a real `next dev` server. The GitHub Actions workflow
+      mirrors this same sequence and hasn't been run on GitHub's runners
+      (no push access to trigger Actions from this environment beyond
+      the PAT-based `git push` used for every phase), but every step it
+      runs is the exact command just verified locally.
 
 ## Phase 14 — Deployment & monitoring
 - [ ] Vercel project + Supabase production instance
