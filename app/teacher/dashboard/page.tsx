@@ -21,11 +21,19 @@ export default async function TeacherDashboardPage() {
 
   return (
     <main className="mx-auto max-w-4xl space-y-6 px-4 py-10">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-2">
         <h1 className="font-display text-3xl font-bold">Teacher Dashboard</h1>
-        <Link href="/teacher/dashboard/project-generator">
-          <Button>Generate New Project</Button>
-        </Link>
+        <div className="flex gap-2">
+          <Link href="/teacher/dashboard/equipment">
+            <Button variant="secondary">Equipment</Button>
+          </Link>
+          <Link href="/teacher/dashboard/analytics">
+            <Button variant="secondary">Analytics</Button>
+          </Link>
+          <Link href="/teacher/dashboard/project-generator">
+            <Button>Generate New Project</Button>
+          </Link>
+        </div>
       </div>
 
       {classPeriods.length === 0 ? (
@@ -37,10 +45,30 @@ export default async function TeacherDashboardPage() {
       ) : (
         classPeriods.map((cp) => (
           <Card key={cp.id}>
-            <CardHeader>
+            <CardHeader className="flex flex-wrap items-center justify-between gap-2">
               <CardTitle>
                 {cp.name} · Grade {cp.gradeLevel} · {cp._count.enrollments} students
               </CardTitle>
+              <div className="flex gap-2">
+                <Link
+                  href={`/teacher/dashboard/attendance/${cp.id}`}
+                  className="text-xs text-studio-accent hover:underline"
+                >
+                  Attendance
+                </Link>
+                <Link
+                  href={`/teacher/dashboard/gradebook/${cp.id}`}
+                  className="text-xs text-studio-accent hover:underline"
+                >
+                  Gradebook
+                </Link>
+                <Link
+                  href={`/teacher/dashboard/messages/${cp.id}`}
+                  className="text-xs text-studio-accent hover:underline"
+                >
+                  Message Parents
+                </Link>
+              </div>
             </CardHeader>
             <CardContent>
               {cp.projects.length === 0 ? (
@@ -52,8 +80,11 @@ export default async function TeacherDashboardPage() {
                       <Link href={`/teacher/projects/${project.id}`} className="hover:text-studio-accent">
                         {project.title}
                       </Link>
-                      <span className="text-xs text-black/50 dark:text-white/50">
+                      <span className="flex items-center gap-2 text-xs text-black/50 dark:text-white/50">
                         {PROJECT_CATEGORY_LABELS[project.category]} · {project.status}
+                        <Link href={`/teacher/projects/${project.id}/edit`} className="text-studio-accent hover:underline">
+                          Edit
+                        </Link>
                       </span>
                     </li>
                   ))}

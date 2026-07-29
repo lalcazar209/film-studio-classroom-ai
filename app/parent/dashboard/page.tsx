@@ -12,7 +12,13 @@ export default async function ParentDashboardPage() {
     include: {
       student: {
         include: {
-          enrollments: { include: { classPeriod: true } },
+          enrollments: {
+            include: {
+              classPeriod: {
+                include: { messages: { orderBy: { createdAt: "desc" }, take: 5 } },
+              },
+            },
+          },
           submissions: { orderBy: { createdAt: "desc" }, take: 3, include: { project: true } },
         },
       },
@@ -36,18 +42,33 @@ export default async function ParentDashboardPage() {
             <CardHeader>
               <CardTitle>{student.name ?? student.email}</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-2 text-sm">
+            <CardContent className="space-y-4 text-sm">
               {student.enrollments.map((e) => (
                 <p key={e.id}>{e.classPeriod.name}</p>
               ))}
+
               {student.submissions.length > 0 && (
-                <div className="pt-2">
+                <div>
                   <p className="font-medium">Recent submissions</p>
                   {student.submissions.map((s) => (
                     <p key={s.id} className="text-black/60 dark:text-white/60">
                       {s.project.title} — {s.status}
                     </p>
                   ))}
+                </div>
+              )}
+
+              {student.enrollments.some((e) => e.classPeriod.messages.length > 0) && (
+                <div>
+                  <p className="font-medium">Messages from teachers</p>
+                  {student.enrollments.flatMap((e) =>
+                    e.classPeriod.messages.map((m) => (
+                      <div key={m.id} className="mt-1 border-l-2 border-studio-accent pl-2">
+                        <p className="font-medium">{m.subject}</p>
+                        <p className="text-black/60 dark:text-white/60">{m.body}</p>
+                      </div>
+                    )),
+                  )}
                 </div>
               )}
             </CardContent>

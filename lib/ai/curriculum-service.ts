@@ -198,6 +198,20 @@ async function persistBundle(input: GenerateProjectInput, bundle: ProjectBundle)
       },
     });
 
+    // A Submission row per enrolled student means the gradebook has
+    // something to show from the moment a project is generated, not just
+    // after a student turns work in.
+    const enrolledStudents = await tx.enrollment.findMany({
+      where: { classPeriodId: input.classPeriodId },
+      select: { studentId: true },
+    });
+    if (enrolledStudents.length) {
+      await tx.submission.createMany({
+        data: enrolledStudents.map((e) => ({ projectId: project.id, studentId: e.studentId })),
+        skipDuplicates: true,
+      });
+    }
+
     return tx.project.findUniqueOrThrow({
       where: { id: project.id },
       include: {

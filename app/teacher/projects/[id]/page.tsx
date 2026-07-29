@@ -1,7 +1,9 @@
+import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { PROJECT_CATEGORY_LABELS } from "@/lib/constants/project-categories";
 
 const DAY_LABELS: Record<string, string> = {
@@ -43,12 +45,17 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
 
   return (
     <main className="mx-auto max-w-4xl space-y-6 px-4 py-10">
-      <header>
-        <p className="text-sm uppercase tracking-wide text-studio-accent">
-          {PROJECT_CATEGORY_LABELS[project.category]}
-        </p>
-        <h1 className="font-display text-3xl font-bold">{project.title}</h1>
-        <p className="mt-1 text-black/60 dark:text-white/60">{project.classPeriod.name}</p>
+      <header className="flex items-start justify-between gap-4">
+        <div>
+          <p className="text-sm uppercase tracking-wide text-studio-accent">
+            {PROJECT_CATEGORY_LABELS[project.category]}
+          </p>
+          <h1 className="font-display text-3xl font-bold">{project.title}</h1>
+          <p className="mt-1 text-black/60 dark:text-white/60">{project.classPeriod.name}</p>
+        </div>
+        <Link href={`/teacher/projects/${project.id}/edit`}>
+          <Button variant="secondary">Edit</Button>
+        </Link>
       </header>
 
       <div className="grid gap-6 md:grid-cols-5">

@@ -50,6 +50,10 @@ model User {
   generationJobs AIGenerationJob[]
   invitesSent    Invite[]            @relation("InviteCreatedBy")
 
+  attendanceAsStudent AttendanceRecord[] @relation("StudentAttendance")
+  attendanceRecorded  AttendanceRecord[] @relation("AttendanceRecordedBy")
+  messagesSent        TeacherMessage[]   @relation("TeacherMessageSentBy")
+
   @@index([organizationId])
 }
 
@@ -141,10 +145,12 @@ model ClassPeriod {
   teacherId      String
   createdAt      DateTime @default(now())
 
-  organization Organization @relation(fields: [organizationId], references: [id])
-  teacher      User         @relation("TeacherClasses", fields: [teacherId], references: [id])
+  organization Organization       @relation(fields: [organizationId], references: [id])
+  teacher      User               @relation("TeacherClasses", fields: [teacherId], references: [id])
   enrollments  Enrollment[]
   projects     Project[]
+  attendance   AttendanceRecord[]
+  messages     TeacherMessage[]
 
   @@index([organizationId])
   @@index([teacherId])
@@ -160,6 +166,32 @@ model Enrollment {
   classPeriod ClassPeriod @relation(fields: [classPeriodId], references: [id])
 
   @@unique([studentId, classPeriodId])
+}
+
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+  TARDY
+  EXCUSED
+}
+
+model AttendanceRecord {
+  id            String           @id @default(cuid())
+  classPeriodId String
+  studentId     String
+  date          DateTime         @db.Date
+  status        AttendanceStatus
+  notes         String?
+  recordedById  String
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+
+  classPeriod ClassPeriod @relation(fields: [classPeriodId], references: [id])
+  student     User        @relation("StudentAttendance", fields: [studentId], references: [id])
+  recordedBy  User        @relation("AttendanceRecordedBy", fields: [recordedById], references: [id])
+
+  @@unique([classPeriodId, studentId, date])
+  @@index([classPeriodId, date])
 }
 
 // ---------------------------------------------------------------------------
@@ -395,6 +427,26 @@ model Submission {
   student User    @relation(fields: [studentId], references: [id])
 
   @@unique([projectId, studentId])
+}
+
+/// A message a teacher sends to the parents of every student enrolled in a
+/// class period. Recipients are derived at read time (ParentLink ->
+/// student -> enrollment -> classPeriod), not persisted per-recipient, so
+/// adding/removing a student's parent link automatically changes who sees
+/// past messages. Delivery today is in-app only (parent dashboard); real
+/// email/SMS delivery is an integration concern (ROADMAP.md Phase 10).
+model TeacherMessage {
+  id            String   @id @default(cuid())
+  classPeriodId String
+  sentById      String
+  subject       String
+  body          String   @db.Text
+  createdAt     DateTime @default(now())
+
+  classPeriod ClassPeriod @relation(fields: [classPeriodId], references: [id], onDelete: Cascade)
+  sentBy      User        @relation("TeacherMessageSentBy", fields: [sentById], references: [id])
+
+  @@index([classPeriodId])
 }
 
 // ---------------------------------------------------------------------------

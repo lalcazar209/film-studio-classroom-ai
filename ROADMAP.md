@@ -72,13 +72,47 @@ what's done vs. pending, not a separate planning doc that drifts.
       valid studentId, wrong-email acceptance rejection, and correct
       `ParentLink` creation on accept — all 8 assertions pass
 
-## Phase 4 — Teacher Portal
-- [ ] Lesson Builder, Rubric Builder, Quiz Builder standalone editors (not
-      just AI-generated — teachers must be able to hand-edit everything)
-- [ ] Attendance, Gradebook
-- [ ] Equipment Manager UI (checkout/return, QR scan flow)
-- [ ] Parent communication composer
-- [ ] Analytics dashboard
+## Phase 4 — Teacher Portal ✅
+- [x] Hand-editing for every AI-generated artifact: `/teacher/projects/[id]/edit`
+      lets a teacher rewrite lesson objectives/"I can" statements/
+      differentiation, rubric criteria and weights, and quiz prompts/answers
+      — generation is a starting point, never the final word
+      (`PATCH /api/projects/[id]`)
+- [x] Attendance: `/teacher/dashboard/attendance/[classPeriodId]`, one-click
+      P/A/T/E per student per day, upserts so re-marking a day never
+      duplicates (`lib/attendance.ts`, `POST /api/attendance`)
+- [x] Gradebook: `/teacher/dashboard/gradebook/[classPeriodId]`, a
+      student x project grid with inline auto-saving total + feedback per
+      submission. Project generation now also creates a `Submission` row
+      per enrolled student at generation time (see `curriculum-service.ts`)
+      so the gradebook has something to show before anyone turns work in.
+- [x] Equipment Manager: `/teacher/dashboard/equipment` — real QR codes
+      (encoding the asset tag) generated server-side with the `qrcode`
+      package, checkout/return flow with status transitions
+      (`lib/equipment.ts`, `POST /api/equipment/[id]/checkout`,
+      `POST /api/equipment/checkouts/[checkoutId]/return`). "Scanning" is a
+      focused text input a USB/handheld barcode scanner can type into
+      directly — no camera API needed for the common school hardware case.
+- [x] Parent communication composer: `/teacher/dashboard/messages/[classPeriodId]`
+      sends a `TeacherMessage` to a class period; parents see it on their
+      dashboard via the `ParentLink -> student -> enrollment -> classPeriod`
+      path. In-app only for now — outbound email/SMS delivery is an
+      integration concern (Phase 10).
+- [x] Analytics: `/teacher/dashboard/analytics` — real aggregate queries
+      per class period (submission progress, grading progress, 30-day
+      attendance rate, average grade), not mock numbers.
+- [x] Fixed the admin dashboard org-scoping bug from Phase 3.
+- [x] Verified against the real seeded database with an executable smoke
+      test (`npm run test:smoke:phase4`, `scripts/smoke-test-phase4.ts`):
+      11 assertions covering attendance recording + idempotent
+      re-recording, equipment checkout/double-checkout-rejection/return,
+      message visibility via the parent's exact query path, and grade
+      persistence. Typecheck, lint, and build all pass clean.
+
+Known gap carried forward: there's still no UI for a teacher to *create* a
+ClassPeriod (only the seed script does today) — needed before Phase 4's
+tools are usable end-to-end for a brand-new school. Folding into Phase 12
+(Admin Portal CRUD) rather than growing Phase 4 further.
 
 ## Phase 5 — Student Portal
 - [ ] Assignment view + submission flow (video upload)

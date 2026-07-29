@@ -139,8 +139,14 @@ film-studio-classroom-ai/
 
 Per the project brief's own instruction — build in phases, not one giant
 response — the following are designed-for in the schema/architecture but
-not yet implemented: equipment QR/RFID scanning UI, digital portfolio site
-generation, SkillsUSA competition mode, AI video review pipeline, most
-LMS adapters beyond Google Classroom, billing, and the admin
-teacher/student/class management CRUD screens. See `ROADMAP.md` for the
+not yet implemented: student-facing submission/portfolio flow, digital
+portfolio site generation, SkillsUSA competition mode, AI video review
+pipeline, most LMS adapters beyond Google Classroom, billing, and admin
+CRUD for organizations/class periods/rostering (there's still no UI to
+*create* a ClassPeriod outside the seed script). See `ROADMAP.md` for the
 phase plan and current status.
+
+Equipment checkout now has a real QR-based flow (Phase 4): the QR encodes
+the asset tag, and a school's existing USB/handheld barcode scanner can
+type it straight into the checkout page's input — no camera API or native
+app needed.
