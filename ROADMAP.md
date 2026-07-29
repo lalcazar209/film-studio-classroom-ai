@@ -211,10 +211,44 @@ tools are usable end-to-end for a brand-new school. Folding into Phase 12
       against `tutorialVideoBundleSchema`. Typecheck, lint, and build all
       pass clean.
 
-## Phase 8 — AI Film Studio & AI Assistants
-- [ ] Per-assistant system prompts (Director AI, Producer AI, Screenwriter
-      AI, Editor AI, Colorist AI, ...) as a registry, not one generic bot
-- [ ] Screenplay/shot-list/call-sheet/budget generation
+## Phase 8 — AI Film Studio & AI Assistants ✅
+- [x] All 19 AI Assistants from the project brief as a registry
+      (`lib/ai/assistants.ts`) — Director, Producer, Screenwriter, Editor,
+      Colorist, Cinematographer, Lighting Designer, Audio Engineer, Drone
+      Instructor, Broadcast Coach, Animation Coach, Motion Graphics Coach,
+      Acting Coach, Film History, Career Coach, Portfolio Coach, SkillsUSA
+      Coach, College Advisor, Internship Advisor. Each has a genuinely
+      distinct, substantive system prompt reflecting real domain practice
+      (e.g. Drone Instructor AI leads with FAA Part 107 compliance;
+      Colorist AI talks in waveforms/vectorscopes) — not one generic bot
+      with a name swapped in. Chat persists per (user, assistant) via the
+      new `AssistantMessage` model, available to teachers, students, and
+      mentors at `/{role}/dashboard/assistants[/id]`
+      (`lib/ai/assistant-chat-service.ts`,
+      `POST /api/assistants/[id]/messages`).
+- [x] AI Film Studio (`lib/ai/film-studio-service.ts`, `FilmStudioProject`
+      model, `POST /api/film-studio/generate`,
+      `/{teacher,mentor}/dashboard/film-studio`): standalone production
+      packages (not tied to a ClassPeriod's weekly cycle) covering
+      screenplay, shot list, call sheet, budget, equipment list, location
+      plan (flagging which locations need permits), casting sheet, and a
+      marketing plan with poster/trailer concepts described in prose.
+- [x] Honest scope limit, stated in the schema comments and here rather
+      than silently skipped: camera diagrams, lighting diagrams, floor
+      plans, blocking diagrams, animatics, and actual poster/trailer
+      **images** are not generated — those need an image-generation
+      integration (Adobe Firefly / DALL-E) this app doesn't have wired up
+      yet. The marketing plan describes the poster/trailer concept in
+      prose instead of inventing a fake image.
+- [x] Verified with `npm run test:smoke:phase8`
+      (`scripts/smoke-test-phase8.ts`): 12 assertions covering registry
+      completeness (all 19), id uniqueness, prompt distinctness (every
+      system prompt is unique, not template-filled), two spot-checks that
+      prompts reflect real domain content, a real DB round-trip proving
+      `AssistantMessage` history is correctly scoped per (user, assistant)
+      pair, and `filmStudioBundleSchema` validating a realistic bundle
+      and rejecting one with a missing required field. Typecheck, lint,
+      and build all pass clean.
 
 ## Phase 9 — SkillsUSA Mode
 - [ ] Competition practice generator, judge sheets, timed challenges

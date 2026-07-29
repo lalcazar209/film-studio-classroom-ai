@@ -50,11 +50,13 @@ model User {
   generationJobs AIGenerationJob[]
   invitesSent    Invite[]            @relation("InviteCreatedBy")
 
-  attendanceAsStudent AttendanceRecord[] @relation("StudentAttendance")
-  attendanceRecorded  AttendanceRecord[] @relation("AttendanceRecordedBy")
-  messagesSent        TeacherMessage[]   @relation("TeacherMessageSentBy")
+  attendanceAsStudent AttendanceRecord[]  @relation("StudentAttendance")
+  attendanceRecorded  AttendanceRecord[]  @relation("AttendanceRecordedBy")
+  messagesSent        TeacherMessage[]    @relation("TeacherMessageSentBy")
   tutorMessages       TutorMessage[]
   tutorialVideos      TutorialVideo[]
+  assistantMessages   AssistantMessage[]
+  filmStudioProjects  FilmStudioProject[]
 
   @@index([organizationId])
 }
@@ -104,12 +106,13 @@ model Organization {
   cdsCode   String? // California school code, for CTE reporting
   createdAt DateTime @default(now())
 
-  users            User[]
-  classPeriods     ClassPeriod[]
-  equipment        EquipmentItem[]
-  integrationLinks IntegrationConnection[]
-  invites          Invite[]
-  tutorialVideos   TutorialVideo[]
+  users              User[]
+  classPeriods       ClassPeriod[]
+  equipment          EquipmentItem[]
+  integrationLinks   IntegrationConnection[]
+  invites            Invite[]
+  tutorialVideos     TutorialVideo[]
+  filmStudioProjects FilmStudioProject[]
 }
 
 /// Invite-based onboarding. Roles are never self-assigned beyond the
@@ -654,6 +657,62 @@ model TutorialVideo {
   transcript        String           @db.Text
   captionsSrt       String           @db.Text
   createdAt         DateTime         @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+  createdBy    User         @relation(fields: [createdById], references: [id])
+
+  @@index([organizationId])
+}
+
+// ---------------------------------------------------------------------------
+// AI Assistants (Director AI, Producer AI, Screenwriter AI, ...)
+// ---------------------------------------------------------------------------
+
+/// Chat history for the named AI Assistants (see lib/ai/assistants.ts for
+/// the registry of personas + system prompts). One row per turn, scoped by
+/// (userId, assistantId) — a teacher and a student each get their own
+/// conversation with e.g. "director", and the same user's conversations
+/// with different assistants don't mix. Distinct from TutorMessage: the
+/// AI Tutor is a single pedagogy-grounded coaching surface for students;
+/// these are the production-role personas any user can consult.
+model AssistantMessage {
+  id          String   @id @default(cuid())
+  userId      String
+  /// Matches an id in lib/ai/assistants.ts's ASSISTANTS registry (e.g. "director", "career-coach").
+  assistantId String
+  role        ChatRole
+  content     String   @db.Text
+  createdAt   DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId, assistantId, createdAt])
+}
+
+// ---------------------------------------------------------------------------
+// AI Film Studio
+// ---------------------------------------------------------------------------
+
+/// Standalone production-planning package — unlike Project (tied to a
+/// ClassPeriod's Mon-Fri PBL cycle), a FilmStudioProject can back a film
+/// festival entry, an extracurricular shoot, or any production a teacher
+/// or mentor is planning independent of a specific class assignment.
+model FilmStudioProject {
+  id             String   @id @default(cuid())
+  organizationId String
+  createdById    String
+  title          String
+  logline        String   @db.Text
+  genre          String
+  screenplay     Json // { scenes: [{ sceneNumber, heading, action, dialogue: [{character, line}] }] }
+  shotList       Json // { shots: [{ number, sceneNumber, description, shotType, lens, movement, durationSeconds }] }
+  callSheet      Json // { shootDate, generalCallTime, location, weather?, cast: [...], crew: [...], notes }
+  budget         Json // { lineItems: [{ category, item, estimatedCost, notes }], totalEstimate }
+  equipmentList  Json // [{ itemType, quantity, notes }]
+  locationPlan   Json // [{ name, address?, notes, permitsNeeded }]
+  castingSheet   Json // [{ character, description, notes }]
+  marketingPlan  Json // { targetAudience, keyMessages: [], channels: [], posterConcept, trailerConcept }
+  createdAt      DateTime @default(now())
 
   organization Organization @relation(fields: [organizationId], references: [id])
   createdBy    User         @relation(fields: [createdById], references: [id])

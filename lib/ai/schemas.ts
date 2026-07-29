@@ -176,3 +176,66 @@ export const tutorialVideoBundleSchema = z.object({
 
 export type TutorialSegment = z.infer<typeof tutorialSegmentSchema>;
 export type TutorialVideoBundle = z.infer<typeof tutorialVideoBundleSchema>;
+
+export const screenplaySceneSchema = z.object({
+  sceneNumber: z.number().int().positive(),
+  heading: z.string().describe("Slugline, e.g. INT. NEWSROOM - DAY"),
+  action: z.string(),
+  dialogue: z.array(z.object({ character: z.string(), line: z.string() })),
+});
+
+export const shotListEntrySchema = z.object({
+  number: z.number().int().positive(),
+  sceneNumber: z.number().int().positive(),
+  description: z.string(),
+  shotType: z.string(),
+  lens: z.string(),
+  movement: z.string(),
+  durationSeconds: z.number().positive(),
+});
+
+export const callSheetSchema = z.object({
+  shootDate: z.string(),
+  generalCallTime: z.string(),
+  location: z.string(),
+  weather: z.string().optional(),
+  cast: z.array(z.object({ role: z.string(), callTime: z.string() })),
+  crew: z.array(z.object({ role: z.string(), callTime: z.string() })),
+  notes: z.string(),
+});
+
+export const budgetSchema = z.object({
+  lineItems: z.array(
+    z.object({
+      category: z.string(),
+      item: z.string(),
+      estimatedCost: z.number().nonnegative(),
+      notes: z.string().optional(),
+    }),
+  ),
+  totalEstimate: z.number().nonnegative(),
+});
+
+export const filmStudioBundleSchema = z.object({
+  title: z.string(),
+  logline: z.string(),
+  genre: z.string(),
+  screenplay: z.object({ scenes: z.array(screenplaySceneSchema).min(1) }),
+  shotList: z.object({ shots: z.array(shotListEntrySchema).min(1) }),
+  callSheet: callSheetSchema,
+  budget: budgetSchema,
+  equipmentList: z.array(z.object({ itemType: z.string(), quantity: z.number().int().positive(), notes: z.string().optional() })),
+  locationPlan: z.array(
+    z.object({ name: z.string(), address: z.string().optional(), notes: z.string(), permitsNeeded: z.boolean() }),
+  ),
+  castingSheet: z.array(z.object({ character: z.string(), description: z.string(), notes: z.string().optional() })),
+  marketingPlan: z.object({
+    targetAudience: z.string(),
+    keyMessages: z.array(z.string()),
+    channels: z.array(z.string()),
+    posterConcept: z.string(),
+    trailerConcept: z.string(),
+  }),
+});
+
+export type FilmStudioBundle = z.infer<typeof filmStudioBundleSchema>;

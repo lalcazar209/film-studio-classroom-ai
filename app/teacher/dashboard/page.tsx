@@ -30,6 +30,12 @@ export default async function TeacherDashboardPage() {
           <Link href="/teacher/dashboard/video-academy">
             <Button variant="secondary">Video Academy</Button>
           </Link>
+          <Link href="/teacher/dashboard/film-studio">
+            <Button variant="secondary">AI Film Studio</Button>
+          </Link>
+          <Link href="/teacher/dashboard/assistants">
+            <Button variant="secondary">AI Assistants</Button>
+          </Link>
           <Link href="/teacher/dashboard/analytics">
             <Button variant="secondary">Analytics</Button>
           </Link>

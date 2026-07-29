@@ -74,9 +74,14 @@ into its own image-input shape (Anthropic base64 `source`, OpenAI
 consumer: it pulls Cloudinary-generated frame thumbnails via
 `lib/integrations/cloudinary.ts` and attaches them alongside text context.
 
-Adding a new AI Assistant (Director AI, Editor AI, Colorist AI, ...) means
-adding a new schema + a new service function that calls `getAIProvider()`,
-not a new provider integration.
+Adding a new generation-style AI service (Video Academy, AI Film Studio,
+...) means adding a new schema + a new service function that calls
+`getAIProvider()`, not a new provider integration. The 19 named AI
+Assistants (Director AI, Editor AI, Colorist AI, Career Coach, ...) follow
+a sibling pattern for chat rather than generate-once: `assistants.ts` is a
+registry of `{id, name, systemPrompt}`, and `assistant-chat-service.ts` is
+the one chat loop every assistant shares — persona differences live
+entirely in the registry's system prompts, not in per-assistant code.
 
 ### Third-party integrations (`lib/integrations/`)
 
@@ -157,6 +162,13 @@ competition mode, most LMS adapters beyond Google Classroom, billing, and
 admin CRUD for organizations/class periods/rostering (there's still no UI
 to *create* a ClassPeriod outside the seed script). See `ROADMAP.md` for the
 phase plan and current status.
+
+Also out of scope by design, not oversight: visual diagram generation
+(camera diagrams, lighting diagrams, floor plans, blocking, animatics) and
+actual poster/trailer images. AI Film Studio (Phase 8) describes those in
+prose instead of inventing an image — producing real diagrams/images needs
+an image-generation integration (Adobe Firefly, DALL-E) this app doesn't
+have wired up.
 
 Equipment checkout now has a real QR-based flow (Phase 4): the QR encodes
 the asset tag, and a school's existing USB/handheld barcode scanner can
