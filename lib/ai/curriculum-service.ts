@@ -1,6 +1,7 @@
 import { db } from "@/lib/db";
 import { getAIProvider } from "./registry";
 import { projectBundleSchema, type ProjectBundle } from "./schemas";
+import { dispatchWebhookEvent } from "@/lib/integrations/webhooks";
 import type { Prisma, ProjectCategory } from "@prisma/client";
 
 export interface GenerateProjectInput {
@@ -60,6 +61,18 @@ export async function generateProjectBundle(
         projectId: project.id,
       },
     });
+
+    const classPeriod = await db.classPeriod.findUnique({
+      where: { id: input.classPeriodId },
+      select: { organizationId: true },
+    });
+    if (classPeriod) {
+      await dispatchWebhookEvent(classPeriod.organizationId, {
+        type: "project.generated",
+        summary: `New project generated: "${project.title}"`,
+        payload: { projectId: project.id, category: input.category },
+      });
+    }
 
     return { project, bundle };
   } catch (error) {

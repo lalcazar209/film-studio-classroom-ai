@@ -567,11 +567,16 @@ enum IntegrationProviderType {
   CANVAS
   SCHOOLOGY
   BLACKBOARD
+  /// Student Information System, not an LMS — see lib/integrations/sis-adapter.ts.
+  /// District-provisioned API access, not self-serve OAuth app registration.
+  INFINITE_CAMPUS
   GOOGLE_WORKSPACE
   MICROSOFT_365
   ADOBE_CREATIVE_CLOUD
   YOUTUBE
   VIMEO
+  /// Adobe's video review/collaboration product — see lib/integrations/video-host-adapter.ts.
+  FRAME_IO
   ZAPIER
   SLACK
 }

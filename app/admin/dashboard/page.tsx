@@ -30,9 +30,14 @@ export default async function AdminDashboardPage() {
     <main className="mx-auto max-w-4xl space-y-6 px-4 py-10">
       <div className="flex items-center justify-between">
         <h1 className="font-display text-3xl font-bold">Admin Dashboard</h1>
-        <Link href="/admin/dashboard/invites">
-          <Button variant="secondary">Manage Invites</Button>
-        </Link>
+        <div className="flex gap-2">
+          <Link href="/admin/dashboard/invites">
+            <Button variant="secondary">Manage Invites</Button>
+          </Link>
+          <Link href="/admin/dashboard/integrations">
+            <Button variant="secondary">Integrations</Button>
+          </Link>
+        </div>
       </div>
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
         {stats.map((stat) => (

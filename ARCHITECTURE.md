@@ -85,18 +85,40 @@ entirely in the registry's system prompts, not in per-assistant code.
 
 ### Third-party integrations (`lib/integrations/`)
 
-- `adapter.ts` — the `IntegrationAdapter` interface (OAuth exchange, token
-  refresh, `createAssignment`) every LMS/tool integration implements.
-- `registry.ts` — maps `IntegrationProviderType` → adapter factory.
-  Providers without an adapter yet throw a clear "not implemented" error
-  instead of silently no-op'ing.
-- `google-classroom.ts` — the reference implementation (OAuth2, courseWork
-  creation). Canvas, Schoology, Blackboard, Adobe CC, YouTube, Zapier etc.
-  follow the same shape (see ROADMAP.md Phase 10).
+Not every third-party service fits the same shape — forcing them all into
+one interface would mean either bloating it with methods most providers
+don't support, or lying about what a provider actually does. Instead
+there are three narrow contracts, one per genuinely different integration
+category:
+
+- **LMS adapters** (`adapter.ts`'s `IntegrationAdapter`: OAuth exchange,
+  token refresh, `createAssignment`) — `google-classroom.ts`, `canvas.ts`,
+  `schoology.ts`, `blackboard.ts`, registered in `registry.ts`. These all
+  manage courses/coursework.
+- **SIS adapters** (`sis-adapter.ts`'s `SisAdapter`: `fetchRoster`,
+  `pushGrade`) — `infinite-campus.ts`, registered in `sis-registry.ts`. A
+  Student Information System owns the official roster and official
+  gradebook; it has no "assignments" to create. Credentials are
+  district-issued per Campus instance, not a self-serve OAuth app.
+- **Video host adapters** (`video-host-adapter.ts`'s `VideoHostAdapter`:
+  OAuth exchange, token refresh, `uploadVideo`) — `youtube.ts`,
+  `vimeo.ts`, `frameio.ts`, registered in `video-host-registry.ts`. These
+  publish/share a video file rather than manage coursework.
+- **Push-style webhooks** (`webhooks.ts`'s `dispatchWebhookEvent`) —
+  Slack and Zapier/Make don't get called *into*; an org admin pastes a
+  webhook URL and the app calls *out* to it when something happens
+  (e.g. `project.generated`, fired from `curriculum-service.ts`).
+  Best-effort by design: a broken webhook is logged, never allowed to
+  fail the action that triggered it.
+
+Every registry throws a clear "not implemented" error for an unconfigured
+provider instead of silently no-op'ing.
 
 Integration credentials persist in `IntegrationConnection`, scoped per
 `Organization`, never per-user — a school connects Google Classroom once,
-every teacher in that org can push assignments through it.
+every teacher in that org can push assignments through it. The same model
+holds Slack/Zapier webhook URLs and Infinite Campus's API key/secret in
+its `metadata` JSON field, since those aren't OAuth-token-shaped.
 
 ## Access control
 

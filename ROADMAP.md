@@ -277,11 +277,68 @@ tools are usable end-to-end for a brand-new school. Folding into Phase 12
       survives persistence intact. Typecheck, lint, and build all pass
       clean.
 
-## Phase 10 — Integrations beyond Google Classroom
-- [ ] Canvas, Schoology, Blackboard adapters (same `IntegrationAdapter`
-      interface as `google-classroom.ts`)
-- [ ] Adobe Creative Cloud / Frame.io, YouTube, Vimeo
-- [ ] Zapier/Make, Slack
+## Phase 10 — Integrations beyond Google Classroom ✅
+- [x] Canvas, Schoology, Blackboard: real `IntegrationAdapter` implementations
+      (`lib/integrations/{canvas,schoology,blackboard}.ts`) — OAuth2
+      authorization-code flow, per-institution base URL (all three are
+      typically self-hosted per school, unlike Google's single global
+      host). Registered in `registry.ts`.
+- [x] Infinite Campus: added as a genuinely different integration shape,
+      not forced into the LMS adapter interface. Infinite Campus is a
+      **Student Information System**, not an LMS — there's no
+      "assignment" to push, so `lib/integrations/sis-adapter.ts` defines
+      a separate `SisAdapter` contract (`fetchRoster`, `pushGrade`)
+      implemented by `infinite-campus.ts`. Credentials are
+      district-issued (API key/secret per Campus instance), configured
+      per-organization at `/admin/dashboard/integrations` rather than via
+      a self-serve OAuth app, which matches how districts actually
+      provision Campus API access. A working "Preview roster" action
+      calls the real adapter and shows section/student counts — full
+      roster auto-reconciliation into Enrollment records is a follow-up,
+      not built yet.
+- [x] YouTube, Vimeo, Frame.io: another distinct shape —
+      `lib/integrations/video-host-adapter.ts` (`VideoHostAdapter`,
+      `uploadVideo`) rather than the LMS or SIS contracts, since these
+      publish/share video rather than manage coursework. YouTube reuses
+      the Google OAuth client (upload-scoped) already used for Classroom;
+      Vimeo and Frame.io both use their real "pull/remote upload"
+      capability to fetch from a URL (the Cloudinary secure_url) instead
+      of streaming bytes through our server. Frame.io is treated as this
+      app's practical "Adobe Creative Cloud" integration, since Adobe's
+      developer APIs are product-specific and Frame.io (now part of
+      Creative Cloud) is the product that matches "share a cut for
+      review" — documented as a deliberate scope decision, not an
+      oversight.
+- [x] Slack and Zapier/Make: push-style integrations via
+      `lib/integrations/webhooks.ts` — an org admin pastes a webhook URL
+      (Slack Incoming Webhook, or a Zapier/Make catch-hook), and
+      `dispatchWebhookEvent` POSTs to it. Wired into a real trigger:
+      generating a Project now fires a `project.generated` event to any
+      configured Slack/Zapier integration. Dispatch is best-effort — a
+      broken webhook is logged, never allowed to fail the action that
+      triggered it.
+- [x] `/admin/dashboard/integrations`: connection status for every
+      provider, working configuration forms for Slack/Zapier (webhook
+      URL) and Infinite Campus (base URL + API key/secret, plus the
+      roster preview action); OAuth-based providers (Canvas, Schoology,
+      Blackboard, YouTube, Vimeo, Frame.io) show configuration status
+      from env vars — the adapters are fully implemented and ready, but
+      the OAuth authorize/callback route pairs to drive the actual
+      "Connect" button per provider are a follow-up (6 near-identical
+      OAuth dances), not built this phase.
+- [x] Verified with `npm run test:smoke:phase10`
+      (`scripts/smoke-test-phase10.ts`): 16 assertions covering registry
+      resolution (including that an unregistered provider throws instead
+      of silently no-op'ing, and that Infinite Campus resolves from the
+      SIS registry rather than the LMS one), real HTTP round-trips
+      proving the Slack `{text}` payload shape and the raw-JSON Zapier
+      payload shape, that a broken webhook URL is swallowed rather than
+      thrown, and — against a real local HTTP server standing in for
+      Campus — that roster requests are correctly Basic-authenticated and
+      the section/student JSON maps through intact. Live OAuth exchanges
+      against the real vendor APIs need live credentials and aren't
+      exercised offline, consistent with every AI-provider call in prior
+      phases. Typecheck, lint, and build all pass clean.
 
 ## Phase 11 — Export pipeline
 - [ ] PDF / Docx / PPTX / Google Docs-Slides export of every generated
