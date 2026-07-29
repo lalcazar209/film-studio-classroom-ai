@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { auth } from "@/lib/auth";
 import { saveDemoReel, DemoReelError, demoReelClipSchema } from "@/lib/demo-reel";
+import { logger } from "@/lib/logger";
 
 const requestSchema = z.object({
   title: z.string().min(1).max(200),
@@ -30,7 +31,7 @@ export async function POST(request: Request) {
     if (error instanceof DemoReelError) {
       return NextResponse.json({ error: error.message }, { status: 403 });
     }
-    console.error("Demo reel save failed", error);
+    logger.error("Demo reel save failed", error);
     return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
   }
 }

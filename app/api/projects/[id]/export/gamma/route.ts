@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { generateGammaAndWait, buildProjectOutline, GammaError } from "@/lib/export/gamma";
+import { logger } from "@/lib/logger";
 
 const DAY_LABELS: Record<string, string> = {
   MONDAY_LAUNCH: "Monday — Launch",
@@ -47,7 +48,7 @@ export async function POST(_request: Request, { params }: { params: Promise<{ id
     if (error instanceof GammaError) {
       return NextResponse.json({ error: error.message }, { status: 502 });
     }
-    console.error("Gamma export failed", error);
+    logger.error("Gamma export failed", error);
     return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
   }
 }

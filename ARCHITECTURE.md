@@ -221,6 +221,46 @@ Vitest, build, Playwright — against a real `postgres:16` service
 container on every push/PR, so CI is verifying the exact commands a
 developer runs locally, not a separate CI-only path.
 
+## Deployment & monitoring
+
+- **Database**: Postgres via Supabase, accessed through two Prisma
+  datasource URLs — `DATABASE_URL` is Supabase's pooled pgbouncer
+  connection (every runtime query), `DIRECT_URL` is the direct connection
+  (`prisma migrate`, which needs real DDL/advisory-lock support pgbouncer's
+  transaction pooling mode doesn't provide). Schema changes go through real
+  Prisma Migrate history (`prisma/migrations/`), not `prisma db push` —
+  `db push` was used through Phase 13 for fast iteration but has no
+  migration history and isn't safe against a real production database.
+- **App hosting**: Vercel. `package.json`'s `vercel-build` script
+  (`prisma migrate deploy && next build`) is Vercel's auto-detected build
+  command override, so every deploy applies pending migrations before
+  building. `postinstall: "prisma generate"` keeps the generated client in
+  sync on every fresh install (Vercel's build, Docker's `deps` stage, a
+  contributor's first `npm install`).
+- **Error reporting**: Sentry (`@sentry/nextjs`) across server, edge, and
+  client runtimes (`instrumentation.ts`, `sentry.server.config.ts`,
+  `sentry.edge.config.ts`, `instrumentation-client.ts`), plus
+  `app/global-error.tsx` for uncaught React render errors. Every init call
+  is DSN-gated (`enabled: Boolean(process.env.SENTRY_DSN)`), so
+  environments without a configured DSN — local dev, CI, this sandbox —
+  run with reporting cleanly disabled instead of erroring.
+- **Structured logging**: `lib/logger.ts` — leveled JSON log lines
+  (`{level, message, timestamp, ...meta}`); `.error()` also reports to
+  Sentry. Every API route's error handling and
+  `lib/integrations/webhooks.ts`'s best-effort dispatch failures go through
+  this instead of raw `console.error`, so a production Sentry project
+  receives every one of them automatically once `SENTRY_DSN` is set — no
+  route-by-route wiring needed beyond what's already there.
+- **Containerization**: `Dockerfile` (three-stage: `deps` → `builder` →
+  `runner`) builds on `next.config.ts`'s `output: "standalone"` for a lean
+  runtime image; `docker-compose.yml` adds a local Postgres plus one-off
+  `migrate`/`seed` tooling services (built from the fuller `builder` stage,
+  since they need the Prisma CLI the lean `runner` image deliberately
+  doesn't ship). This is both a local dev-parity option and a self-hosting
+  path if you don't want Vercel.
+- See `DEPLOYMENT.md` for the actual step-by-step Vercel/Supabase/Sentry
+  setup instructions.
+
 ## Folder structure
 
 ```
@@ -244,18 +284,25 @@ film-studio-classroom-ai/
 │   ├── constants/
 │   ├── utils/
 │   ├── auth.ts
+│   ├── logger.ts                      structured logging + Sentry reporting
 │   └── db.ts                          Prisma client singleton
-├── prisma/schema.prisma
+├── prisma/
+│   ├── schema.prisma
+│   └── migrations/                    real Prisma Migrate history
 ├── skills/                            Agent Skills library (see README.md)
 ├── tests/
 │   ├── unit/                          Vitest — pure logic, mocked fetch
 │   ├── integration/                   Vitest — real local Postgres
 │   └── e2e/                           Playwright — real browser + server
 ├── .github/workflows/ci.yml
+├── Dockerfile, docker-compose.yml     containerized dev parity / self-hosting
+├── instrumentation.ts, instrumentation-client.ts,
+│   sentry.server.config.ts, sentry.edge.config.ts   Sentry wiring
 ├── middleware.ts
 ├── playwright.config.ts
 ├── vitest.config.ts
 ├── ARCHITECTURE.md
+├── DEPLOYMENT.md
 └── ROADMAP.md
 ```
 

@@ -522,7 +522,87 @@ tools are usable end-to-end for a brand-new school. Folding into Phase 12
       the PAT-based `git push` used for every phase), but every step it
       runs is the exact command just verified locally.
 
-## Phase 14 — Deployment & monitoring
-- [ ] Vercel project + Supabase production instance
-- [ ] Error reporting (Sentry) + structured logging
-- [ ] Docker Compose for local dev parity
+## Phase 14 — Deployment & monitoring ✅
+- [x] Vercel project + Supabase production instance: the codebase is
+      deploy-ready and every step is documented in `DEPLOYMENT.md`, but no
+      actual Vercel/Supabase account exists in this environment to click
+      "Create Project" in — same honest boundary as every phase's live AI
+      calls or the Gamma/Google Docs APIs, which also need real accounts
+      this sandbox doesn't have. What's real and verified:
+      - `prisma/schema.prisma`'s `datasource` now splits `url`
+        (`DATABASE_URL`, Supabase's pooled pgbouncer connection) from
+        `directUrl` (`DIRECT_URL`, the direct connection `prisma migrate`
+        needs for DDL/advisory locks pgbouncer's transaction-pooling mode
+        doesn't support) — the standard Prisma+Supabase production
+        pattern.
+      - The project moved off `prisma db push` (fine for the rapid
+        phase-by-phase build, but no migration history and unsafe against
+        a real production database) onto real Prisma Migrate: the entire
+        schema was baselined into `prisma/migrations/20260729045821_init/`
+        via `prisma migrate diff --from-empty` and marked applied against
+        the existing dev database with `prisma migrate resolve --applied`
+        — verified with `prisma migrate status` (clean) and
+        `prisma migrate deploy` (idempotent, no pending migrations) right
+        after. Every migration from here forward goes through
+        `npm run db:migrate` (`prisma migrate dev`) like a normal project.
+      - `package.json` gained `postinstall: "prisma generate"` (so a
+        fresh `npm install`/`npm ci` — including Vercel's build and
+        Docker's `deps` stage — always has a matching client) and
+        `vercel-build: "prisma migrate deploy && next build"` — Vercel
+        auto-detects and runs this script instead of `next build` when
+        present, so every deploy applies pending migrations before
+        building.
+- [x] Error reporting (Sentry) + structured logging:
+      - `@sentry/nextjs` wired in per the current (Next.js 15 App Router)
+        convention: `instrumentation.ts` (registers
+        `sentry.server.config.ts`/`sentry.edge.config.ts` by
+        `NEXT_RUNTIME`, plus `onRequestError`), `instrumentation-client.ts`
+        (browser init + router-transition instrumentation),
+        `app/global-error.tsx` (catches uncaught React render errors),
+        and `next.config.ts` wrapped with `withSentryConfig` for
+        source-map upload (skipped gracefully without `SENTRY_AUTH_TOKEN`,
+        which is exactly the case in this sandbox/CI). Every init call
+        checks for a DSN and sets `enabled: false` without one, so local
+        dev/CI/this sandbox — none of which have a real Sentry project —
+        run with reporting cleanly disabled rather than failing.
+      - `lib/logger.ts`: a small structured JSON logger
+        (`{level, message, timestamp, ...meta}`) whose `.error()` also
+        calls `Sentry.captureException`/`captureMessage`. This isn't a
+        built-and-never-used utility — every one of the 26 existing
+        `console.error(...)` call sites across the API routes and
+        `lib/integrations/webhooks.ts` was swept to `logger.error(...)`,
+        confirmed by grepping for `console.error` afterward (zero
+        remaining outside `lib/logger.ts` itself) and by the Vitest
+        integration suite's webhook test actually printing a real
+        structured JSON log line during the run.
+      - `middleware.ts` needing the Node.js middleware runtime (from
+        Phase 13's e2e bug) is now also documented as a load-bearing
+        constraint in `ARCHITECTURE.md` and `DEPLOYMENT.md`, since it's
+        exactly the kind of thing that's easy to accidentally revert.
+- [x] Docker Compose for local dev parity: `Dockerfile` (three-stage:
+      `deps`/`builder`/`runner`, using `next.config.ts`'s new
+      `output: "standalone"` for a lean runtime image, non-root user,
+      Prisma's generated client/query-engine explicitly copied into the
+      runner since Next's file-tracing doesn't reliably pick it up on its
+      own) and `docker-compose.yml` (a `db` Postgres 16 service, `app`
+      built from the `runner` stage, and `migrate`/`seed` one-off tooling
+      services built from the fuller `builder` stage — kept out of the
+      lean production image on purpose, since it needs the Prisma CLI and
+      devDependencies the runtime image deliberately doesn't ship).
+      Verified for real: `docker compose config` (both the default
+      profile and `--profile tools`) parses and merges cleanly, including
+      the `environment:`-over-`env_file:` precedence that repoints
+      `DATABASE_URL`/`DIRECT_URL` at the `db` service hostname instead of
+      `localhost`. The Docker *daemon* itself isn't reachable in this
+      sandbox (`docker info` fails; starting it fails on a `ulimit`
+      permission error that's a property of the sandbox, not the repo) —
+      so the actual `docker compose up`/image build was not executed
+      here. That's a real, stated limitation, not swept under the rug;
+      everything short of the daemon itself (Dockerfile correctness,
+      compose YAML validity, the standalone build the Dockerfile depends
+      on) was checked as thoroughly as this environment allows.
+- [x] Verified for real, end to end, after every change above:
+      `npx tsc --noEmit`, `npx eslint .`, `npm run test` (all 74 Vitest
+      tests), `npx next build`, and `npx playwright test` (the Phase 13
+      e2e slice) all still pass clean — nothing in the deployment/
+      monitoring work regressed the application itself.

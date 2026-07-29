@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { auth } from "@/lib/auth";
 import { submitWork, SubmissionError } from "@/lib/submissions";
+import { logger } from "@/lib/logger";
 
 const requestSchema = z.object({
   videoUrl: z.string().url(),
@@ -38,7 +39,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     if (error instanceof SubmissionError) {
       return NextResponse.json({ error: error.message }, { status: 403 });
     }
-    console.error("Submission failed", error);
+    logger.error("Submission failed", error);
     return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
   }
 }

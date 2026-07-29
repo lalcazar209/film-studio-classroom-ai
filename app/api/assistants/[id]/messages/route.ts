@@ -3,6 +3,7 @@ import { z } from "zod";
 import { auth } from "@/lib/auth";
 import { sendAssistantMessage, getAssistantHistory, AssistantNotFoundError } from "@/lib/ai/assistant-chat-service";
 import { getAssistant } from "@/lib/ai/assistants";
+import { logger } from "@/lib/logger";
 
 const requestSchema = z.object({ content: z.string().min(1).max(2000) });
 
@@ -40,7 +41,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     if (error instanceof AssistantNotFoundError) {
       return NextResponse.json({ error: error.message }, { status: 404 });
     }
-    console.error("Assistant message failed", error);
+    logger.error("Assistant message failed", error);
     return NextResponse.json({ error: "The assistant couldn't respond. Try again." }, { status: 502 });
   }
 }

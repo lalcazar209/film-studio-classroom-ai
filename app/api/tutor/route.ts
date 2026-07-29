@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { auth } from "@/lib/auth";
 import { sendTutorMessage, getTutorHistory } from "@/lib/ai/tutor-service";
+import { logger } from "@/lib/logger";
 
 const requestSchema = z.object({ content: z.string().min(1).max(2000) });
 
@@ -33,7 +34,7 @@ export async function POST(request: Request) {
     const reply = await sendTutorMessage(session.user.id, parsed.data.content);
     return NextResponse.json({ reply });
   } catch (error) {
-    console.error("Tutor message failed", error);
+    logger.error("Tutor message failed", error);
     return NextResponse.json({ error: "The tutor couldn't respond. Try again." }, { status: 502 });
   }
 }

@@ -3,6 +3,7 @@ import { z } from "zod";
 import { auth } from "@/lib/auth";
 import { createInvite, InviteError } from "@/lib/invites";
 import { Role } from "@prisma/client";
+import { logger } from "@/lib/logger";
 
 const requestSchema = z.object({
   email: z.string().email(),
@@ -39,7 +40,7 @@ export async function POST(request: Request) {
     if (error instanceof InviteError) {
       return NextResponse.json({ error: error.message }, { status: 409 });
     }
-    console.error("Invite creation failed", error);
+    logger.error("Invite creation failed", error);
     return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
   }
 }

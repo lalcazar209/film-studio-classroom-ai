@@ -4,6 +4,7 @@ import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { getSisAdapter } from "@/lib/integrations/sis-registry";
 import type { SisCredentials } from "@/lib/integrations/sis-adapter";
+import { logger } from "@/lib/logger";
 
 const requestSchema = z.object({ schoolSisId: z.string().min(1) });
 
@@ -42,7 +43,7 @@ export async function POST(request: Request) {
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Something went wrong";
-    console.error("SIS roster preview failed", error);
+    logger.error("SIS roster preview failed", error);
     return NextResponse.json({ error: message }, { status: 502 });
   }
 }

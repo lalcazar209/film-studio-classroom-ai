@@ -3,6 +3,7 @@ import { z } from "zod";
 import { auth } from "@/lib/auth";
 import { changeUserRole, setUserActive, UserManagementError } from "@/lib/user-management";
 import { Role } from "@prisma/client";
+import { logger } from "@/lib/logger";
 
 const requestSchema = z.object({
   role: z.nativeEnum(Role).optional(),
@@ -41,7 +42,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     if (error instanceof UserManagementError) {
       return NextResponse.json({ error: error.message }, { status: 400 });
     }
-    console.error("User update failed", error);
+    logger.error("User update failed", error);
     return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
   }
 }

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { auth } from "@/lib/auth";
 import { generateSkillsUsaPractice } from "@/lib/ai/skillsusa-service";
+import { logger } from "@/lib/logger";
 
 const requestSchema = z.object({
   contestName: z.string().min(3).max(200),
@@ -35,7 +36,7 @@ export async function POST(request: Request) {
     });
     return NextResponse.json({ practice }, { status: 201 });
   } catch (error) {
-    console.error("SkillsUSA practice generation failed", error);
+    logger.error("SkillsUSA practice generation failed", error);
     return NextResponse.json({ error: "Generation failed. Nothing was saved." }, { status: 502 });
   }
 }

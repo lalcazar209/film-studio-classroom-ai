@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { generateVideoReview } from "@/lib/ai/video-review-service";
+import { logger } from "@/lib/logger";
 
 export async function POST(_request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -29,7 +30,7 @@ export async function POST(_request: Request, { params }: { params: Promise<{ id
     return NextResponse.json({ review });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Something went wrong";
-    console.error("Video review failed", error);
+    logger.error("Video review failed", error);
     return NextResponse.json({ error: message }, { status: 502 });
   }
 }

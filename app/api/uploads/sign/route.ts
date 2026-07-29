@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { auth } from "@/lib/auth";
 import { createSignedUploadParams, CloudinaryError } from "@/lib/integrations/cloudinary";
+import { logger } from "@/lib/logger";
 
 const requestSchema = z.object({ submissionId: z.string().cuid() });
 
@@ -27,7 +28,7 @@ export async function POST(request: Request) {
     if (error instanceof CloudinaryError) {
       return NextResponse.json({ error: error.message }, { status: 503 });
     }
-    console.error("Upload signing failed", error);
+    logger.error("Upload signing failed", error);
     return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
   }
 }

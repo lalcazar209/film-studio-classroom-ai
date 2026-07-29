@@ -3,6 +3,7 @@ import { z } from "zod";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { enrollStudent, unenrollStudent, ClassPeriodError } from "@/lib/class-periods";
+import { logger } from "@/lib/logger";
 
 const requestSchema = z.object({ studentId: z.string().cuid() });
 
@@ -36,7 +37,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     if (error instanceof ClassPeriodError) {
       return NextResponse.json({ error: error.message }, { status: 400 });
     }
-    console.error("Enrollment failed", error);
+    logger.error("Enrollment failed", error);
     return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
   }
 }
@@ -64,7 +65,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
     if (error instanceof ClassPeriodError) {
       return NextResponse.json({ error: error.message }, { status: 400 });
     }
-    console.error("Unenrollment failed", error);
+    logger.error("Unenrollment failed", error);
     return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
   }
 }

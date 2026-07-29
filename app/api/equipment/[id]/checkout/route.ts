@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { auth } from "@/lib/auth";
 import { checkoutEquipment, EquipmentError } from "@/lib/equipment";
+import { logger } from "@/lib/logger";
 
 const requestSchema = z.object({
   userId: z.string().cuid(),
@@ -39,7 +40,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     if (error instanceof EquipmentError) {
       return NextResponse.json({ error: error.message }, { status: 409 });
     }
-    console.error("Equipment checkout failed", error);
+    logger.error("Equipment checkout failed", error);
     return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
   }
 }

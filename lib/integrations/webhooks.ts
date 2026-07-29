@@ -1,4 +1,5 @@
 import { db } from "@/lib/db";
+import { logger } from "@/lib/logger";
 
 export interface WebhookEvent {
   type: string;
@@ -37,10 +38,10 @@ export async function dispatchWebhookEvent(organizationId: string, event: Webhoo
         });
 
         if (!response.ok) {
-          console.error(`Webhook dispatch to ${connection.provider} failed: ${response.status}`);
+          logger.error(`Webhook dispatch to ${connection.provider} failed: ${response.status}`);
         }
       } catch (error) {
-        console.error(`Webhook dispatch to ${connection.provider} threw`, error);
+        logger.error(`Webhook dispatch to ${connection.provider} threw`, error);
       }
     }),
   );

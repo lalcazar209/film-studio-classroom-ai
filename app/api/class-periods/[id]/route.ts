@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { auth } from "@/lib/auth";
 import { updateClassPeriod, deleteClassPeriod, ClassPeriodError } from "@/lib/class-periods";
+import { logger } from "@/lib/logger";
 
 const requestSchema = z.object({
   name: z.string().min(2).max(200).optional(),
@@ -36,7 +37,7 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     if (error instanceof ClassPeriodError) {
       return NextResponse.json({ error: error.message }, { status: 400 });
     }
-    console.error("Class period update failed", error);
+    logger.error("Class period update failed", error);
     return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
   }
 }
@@ -61,7 +62,7 @@ export async function DELETE(_request: Request, { params }: { params: Promise<{ 
     if (error instanceof ClassPeriodError) {
       return NextResponse.json({ error: error.message }, { status: 409 });
     }
-    console.error("Class period deletion failed", error);
+    logger.error("Class period deletion failed", error);
     return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
   }
 }

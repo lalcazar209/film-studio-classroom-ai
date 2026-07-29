@@ -3,6 +3,7 @@ import { z } from "zod";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { createClassPeriod, ClassPeriodError } from "@/lib/class-periods";
+import { logger } from "@/lib/logger";
 
 const requestSchema = z.object({
   name: z.string().min(2).max(200),
@@ -61,7 +62,7 @@ export async function POST(request: Request) {
     if (error instanceof ClassPeriodError) {
       return NextResponse.json({ error: error.message }, { status: 400 });
     }
-    console.error("Class period creation failed", error);
+    logger.error("Class period creation failed", error);
     return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
   }
 }

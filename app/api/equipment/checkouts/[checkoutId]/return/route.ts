@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { auth } from "@/lib/auth";
 import { returnEquipment, EquipmentError } from "@/lib/equipment";
+import { logger } from "@/lib/logger";
 
 const requestSchema = z.object({
   damageNotes: z.string().max(1000).optional(),
@@ -37,7 +38,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ che
     if (error instanceof EquipmentError) {
       return NextResponse.json({ error: error.message }, { status: 409 });
     }
-    console.error("Equipment return failed", error);
+    logger.error("Equipment return failed", error);
     return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
   }
 }

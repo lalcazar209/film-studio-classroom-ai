@@ -3,6 +3,7 @@ import { z } from "zod";
 import { auth } from "@/lib/auth";
 import { generateTutorialVideo } from "@/lib/ai/video-academy-service";
 import { TutorialCategory } from "@prisma/client";
+import { logger } from "@/lib/logger";
 
 const requestSchema = z.object({
   topic: z.string().min(3).max(200),
@@ -38,7 +39,7 @@ export async function POST(request: Request) {
     });
     return NextResponse.json({ tutorial }, { status: 201 });
   } catch (error) {
-    console.error("Video Academy generation failed", error);
+    logger.error("Video Academy generation failed", error);
     return NextResponse.json({ error: "Generation failed. Nothing was saved." }, { status: 502 });
   }
 }

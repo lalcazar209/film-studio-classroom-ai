@@ -57,18 +57,45 @@ adapted for this project's needs.
 
 This repo also contains the Next.js 15 app itself — see
 [`ARCHITECTURE.md`](./ARCHITECTURE.md) for the system design and
-[`ROADMAP.md`](./ROADMAP.md) for what's built vs. planned.
+[`ROADMAP.md`](./ROADMAP.md) for the full phase-by-phase build history
+(Phases 1–14, all complete — standards engine, curriculum/project
+generation, Teacher/Student/Admin/Parent/Mentor portals, AI Video Review,
+AI Assistants, Video Academy, AI Film Studio, SkillsUSA mode, LMS/SIS/video-
+host integrations, the PDF/Word/PowerPoint/Gamma/Google Docs export
+pipeline, the Admin Portal, automated testing, and deployment/monitoring).
+
+### Local development
 
 ```bash
 npm install
 cp .env.example .env   # fill in DATABASE_URL, AUTH_SECRET, Google + AI provider keys
 npx prisma generate
-npx prisma db push     # or `npm run db:migrate` once you have a real Postgres instance
+npx prisma migrate dev # or `npx prisma db push` for a disposable/throwaway database
+npm run db:seed
 npm run dev
 ```
 
-Phase 1 (architecture, schema, auth, and a working end-to-end "Project
-Generator" vertical slice) is complete. Everything else — the full Teacher/
-Student/Admin portals, equipment management, portfolio, SkillsUSA mode,
-additional LMS integrations, exports, and deployment — is tracked
-phase-by-phase in `ROADMAP.md`.
+### Local development with Docker Compose
+
+For a Postgres instance without installing it locally, or to run the app
+itself in a container matching production:
+
+```bash
+cp .env.example .env
+docker compose up -d db
+docker compose run --rm migrate   # applies prisma/migrations
+docker compose run --rm seed      # optional demo data
+docker compose up app             # or: npm run dev, pointed at the same db
+```
+
+### Testing
+
+```bash
+npm run test     # Vitest — unit + integration (needs a running Postgres)
+npm run test:e2e # Playwright — starts its own dev server
+```
+
+### Deployment
+
+See [`DEPLOYMENT.md`](./DEPLOYMENT.md) for the Vercel + Supabase + Sentry
+production setup.

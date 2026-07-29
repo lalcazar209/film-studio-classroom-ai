@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { auth } from "@/lib/auth";
 import { generateFilmStudioProject } from "@/lib/ai/film-studio-service";
+import { logger } from "@/lib/logger";
 
 const requestSchema = z.object({
   concept: z.string().min(10).max(2000),
@@ -36,7 +37,7 @@ export async function POST(request: Request) {
     });
     return NextResponse.json({ project }, { status: 201 });
   } catch (error) {
-    console.error("AI Film Studio generation failed", error);
+    logger.error("AI Film Studio generation failed", error);
     return NextResponse.json({ error: "Generation failed. Nothing was saved." }, { status: 502 });
   }
 }

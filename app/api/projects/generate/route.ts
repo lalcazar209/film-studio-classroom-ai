@@ -4,6 +4,7 @@ import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { generateProjectBundle } from "@/lib/ai/curriculum-service";
 import { ProjectCategory } from "@prisma/client";
+import { logger } from "@/lib/logger";
 
 const requestSchema = z.object({
   title: z.string().min(3).max(200),
@@ -52,7 +53,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ project }, { status: 201 });
   } catch (error) {
-    console.error("Project generation failed", error);
+    logger.error("Project generation failed", error);
     return NextResponse.json(
       { error: "Generation failed. The project was not created." },
       { status: 502 },

@@ -1,0 +1,67 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: film_studio_classroom_ai
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # One-off tooling: `docker compose run --rm migrate` /
+  # `docker compose run --rm seed`. Built from the `builder` stage (not the
+  # lean `runner` image) because migrations and seeding need the Prisma CLI
+  # and devDependencies that the production runtime image deliberately
+  # doesn't ship.
+  migrate:
+    build:
+      context: .
+      target: builder
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/film_studio_classroom_ai
+      DIRECT_URL: postgresql://postgres:postgres@db:5432/film_studio_classroom_ai
+    depends_on:
+      db:
+        condition: service_healthy
+    command: ["npx", "prisma", "migrate", "deploy"]
+    profiles: ["tools"]
+
+  seed:
+    build:
+      context: .
+      target: builder
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/film_studio_classroom_ai
+      DIRECT_URL: postgresql://postgres:postgres@db:5432/film_studio_classroom_ai
+    depends_on:
+      db:
+        condition: service_healthy
+    command: ["npx", "prisma", "db", "seed"]
+    profiles: ["tools"]
+
+  app:
+    build:
+      context: .
+      target: runner
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/film_studio_classroom_ai
+      DIRECT_URL: postgresql://postgres:postgres@db:5432/film_studio_classroom_ai
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  db-data:

@@ -4,6 +4,7 @@ import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { recordAttendance, AttendanceError } from "@/lib/attendance";
 import { AttendanceStatus } from "@prisma/client";
+import { logger } from "@/lib/logger";
 
 const requestSchema = z.object({
   classPeriodId: z.string().cuid(),
@@ -57,7 +58,7 @@ export async function POST(request: Request) {
     if (error instanceof AttendanceError) {
       return NextResponse.json({ error: error.message }, { status: 400 });
     }
-    console.error("Attendance recording failed", error);
+    logger.error("Attendance recording failed", error);
     return NextResponse.json({ error: "Something went wrong" }, { status: 500 });
   }
 }

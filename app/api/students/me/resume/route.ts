@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { generateResume } from "@/lib/ai/resume-service";
+import { logger } from "@/lib/logger";
 
 export async function POST() {
   const session = await auth();
@@ -16,7 +17,7 @@ export async function POST() {
     return NextResponse.json({ resume });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Something went wrong";
-    console.error("Resume generation failed", error);
+    logger.error("Resume generation failed", error);
     return NextResponse.json({ error: message }, { status: 400 });
   }
 }
