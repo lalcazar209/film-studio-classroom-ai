@@ -21,31 +21,14 @@ export default async function StudentDashboardPage() {
 
   return (
     <main className="mx-auto max-w-4xl space-y-6 px-4 py-10">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <h1 className="font-display text-3xl font-bold">My Projects</h1>
-        <div className="flex gap-2">
-          <Link href="/student/dashboard/portfolio">
-            <Button variant="secondary">Portfolio</Button>
-          </Link>
-          <Link href="/student/dashboard/resume">
-            <Button variant="secondary">Resume</Button>
-          </Link>
-          <Link href="/student/dashboard/demo-reel">
-            <Button variant="secondary">Demo Reel</Button>
-          </Link>
-          <Link href="/student/dashboard/video-academy">
-            <Button variant="secondary">Video Academy</Button>
-          </Link>
-          <Link href="/student/dashboard/assistants">
-            <Button variant="secondary">AI Assistants</Button>
-          </Link>
-          <Link href="/student/dashboard/skillsusa">
-            <Button variant="secondary">SkillsUSA Mode</Button>
-          </Link>
-          <Link href="/student/dashboard/tutor">
-            <Button>AI Tutor</Button>
-          </Link>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <p className="text-sm font-bold uppercase tracking-wide text-studio-coral">Welcome back</p>
+          <h1 className="font-display text-3xl font-extrabold">My Projects</h1>
         </div>
+        <Link href="/student/dashboard/tutor">
+          <Button>Ask the AI Tutor</Button>
+        </Link>
       </div>
 
       {enrollments.length === 0 ? (

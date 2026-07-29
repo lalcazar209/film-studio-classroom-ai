@@ -14,7 +14,10 @@ const executablePath = fs.existsSync(sandboxChromium) ? sandboxChromium : undefi
 
 export default defineConfig({
   testDir: "./tests/e2e",
-  timeout: 30000,
+  // `next dev` compiles each route on first visit; a cold server (always the
+  // case in CI, since reuseExistingServer is off there) can take a while to
+  // compile the destination route on top of running the test's own steps.
+  timeout: 60000,
   fullyParallel: false,
   workers: 1,
   retries: 0,

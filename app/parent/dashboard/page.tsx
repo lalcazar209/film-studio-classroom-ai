@@ -27,7 +27,10 @@ export default async function ParentDashboardPage() {
 
   return (
     <main className="mx-auto max-w-4xl space-y-6 px-4 py-10">
-      <h1 className="font-display text-3xl font-bold">Family Portal</h1>
+      <div>
+        <p className="text-sm font-bold uppercase tracking-wide text-studio-mint">Welcome back</p>
+        <h1 className="font-display text-3xl font-extrabold">Family Portal</h1>
+      </div>
 
       {links.length === 0 ? (
         <Card>

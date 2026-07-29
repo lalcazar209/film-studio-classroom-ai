@@ -2,12 +2,12 @@ import type { InputHTMLAttributes, LabelHTMLAttributes, SelectHTMLAttributes, Te
 import { cn } from "@/lib/utils/cn";
 
 const fieldBase =
-  "w-full rounded-lg border border-black/15 bg-white px-3 py-2 text-sm text-black " +
-  "placeholder:text-black/40 focus:border-studio-accent focus:outline-none focus:ring-1 focus:ring-studio-accent " +
+  "w-full rounded-xl border border-studio-ink/10 bg-white px-3.5 py-2.5 text-sm text-studio-ink " +
+  "placeholder:text-studio-ink/35 transition-shadow focus:border-studio-accent focus:outline-none focus:ring-2 focus:ring-studio-accent/30 " +
   "dark:border-white/15 dark:bg-studio-900 dark:text-white dark:placeholder:text-white/40";
 
 export function Label({ className, ...props }: LabelHTMLAttributes<HTMLLabelElement>) {
-  return <label className={cn("mb-1 block text-sm font-medium", className)} {...props} />;
+  return <label className={cn("mb-1 block text-sm font-semibold", className)} {...props} />;
 }
 
 export function Input({ className, ...props }: InputHTMLAttributes<HTMLInputElement>) {

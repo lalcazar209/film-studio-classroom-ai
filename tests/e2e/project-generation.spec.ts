@@ -64,7 +64,9 @@ test("a teacher can generate a project and land on its full generated page", asy
   await page.getByLabel("Brief").fill("A 30-second PSA about recycling for the whole school.");
   await page.getByRole("button", { name: "Generate Project" }).click();
 
-  await page.waitForURL(`**/teacher/projects/${project.id}`);
+  // The target route is compiled on-demand by `next dev` on first visit, so
+  // give this specific navigation more headroom than the suite default.
+  await page.waitForURL(`**/teacher/projects/${project.id}`, { timeout: 45000 });
   await expect(page.getByRole("heading", { name: "E2E Recycling PSA" })).toBeVisible();
   await expect(page.getByText("Monday — Launch: Launch Day")).toBeVisible();
 });

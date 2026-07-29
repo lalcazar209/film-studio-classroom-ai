@@ -7,5 +7,10 @@
 }
 
 body {
-  @apply bg-white text-black dark:bg-studio-950 dark:text-white;
+  @apply bg-studio-paper text-studio-ink dark:bg-studio-950 dark:text-white;
+  background-image:
+    radial-gradient(650px circle at 8% -10%, rgb(109 93 251 / 0.10), transparent 60%),
+    radial-gradient(550px circle at 100% 0%, rgb(255 176 32 / 0.12), transparent 55%),
+    radial-gradient(600px circle at 90% 100%, rgb(20 184 166 / 0.08), transparent 55%);
+  background-attachment: fixed;
 }

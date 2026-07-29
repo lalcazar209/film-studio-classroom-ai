@@ -21,31 +21,14 @@ export default async function TeacherDashboardPage() {
 
   return (
     <main className="mx-auto max-w-4xl space-y-6 px-4 py-10">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <h1 className="font-display text-3xl font-bold">Teacher Dashboard</h1>
-        <div className="flex gap-2">
-          <Link href="/teacher/dashboard/equipment">
-            <Button variant="secondary">Equipment</Button>
-          </Link>
-          <Link href="/teacher/dashboard/video-academy">
-            <Button variant="secondary">Video Academy</Button>
-          </Link>
-          <Link href="/teacher/dashboard/film-studio">
-            <Button variant="secondary">AI Film Studio</Button>
-          </Link>
-          <Link href="/teacher/dashboard/assistants">
-            <Button variant="secondary">AI Assistants</Button>
-          </Link>
-          <Link href="/teacher/dashboard/skillsusa">
-            <Button variant="secondary">SkillsUSA Mode</Button>
-          </Link>
-          <Link href="/teacher/dashboard/analytics">
-            <Button variant="secondary">Analytics</Button>
-          </Link>
-          <Link href="/teacher/dashboard/project-generator">
-            <Button>Generate New Project</Button>
-          </Link>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <p className="text-sm font-bold uppercase tracking-wide text-studio-accent">Welcome back</p>
+          <h1 className="font-display text-3xl font-extrabold">Your Classes</h1>
         </div>
+        <Link href="/teacher/dashboard/project-generator">
+          <Button>+ Generate New Project</Button>
+        </Link>
       </div>
 
       {classPeriods.length === 0 ? (

@@ -1,9 +1,7 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { PROJECT_CATEGORY_LABELS } from "@/lib/constants/project-categories";
 
 export default async function MentorDashboardPage() {
@@ -21,20 +19,13 @@ export default async function MentorDashboardPage() {
 
   return (
     <main className="mx-auto max-w-4xl space-y-6 px-4 py-10">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <h1 className="font-display text-3xl font-bold">Industry Mentor Portal</h1>
-        <div className="flex gap-2">
-          <Link href="/mentor/dashboard/film-studio">
-            <Button variant="secondary">AI Film Studio</Button>
-          </Link>
-          <Link href="/mentor/dashboard/assistants">
-            <Button variant="secondary">AI Assistants</Button>
-          </Link>
-        </div>
+      <div>
+        <p className="text-sm font-bold uppercase tracking-wide text-studio-sky">Welcome back</p>
+        <h1 className="font-display text-3xl font-extrabold">Industry Mentor Portal</h1>
+        <p className="mt-1 text-black/60 dark:text-white/60">
+          Recent student work you can review and give industry feedback on.
+        </p>
       </div>
-      <p className="text-black/60 dark:text-white/60">
-        Recent student work you can review and give industry feedback on.
-      </p>
 
       <Card>
         <CardHeader>

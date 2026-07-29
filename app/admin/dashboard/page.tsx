@@ -1,9 +1,8 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils/cn";
 
 export default async function AdminDashboardPage() {
   const session = await auth();
@@ -20,44 +19,25 @@ export default async function AdminDashboardPage() {
   ]);
 
   const stats = [
-    { label: "Class Periods", value: classPeriodCount },
-    { label: "Teachers", value: teacherCount },
-    { label: "Students", value: studentCount },
-    { label: "Projects Generated", value: projectCount },
+    { label: "Class Periods", value: classPeriodCount, color: "text-studio-accent" },
+    { label: "Teachers", value: teacherCount, color: "text-studio-sky" },
+    { label: "Students", value: studentCount, color: "text-studio-coral" },
+    { label: "Projects Generated", value: projectCount, color: "text-studio-gold" },
   ];
 
   return (
     <main className="mx-auto max-w-4xl space-y-6 px-4 py-10">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <h1 className="font-display text-3xl font-bold">Admin Dashboard</h1>
-        <div className="flex flex-wrap gap-2">
-          <Link href="/admin/dashboard/class-periods">
-            <Button variant="secondary">Class Periods</Button>
-          </Link>
-          <Link href="/admin/dashboard/users">
-            <Button variant="secondary">Users</Button>
-          </Link>
-          <Link href="/admin/dashboard/invites">
-            <Button variant="secondary">Manage Invites</Button>
-          </Link>
-          <Link href="/admin/dashboard/integrations">
-            <Button variant="secondary">Integrations</Button>
-          </Link>
-          <Link href="/admin/dashboard/reports">
-            <Button variant="secondary">Reports</Button>
-          </Link>
-          <Link href="/admin/dashboard/settings">
-            <Button variant="secondary">Settings</Button>
-          </Link>
-        </div>
+      <div>
+        <p className="text-sm font-bold uppercase tracking-wide text-studio-gold">Overview</p>
+        <h1 className="font-display text-3xl font-extrabold">Admin Dashboard</h1>
       </div>
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
         {stats.map((stat) => (
           <Card key={stat.label}>
-            <CardHeader>
-              <CardTitle className="text-3xl">{stat.value}</CardTitle>
+            <CardHeader className="border-b-0 pb-0">
+              <CardTitle className={cn("text-3xl", stat.color)}>{stat.value}</CardTitle>
             </CardHeader>
-            <CardContent className="pt-0 text-sm text-black/60 dark:text-white/60">
+            <CardContent className="pt-1 text-sm text-black/60 dark:text-white/60">
               {stat.label}
             </CardContent>
           </Card>
