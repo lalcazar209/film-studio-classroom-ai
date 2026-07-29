@@ -23,7 +23,8 @@
     "test:smoke:phase8": "tsx scripts/smoke-test-phase8.ts",
     "test:smoke:phase9": "tsx scripts/smoke-test-phase9.ts",
     "test:smoke:phase10": "tsx scripts/smoke-test-phase10.ts",
-    "test:smoke:phase11": "tsx scripts/smoke-test-phase11.ts"
+    "test:smoke:phase11": "tsx scripts/smoke-test-phase11.ts",
+    "test:smoke:phase12": "tsx scripts/smoke-test-phase12.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

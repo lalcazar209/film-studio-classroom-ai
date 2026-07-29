@@ -12,6 +12,7 @@ declare module "next-auth" {
       id: string;
       role: Role;
       organizationId: string | null;
+      isActive: boolean;
     } & DefaultSession["user"];
   }
 }
@@ -64,10 +65,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       session.user.id = user.id;
       const dbUser = await db.user.findUnique({
         where: { id: user.id },
-        select: { role: true, organizationId: true },
+        select: { role: true, organizationId: true, isActive: true },
       });
       session.user.role = dbUser?.role ?? "STUDENT";
       session.user.organizationId = dbUser?.organizationId ?? null;
+      session.user.isActive = dbUser?.isActive ?? true;
       return session;
     },
   },

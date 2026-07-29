@@ -155,6 +155,13 @@ without needing the external API to be live.
   `organizationId` can bootstrap a brand-new `Organization` and becomes
   its ADMIN, since someone has to be first. A user who already belongs to
   an org cannot create/join a second one this way.
+- `User.isActive` (Phase 12, `lib/user-management.ts`) lets an admin
+  deactivate a member without deleting their history — `middleware.ts`
+  redirects an inactive user's session to `/account-disabled` instead of
+  letting them into any portal. Guarded so an admin can't deactivate
+  themselves, and the sole remaining admin in an org can't demote
+  themselves out of the role, mirroring the invite system's "someone has
+  to be able to run the school" principle.
 - `middleware.ts` enforces role-prefixed routes (`/teacher/*`, `/student/*`,
   `/admin/*`, `/parent/*`, `/mentor/*`); ADMIN can traverse all portals for
   support/oversight, every other role is confined to its own prefix.
@@ -199,11 +206,14 @@ film-studio-classroom-ai/
 Per the project brief's own instruction — build in phases, not one giant
 response — the following are designed-for in the schema/architecture but
 not yet implemented: digital portfolio *website* generation (the in-app
-portfolio list exists; a public shareable site does not), SkillsUSA
-competition mode, most LMS adapters beyond Google Classroom, billing, and
-admin CRUD for organizations/class periods/rostering (there's still no UI
-to *create* a ClassPeriod outside the seed script). See `ROADMAP.md` for the
-phase plan and current status.
+portfolio list exists; a public shareable site does not), automated SIS
+roster reconciliation (Infinite Campus's roster preview works; turning
+that into actual Enrollment records is manual today), the OAuth
+authorize/callback UI for Canvas/Schoology/Blackboard/YouTube/Vimeo/
+Frame.io (the adapters are fully implemented and ready — see Phase 10),
+the `GOOGLE_WORKSPACE` connection Google Docs export needs, Google Slides
+export, and billing. See `ROADMAP.md` for the phase-by-phase status and
+the reasoning behind each of these scope decisions.
 
 Also out of scope by design, not oversight: visual diagram generation
 (camera diagrams, lighting diagrams, floor plans, blocking, animatics) and

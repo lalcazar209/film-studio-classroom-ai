@@ -388,8 +388,44 @@ tools are usable end-to-end for a brand-new school. Folding into Phase 12
       offline, consistent with every external AI/vendor call in prior
       phases. Typecheck, lint, and build all pass clean.
 
-## Phase 12 — Admin Portal
-- [ ] Teacher/student/class CRUD, permissions, school settings, reporting
+## Phase 12 — Admin Portal ✅
+- [x] Class period CRUD (`lib/class-periods.ts`,
+      `/admin/dashboard/class-periods[/id]`): finally closes the gap
+      flagged back in Phase 4 — an admin can create, edit, and manage
+      the roster for a class period, not just via the seed script.
+      Deletion is guarded: a class period with any enrollments or
+      generated projects can't be deleted (that history has to stay
+      intact), only an empty one can.
+- [x] Roster management: enroll/unenroll students per class period
+      (`POST`/`DELETE /api/class-periods/[id]/enrollments`), usable by
+      the owning teacher or an admin.
+- [x] User management (`lib/user-management.ts`,
+      `/admin/dashboard/users`): change any user's role, activate/
+      deactivate an account. Deactivating keeps all history (submissions,
+      grades, attendance) intact — it blocks sign-in
+      (`middleware.ts` checks `session.user.isActive`, redirects to
+      `/account-disabled`) rather than deleting or unlinking the user.
+      Guarded: you can't deactivate your own account, and the sole
+      remaining admin in an org can't demote themselves — someone has to
+      stay able to run the school.
+- [x] School settings (`/admin/dashboard/settings`): edit org name,
+      district, CDS code.
+- [x] Reporting (`lib/reports.ts`, `/admin/dashboard/reports`): real CSV
+      exports — full roster (student/class period/teacher), and a
+      standards-coverage report showing which California CTE/VAPA/ISTE
+      standards the org's generated projects have actually touched,
+      tying back to the Standards Engine from Phase 2.
+- [x] Verified with `npm run test:smoke:phase12`
+      (`scripts/smoke-test-phase12.ts`): 14 assertions against the real
+      seeded database covering class period create/update, rejecting a
+      non-teacher as a class period's teacher, rejecting deletion of a
+      class period with enrollments, enroll/unenroll round-tripping the
+      Enrollment row, deletion succeeding once history is clear, role
+      changes, the self-demotion guard (only triggers when the acting
+      admin really is the sole admin — verified by promoting then
+      demoting a second admin around the assertion), the
+      self-deactivation guard, and both CSV reports' header rows and
+      content. Typecheck, lint, and build all pass clean.
 
 ## Phase 13 — Testing & CI/CD
 - [ ] Vitest unit tests for `lib/ai/schemas.ts` validation and

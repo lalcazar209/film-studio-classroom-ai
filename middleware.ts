@@ -25,6 +25,10 @@ export default auth((req) => {
     return NextResponse.redirect(loginUrl);
   }
 
+  if (!session.user.isActive) {
+    return NextResponse.redirect(new URL("/account-disabled", req.url));
+  }
+
   // ADMIN can access every portal for support/oversight; other roles are scoped to their own.
   if (session.user.role !== requiredRole && session.user.role !== "ADMIN") {
     return NextResponse.redirect(new URL("/unauthorized", req.url));
