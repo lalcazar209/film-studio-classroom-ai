@@ -165,6 +165,10 @@ model ClassPeriod {
   organizationId String
   teacherId      String
   createdAt      DateTime @default(now())
+  /// Set when an admin imports this class period's roster from a Google
+  /// Classroom course (see lib/roster-sync.ts) — lets "push to Classroom"
+  /// on a generated project find the right course without asking again.
+  googleClassroomCourseId String?
 
   organization Organization       @relation(fields: [organizationId], references: [id])
   teacher      User               @relation("TeacherClasses", fields: [teacherId], references: [id])
@@ -304,6 +308,11 @@ model Project {
   /// Set after a successful Gamma export (lib/export/gamma.ts) so the UI
   /// can link back to it without regenerating. Null until exported.
   gammaUrl      String?
+  /// Set after a successful Google Docs export (lib/export/google-docs.ts).
+  googleDocUrl  String?
+  /// Set after this project's teacher guide has been pushed as a Google
+  /// Classroom assignment (lib/integrations/google-classroom.ts).
+  classroomUrl  String?
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
 

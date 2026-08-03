@@ -311,14 +311,28 @@ film-studio-classroom-ai/
 Per the project brief's own instruction — build in phases, not one giant
 response — the following are designed-for in the schema/architecture but
 not yet implemented: digital portfolio *website* generation (the in-app
-portfolio list exists; a public shareable site does not), automated SIS
-roster reconciliation (Infinite Campus's roster preview works; turning
-that into actual Enrollment records is manual today), the OAuth
-authorize/callback UI for Canvas/Schoology/Blackboard/YouTube/Vimeo/
-Frame.io (the adapters are fully implemented and ready — see Phase 10),
-the `GOOGLE_WORKSPACE` connection Google Docs export needs, Google Slides
-export, and billing. See `ROADMAP.md` for the phase-by-phase status and
-the reasoning behind each of these scope decisions.
+portfolio list exists; a public shareable site does not), Google Slides
+export (Docs export works — see Phase 15 — but Slides' API needs a full
+page/element request tree rather than Docs' single insertText call, a
+meaningfully larger follow-up), OAuth connect UI polish for Canvas/
+Schoology/Blackboard/Vimeo/Frame.io beyond the generic authorize/callback
+flow Phase 15 built (each vendor's authorize endpoint is implemented from
+its documented pattern but only Google's flow — Classroom, Workspace,
+YouTube — has been verified against a real account), and billing/district
+multi-tenancy (a district-hierarchy respec was evaluated in Phase 15 and
+deliberately not pursued — see that phase's notes for the reasoning). See
+`ROADMAP.md` for the phase-by-phase status and the reasoning behind each
+of these scope decisions.
+
+Automated roster reconciliation and the OAuth authorize/callback UI —
+both previously listed here as not-yet-built — now exist for Google
+Classroom specifically (Phase 15): `lib/roster-sync.ts` turns a fetched
+roster into real `Enrollment` rows, and `/admin/dashboard/integrations`
+has working Connect/Disconnect buttons rather than static status text.
+Infinite Campus's roster fetch still only previews (its adapter returns
+the same `SisRosterSection` shape `lib/roster-sync.ts` consumes, so
+wiring its preview into the same reconciliation function is a small
+follow-up, not a redesign).
 
 Also out of scope by design, not oversight: visual diagram generation
 (camera diagrams, lighting diagrams, floor plans, blocking, animatics) and

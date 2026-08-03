@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ClassPeriodEditor } from "@/components/class-period-editor";
+import { GoogleClassroomRosterImport } from "@/components/google-classroom-roster-import";
 
 export default async function ClassPeriodDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -52,6 +53,23 @@ export default async function ClassPeriodDetailPage({ params }: { params: Promis
             teachers={teachers}
             enrolledStudents={enrolledStudents}
             availableStudents={availableStudents}
+          />
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Google Classroom roster</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="mb-3 text-sm text-studio-ink/60 dark:text-white/60">
+            Import students directly from a connected Google Classroom course. New students are
+            created automatically and matched to existing accounts by email; enrollment updates
+            the roster on this page above.
+          </p>
+          <GoogleClassroomRosterImport
+            classPeriodId={classPeriod.id}
+            initialCourseId={classPeriod.googleClassroomCourseId}
           />
         </CardContent>
       </Card>

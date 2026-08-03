@@ -5,6 +5,8 @@ import { db } from "@/lib/db";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { GammaExportButton } from "@/components/gamma-export-button";
+import { GoogleDocsExportButton } from "@/components/google-docs-export-button";
+import { ClassroomExportButton } from "@/components/classroom-export-button";
 import { PROJECT_CATEGORY_LABELS } from "@/lib/constants/project-categories";
 
 const DAY_LABELS: Record<string, string> = {
@@ -104,6 +106,14 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
             Download PowerPoint
           </a>
           <GammaExportButton exportUrl={`/api/projects/${project.id}/export/gamma`} initialGammaUrl={project.gammaUrl} />
+          <GoogleDocsExportButton
+            exportUrl={`/api/projects/${project.id}/export/google-docs`}
+            initialGoogleDocUrl={project.googleDocUrl}
+          />
+          <ClassroomExportButton
+            exportUrl={`/api/projects/${project.id}/export/classroom`}
+            initialClassroomUrl={project.classroomUrl}
+          />
         </CardContent>
       </Card>
 

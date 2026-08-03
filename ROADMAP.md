@@ -606,3 +606,88 @@ tools are usable end-to-end for a brand-new school. Folding into Phase 12
       tests), `npx next build`, and `npx playwright test` (the Phase 13
       e2e slice) all still pass clean — nothing in the deployment/
       monitoring work regressed the application itself.
+
+## Phase 15 — Google Workspace integration ✅
+Prompted by an "Enterprise Edition / District Deployment" respec that
+assumed a full Google Cloud Platform + district-multi-tenant rebuild —
+after confirming with the user, the infrastructure decision was to stay
+on the live Vercel + Supabase deployment rather than re-platform, and to
+prioritize the one piece of that respec genuinely missing and already
+flagged in this file's own prior notes: real Google Workspace
+integration, not just the OAuth-ready-but-unreachable adapters from
+Phase 10.
+- [x] Real OAuth connect/disconnect UI (`/admin/dashboard/integrations`)
+      for every provider that previously only showed static "Connected" /
+      "Not connected" text with no way to actually connect:
+      `lib/integrations/oauth-config.ts` builds each provider's authorize
+      URL (Google's shared endpoint for Classroom/Workspace/YouTube;
+      each LMS's own endpoint for Canvas/Schoology/Blackboard/Vimeo);
+      `app/api/integrations/[provider]/{authorize,callback,disconnect}`
+      are generic across all of them, with real CSRF protection (a random
+      `state` value round-tripped through an httpOnly cookie, verified on
+      callback before any token exchange happens).
+      `lib/integrations/exchange.ts` routes a returned auth code to the
+      right adapter family (LMS registry, video-host registry, or a bare
+      Google OAuth2 client for GOOGLE_WORKSPACE, which is neither) by
+      registry membership, not try/catch — a try/catch version was
+      drafted and rejected during review because it would have silently
+      masked a real exchange failure from the correct adapter behind a
+      misleading "provider not registered" error from the wrong one.
+- [x] Google Classroom roster → real Enrollment records
+      (`lib/roster-sync.ts`, `GoogleClassroomAdapter.listCourses`/
+      `fetchCourseRoster`, wired into
+      `/admin/dashboard/class-periods/[id]`): this was the other gap
+      explicitly named in Phase 10's notes — "automated SIS roster
+      reconciliation... is manual today." `fetchCourseRoster` returns the
+      same `SisRosterSection` shape Infinite Campus's adapter already
+      used, so one reconciliation function serves both roster sources.
+      Deliberately conservative about existing accounts: a roster email
+      matching a non-STUDENT user, or a STUDENT in a different
+      organization, is skipped rather than silently reassigned — matching
+      or creating a STUDENT is the only path that writes anything.
+      Importing a course also stamps `ClassPeriod.googleClassroomCourseId`
+      so a later "push to Classroom" knows which course without asking
+      again. Verified with 7 real-Postgres tests
+      (`tests/integration/roster-sync.test.ts`): new-student creation,
+      matching an existing student without duplicating, idempotency
+      (importing twice doesn't double-enroll), skipping a non-student
+      email without touching their role, skipping a same-email student in
+      a different org, skipping a roster entry with no email, and
+      rejecting a class period outside the organization.
+- [x] Google Docs export (`lib/export/google-docs.ts` — implemented since
+      Phase 11, unreachable until now) wired into
+      `app/api/projects/[id]/export/google-docs` and a
+      `GoogleDocsExportButton` next to the existing PDF/Word/PowerPoint/
+      Gamma export row on the project detail page. Access tokens go
+      through `lib/integrations/get-connection.ts`, which refreshes an
+      expiring Google token and persists the refreshed one before any
+      route uses it — the same "is it still valid" step Classroom's own
+      calls now go through too, since access tokens are short-lived and a
+      teacher's session can easily outlive one.
+- [x] "Push to Google Classroom" — a generated project's teacher guide
+      can be pushed as a real Classroom assignment
+      (`app/api/projects/[id]/export/classroom`,
+      `ClassroomExportButton`), using the `createAssignment` capability
+      Phase 10 already built but nothing ever called. Reads the target
+      course from `ClassPeriod.googleClassroomCourseId` set during roster
+      import, so pushing doesn't need its own course picker.
+- [x] Explicitly out of scope for this pass, left as a follow-up: Google
+      Slides export (the Slides API needs a full page/element request
+      tree, not a single insertText call like Docs — meaningfully more
+      work than this pass's scope) and OAuth connect UI polish for
+      Canvas/Schoology/Blackboard/Vimeo beyond the generic flow (their
+      authorize endpoints are implemented from each vendor's documented
+      pattern but not verified against a real account, since none was
+      available to test against — Google's flow was verified as
+      thoroughly as this environment allows: real token exchange code
+      paths, real DB persistence, real refresh logic).
+- [x] Verified end to end: `npx tsc --noEmit`, `npx eslint .`,
+      `npm run test` (81 Vitest tests — 74 prior + 7 new roster-sync
+      tests), `npx next build`, and `npx playwright test` (cold dev-server
+      start) all pass clean. The new Prisma fields
+      (`ClassPeriod.googleClassroomCourseId`, `Project.googleDocUrl`,
+      `Project.classroomUrl`) went through a real
+      `prisma migrate dev` — the Phase 14 migration baseline paid off
+      immediately here, this is the first schema change since that
+      baseline and it worked exactly like a normal project's migration
+      history from here on.
