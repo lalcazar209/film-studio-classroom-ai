@@ -3,7 +3,8 @@ import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TUTORIAL_CATEGORY_LABELS } from "@/lib/constants/tutorial-categories";
-import type { TutorialSegment } from "@/lib/ai/schemas";
+import { TutorialNarrationPlayer } from "@/components/tutorial-narration-player";
+import type { NarratedSegment } from "@/lib/ai/video-narration-service";
 
 export default async function StudentTutorialDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -14,7 +15,7 @@ export default async function StudentTutorialDetailPage({ params }: { params: Pr
   if (!tutorial) notFound();
   if (tutorial.organizationId !== session.user.organizationId) redirect("/unauthorized");
 
-  const segments = tutorial.segments as unknown as TutorialSegment[];
+  const segments = tutorial.segments as unknown as NarratedSegment[];
   const practiceActivity = tutorial.practiceActivity as { title: string; instructions: string; estimatedMinutes: number };
   const quiz = tutorial.quiz as { title: string; questions: Array<{ prompt: string; answer: string }> };
 
@@ -38,12 +39,15 @@ export default async function StudentTutorialDetailPage({ params }: { params: Pr
 
       <Card>
         <CardHeader>
-          <CardTitle>What you&apos;ll learn</CardTitle>
+          <CardTitle>Watch</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-3 text-sm">
-          {segments.map((segment, i) => (
-            <p key={i}>{segment.narration}</p>
-          ))}
+        <CardContent>
+          <TutorialNarrationPlayer
+            tutorialId={tutorial.id}
+            initialSegments={segments}
+            initialNarrationGenerated={tutorial.narrationGeneratedAt !== null}
+            canGenerate={false}
+          />
         </CardContent>
       </Card>
 

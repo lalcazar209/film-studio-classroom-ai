@@ -4,7 +4,8 @@ import { db } from "@/lib/db";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { GammaExportButton } from "@/components/gamma-export-button";
 import { TUTORIAL_CATEGORY_LABELS } from "@/lib/constants/tutorial-categories";
-import type { TutorialSegment } from "@/lib/ai/schemas";
+import { TutorialNarrationPlayer } from "@/components/tutorial-narration-player";
+import type { NarratedSegment } from "@/lib/ai/video-narration-service";
 
 export default async function TutorialDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -15,7 +16,7 @@ export default async function TutorialDetailPage({ params }: { params: Promise<{
   if (!tutorial) notFound();
   if (tutorial.organizationId !== session.user.organizationId) redirect("/unauthorized");
 
-  const segments = tutorial.segments as unknown as TutorialSegment[];
+  const segments = tutorial.segments as unknown as NarratedSegment[];
   const practiceActivity = tutorial.practiceActivity as { title: string; instructions: string; estimatedMinutes: number };
   const quiz = tutorial.quiz as { title: string; questions: Array<{ prompt: string; answer: string }> };
 
@@ -42,6 +43,20 @@ export default async function TutorialDetailPage({ params }: { params: Promise<{
           />
         </div>
       </header>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Watch / generate narration</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <TutorialNarrationPlayer
+            tutorialId={tutorial.id}
+            initialSegments={segments}
+            initialNarrationGenerated={tutorial.narrationGeneratedAt !== null}
+            canGenerate={true}
+          />
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader>

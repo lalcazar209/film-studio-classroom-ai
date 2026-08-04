@@ -64,6 +64,35 @@ export async function uploadGeneratedImage(input: {
 }
 
 /**
+ * Uploads AI-generated narration audio (base64 mp3, from
+ * lib/ai/providers/openai-tts.ts). Cloudinary has no distinct "audio"
+ * resource type — audio files are uploaded and served under the "video"
+ * resource type, same as createSignedUploadParams above.
+ */
+export async function uploadGeneratedAudio(input: {
+  base64: string;
+  mediaType: string;
+  folder: string;
+  publicId: string;
+}): Promise<{ secureUrl: string; durationSeconds: number }> {
+  assertConfigured();
+  cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+  });
+
+  const result = await cloudinary.uploader.upload(`data:${input.mediaType};base64,${input.base64}`, {
+    folder: input.folder,
+    public_id: input.publicId,
+    resource_type: "video",
+    overwrite: true,
+  });
+
+  return { secureUrl: result.secure_url, durationSeconds: result.duration ?? 0 };
+}
+
+/**
  * Cloudinary generates video-frame thumbnails on the fly via URL
  * transformation — no separate extraction job needed. Returns null for
  * non-Cloudinary URLs (e.g. a student pasted a YouTube link instead of

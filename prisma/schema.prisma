@@ -686,13 +686,17 @@ model TutorialVideo {
   category          TutorialCategory
   learningObjective String           @db.Text
   teacherScript     String           @db.Text
-  segments          Json // [{ startSeconds, endSeconds, narration, visualGuide, shotType?, graphicsNote?, animationSuggestion? }]
+  segments          Json // [{ startSeconds, endSeconds, narration, visualGuide, shotType?, graphicsNote?, animationSuggestion?, audioUrl?, audioDurationSeconds? }]
   practiceActivity  Json // { title, instructions, estimatedMinutes }
   quiz              Json // { title, questions: [...] } — same shape as Quiz.questions
   transcript        String           @db.Text
   captionsSrt       String           @db.Text
   /// Set after a successful Gamma export (lib/export/gamma.ts).
   gammaUrl          String?
+  /// Set after lib/ai/video-narration-service.ts synthesizes TTS audio for
+  /// every segment and stamps audioUrl/audioDurationSeconds onto each one —
+  /// null until a teacher generates narration audio.
+  narrationGeneratedAt DateTime?
   createdAt         DateTime         @default(now())
 
   organization Organization @relation(fields: [organizationId], references: [id])
