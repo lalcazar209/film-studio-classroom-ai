@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { renderProjectPptx } from "@/lib/export/project-pptx";
 import { slugify } from "@/lib/utils/slugify";
+import { logger } from "@/lib/logger";
 
 export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -22,12 +23,17 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  const pptxBuffer = await renderProjectPptx(project);
+  try {
+    const pptxBuffer = await renderProjectPptx(project);
 
-  return new NextResponse(new Uint8Array(pptxBuffer), {
-    headers: {
-      "Content-Type": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
-      "Content-Disposition": `attachment; filename="${slugify(project.title)}.pptx"`,
-    },
-  });
+    return new NextResponse(new Uint8Array(pptxBuffer), {
+      headers: {
+        "Content-Type": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+        "Content-Disposition": `attachment; filename="${slugify(project.title)}.pptx"`,
+      },
+    });
+  } catch (error) {
+    logger.error("Project PPTX export failed", error);
+    return NextResponse.json({ error: "PPTX export failed." }, { status: 500 });
+  }
 }

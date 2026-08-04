@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { renderProjectDocx } from "@/lib/export/project-docx";
 import { slugify } from "@/lib/utils/slugify";
+import { logger } from "@/lib/logger";
 
 export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -28,12 +29,17 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  const docxBuffer = await renderProjectDocx(project);
+  try {
+    const docxBuffer = await renderProjectDocx(project);
 
-  return new NextResponse(new Uint8Array(docxBuffer), {
-    headers: {
-      "Content-Type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-      "Content-Disposition": `attachment; filename="${slugify(project.title)}.docx"`,
-    },
-  });
+    return new NextResponse(new Uint8Array(docxBuffer), {
+      headers: {
+        "Content-Type": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "Content-Disposition": `attachment; filename="${slugify(project.title)}.docx"`,
+      },
+    });
+  } catch (error) {
+    logger.error("Project DOCX export failed", error);
+    return NextResponse.json({ error: "DOCX export failed." }, { status: 500 });
+  }
 }

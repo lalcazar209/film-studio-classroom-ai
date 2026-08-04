@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { renderProjectPdf } from "@/lib/export/project-pdf";
 import { slugify } from "@/lib/utils/slugify";
+import { logger } from "@/lib/logger";
 
 export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -28,12 +29,17 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  const pdfBuffer = await renderProjectPdf(project);
+  try {
+    const pdfBuffer = await renderProjectPdf(project);
 
-  return new NextResponse(new Uint8Array(pdfBuffer), {
-    headers: {
-      "Content-Type": "application/pdf",
-      "Content-Disposition": `attachment; filename="${slugify(project.title)}.pdf"`,
-    },
-  });
+    return new NextResponse(new Uint8Array(pdfBuffer), {
+      headers: {
+        "Content-Type": "application/pdf",
+        "Content-Disposition": `attachment; filename="${slugify(project.title)}.pdf"`,
+      },
+    });
+  } catch (error) {
+    logger.error("Project PDF export failed", error);
+    return NextResponse.json({ error: "PDF export failed." }, { status: 500 });
+  }
 }
