@@ -191,6 +191,11 @@ async function requestBundle(input: GenerateProjectInput, attempt = 1): Promise<
 }
 
 async function persistBundle(input: GenerateProjectInput, bundle: ProjectBundle) {
+  // This is the largest bundle any AI feature here persists (5 lessons,
+  // each with a standards-resolution round trip, plus rubric/quiz/
+  // storyboard/productionPlan/submissions) — Prisma's default 5000ms
+  // interactive-transaction timeout was tight enough to expire against
+  // Supabase's connection latency in production.
   return db.$transaction(async (tx) => {
     const project = await tx.project.create({
       data: {
@@ -289,7 +294,7 @@ async function persistBundle(input: GenerateProjectInput, bundle: ProjectBundle)
         standards: { include: { standard: true } },
       },
     });
-  });
+  }, { timeout: 20000, maxWait: 10000 });
 }
 
 /** Standard codes the model invents that don't yet exist locally are
