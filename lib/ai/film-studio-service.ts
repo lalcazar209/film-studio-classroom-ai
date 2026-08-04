@@ -25,7 +25,32 @@ Keep scope realistic for a student production: a short film (5-15 pages), a smal
 schedule of 1-3 shoot days unless told otherwise. Every scene in shotList.shots must reference a
 sceneNumber that exists in screenplay.scenes.
 
-Respond with ONLY a single JSON object matching the required schema. No prose, no markdown fences.`;
+The JSON object must use exactly this shape — these top-level and nested field names, with no
+renaming, additions, omissions, or extra wrapper objects (types shown for guidance only; fill in
+real generated content):
+
+{
+  "title": "string",
+  "logline": "string",
+  "genre": "string",
+  "screenplay": { "scenes": [{ "sceneNumber": number, "heading": "string", "action": "string", "dialogue": [{ "character": "string", "line": "string" }] }] },
+  "shotList": { "shots": [{ "number": number, "sceneNumber": number, "description": "string", "shotType": "string", "lens": "string", "movement": "string", "durationSeconds": number }] },
+  "callSheet": {
+    "shootDate": "string", "generalCallTime": "string", "location": "string", "weather": "string",
+    "cast": [{ "role": "string", "callTime": "string" }],
+    "crew": [{ "role": "string", "callTime": "string" }],
+    "notes": "string"
+  },
+  "budget": { "lineItems": [{ "category": "string", "item": "string", "estimatedCost": number, "notes": "string" }], "totalEstimate": number },
+  "equipmentList": [{ "itemType": "string", "quantity": number, "notes": "string" }],
+  "locationPlan": [{ "name": "string", "address": "string", "notes": "string", "permitsNeeded": boolean }],
+  "castingSheet": [{ "character": "string", "description": "string", "notes": "string" }],
+  "marketingPlan": {
+    "targetAudience": "string", "keyMessages": ["string"], "channels": ["string"], "posterConcept": "string", "trailerConcept": "string"
+  }
+}
+
+Respond with ONLY a single JSON object matching this exact shape. No prose, no markdown fences.`;
 
 export async function generateFilmStudioProject(input: GenerateFilmStudioInput) {
   const bundle = await requestBundle(input);

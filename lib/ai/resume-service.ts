@@ -20,7 +20,19 @@ export type ResumeContent = z.infer<typeof resumeContentSchema>;
 const SYSTEM_PROMPT = `You write resumes for high school Film & TV Production students applying to
 internships, college programs, or entry-level industry roles. Translate classroom project work
 into professional, industry-credible resume language without exaggerating what a student did.
-Respond with ONLY a single JSON object matching the required schema. No prose, no markdown fences.`;
+
+The JSON object must use exactly this shape — these field names, with no renaming, additions,
+omissions, or extra wrapper objects (types shown for guidance only; fill in real generated
+content):
+
+{
+  "summary": "string",
+  "skills": ["string"] (at least 3 entries),
+  "experience": [{ "title": "string", "description": "string" }],
+  "education": "string"
+}
+
+Respond with ONLY a single JSON object matching this exact shape. No prose, no markdown fences.`;
 
 /** Generates (or regenerates) the student's resume from their completed
  * project history and upserts it as a single PortfolioItem — a student has

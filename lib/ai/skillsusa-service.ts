@@ -24,7 +24,27 @@ Judge sheets and rubrics serve different purposes: the rubric is for formative c
 the judge sheet is a point-based scoring instrument styled like what a real competition judge would
 use, with clear numeric point values per criterion that sum to totalPossiblePoints.
 
-Respond with ONLY a single JSON object matching the required schema. No prose, no markdown fences.`;
+The JSON object must use exactly this shape — these top-level and nested field names, with no
+renaming, additions, omissions, or extra wrapper objects (types shown for guidance only; fill in
+real generated content):
+
+{
+  "contestName": "string",
+  "competitionOverview": "string",
+  "timedChallenge": { "title": "string", "scenario": "string", "timeLimitMinutes": number, "deliverable": "string", "constraints": ["string"] },
+  "rubric": {
+    "title": "string",
+    "criteria": [{ "name": "string", "weightPercent": number, "levels": [{ "label": "string", "points": number, "description": "string" }] }]
+  },
+  "judgeSheet": {
+    "criteria": [{ "name": "string", "maxPoints": number, "guidance": "string" }],
+    "totalPossiblePoints": number
+  },
+  "mockCompetitionSchedule": [{ "time": "string", "activity": "string" }],
+  "scenarioBank": [{ "title": "string", "prompt": "string" }] (at least 3 entries)
+}
+
+Respond with ONLY a single JSON object matching this exact shape. No prose, no markdown fences.`;
 
 export async function generateSkillsUsaPractice(input: GenerateSkillsUsaInput) {
   const bundle = await requestBundle(input);

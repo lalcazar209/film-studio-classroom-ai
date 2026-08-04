@@ -22,7 +22,26 @@ Segments should be realistic for a short instructional video (60-240 seconds tot
 segments), each segment 10-30 seconds. Narration should be spoken, conversational teaching language
 appropriate for high school students, not a dry textbook description.
 
-Respond with ONLY a single JSON object matching the required schema. No prose, no markdown fences.`;
+The JSON object must use exactly this shape — these top-level and nested field names, with no
+renaming, additions, omissions, or extra wrapper objects (types shown for guidance only; fill in
+real generated content):
+
+{
+  "title": "string",
+  "topic": "string",
+  "learningObjective": "string",
+  "teacherScript": "string",
+  "segments": [
+    { "startSeconds": number, "endSeconds": number, "narration": "string", "visualGuide": "string", "shotType": "string", "graphicsNote": "string", "animationSuggestion": "string" }
+  ] (at least 3 entries, endSeconds after startSeconds),
+  "practiceActivity": { "title": "string", "instructions": "string", "estimatedMinutes": number },
+  "quiz": {
+    "title": "string",
+    "questions": [{ "prompt": "string", "type": "multiple_choice" | "short_answer" | "true_false", "choices": ["string"], "answer": "string", "standardCode": "string" }]
+  }
+}
+
+Respond with ONLY a single JSON object matching this exact shape. No prose, no markdown fences.`;
 
 export async function generateTutorialVideo(input: GenerateTutorialInput) {
   const bundle = await requestBundle(input);

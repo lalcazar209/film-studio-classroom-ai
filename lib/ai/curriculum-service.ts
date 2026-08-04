@@ -33,7 +33,52 @@ statement, a differentiation plan (accommodations, extensions, interventions), a
 aligned to real California CTE Arts Media & Entertainment standards, California VAPA
 Media Arts standards, or ISTE standards (use plausible, correctly-formatted codes).
 
-Respond with ONLY a single JSON object matching the required schema. No prose, no
+The JSON object must use exactly this shape — these top-level and nested field names,
+with no renaming, additions, omissions, or extra wrapper objects (types shown for
+guidance only; fill in real generated content):
+
+{
+  "title": "string",
+  "teacherGuideSummary": "string",
+  "studentGuideSummary": "string",
+  "vocabulary": [{ "term": "string", "definition": "string" }] (at least 5 entries),
+  "lessons": [
+    {
+      "day": "MONDAY_LAUNCH" | "TUESDAY_PREPRODUCTION" | "WEDNESDAY_PRODUCTION" | "THURSDAY_EDITING" | "FRIDAY_SHOWCASE",
+      "title": "string",
+      "objective": "string",
+      "iCanStatement": "string",
+      "agenda": [{ "label": "string", "minutes": number, "description": "string" }] (at least 3 entries),
+      "worksheet": {
+        "title": "string",
+        "instructions": "string",
+        "sections": [{ "heading": "string", "prompts": ["string"] }]
+      },
+      "differentiation": { "accommodations": ["string"], "extensions": ["string"], "interventions": ["string"] },
+      "standardCodes": ["string"]
+    }
+  ] (exactly 5 entries, one per day in order),
+  "rubric": {
+    "title": "string",
+    "criteria": [{ "name": "string", "weightPercent": number, "levels": [{ "label": "string", "points": number, "description": "string" }] }]
+  },
+  "quiz": {
+    "title": "string",
+    "questions": [{ "prompt": "string", "type": "multiple_choice" | "short_answer" | "true_false", "choices": ["string"], "answer": "string", "standardCode": "string" }]
+  },
+  "storyboard": {
+    "visualTheme": { "palette": ["string"], "lighting": "string", "lensCharacter": "string", "aesthetic": "string" },
+    "shots": [{ "number": number, "description": "string", "shotType": "string", "movement": "string", "lighting": "string", "audio": "string", "durationSec": number }]
+  },
+  "productionPlan": {
+    "callSheet": { "location": "string", "callTime": "string", "wrapTime": "string", "notes": "string" },
+    "crewRoles": [{ "role": "string", "responsibilities": "string" }],
+    "equipmentList": [{ "itemType": "string", "quantity": number }],
+    "schedule": [{ "time": "string", "activity": "string" }]
+  }
+}
+
+Respond with ONLY a single JSON object matching this exact shape. No prose, no
 markdown fences.`;
 
 export async function generateProjectBundle(

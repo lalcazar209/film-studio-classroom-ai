@@ -24,7 +24,31 @@ For copyrightConcerns: flag anything that reads like unlicensed commercial music
 footage, or trademarked logos based on what's described/visible — an empty array is a fine and
 common answer, don't invent concerns.
 
-Respond with ONLY a single JSON object matching the required schema. No prose, no markdown fences.`;
+The JSON object must use exactly this shape — these field names, with no renaming, additions,
+omissions, or extra wrapper objects (types shown for guidance only; fill in real generated
+content). Each of storytelling/composition/lighting/exposure/whiteBalance/audio/editing/pacing/
+graphics/professionalism is an object shaped { "score": number (1-10), "feedback": "string" }:
+
+{
+  "overallSummary": "string",
+  "overallScore": number (1-10),
+  "storytelling": { "score": number, "feedback": "string" },
+  "composition": { "score": number, "feedback": "string" },
+  "lighting": { "score": number, "feedback": "string" },
+  "exposure": { "score": number, "feedback": "string" },
+  "whiteBalance": { "score": number, "feedback": "string" },
+  "audio": { "score": number, "feedback": "string" },
+  "editing": { "score": number, "feedback": "string" },
+  "pacing": { "score": number, "feedback": "string" },
+  "graphics": { "score": number, "feedback": "string" },
+  "professionalism": { "score": number, "feedback": "string" },
+  "copyrightConcerns": ["string"],
+  "accessibilityNotes": ["string"],
+  "nextSteps": ["string"] (at least 1 entry),
+  "analyzedVisualFrames": boolean
+}
+
+Respond with ONLY a single JSON object matching this exact shape. No prose, no markdown fences.`;
 
 export async function generateVideoReview(submissionId: string) {
   const submission = await db.submission.findUniqueOrThrow({
