@@ -15,6 +15,7 @@ import {
   Scissors,
   Mic,
 } from "lucide-react";
+import { ProgressRing } from "@/components/ui/progress-ring";
 
 /**
  * Standalone design preview — NOT wired to real auth or data. Demonstrates
@@ -61,32 +62,6 @@ const QUICK_ACTIONS = [
   { icon: Wand2, label: "Generate Storyboard" },
   { icon: Film, label: "Review My Demo Reel" },
 ];
-
-function ProgressRing({ value, max, color }: { value: number; max: number; color: string }) {
-  const radius = 26;
-  const circumference = 2 * Math.PI * radius;
-  const pct = Math.min(value / max, 1);
-
-  return (
-    <svg width="64" height="64" viewBox="0 0 64 64" className="shrink-0">
-      <circle cx="32" cy="32" r={radius} fill="none" stroke="#242430" strokeWidth="6" />
-      <motion.circle
-        cx="32"
-        cy="32"
-        r={radius}
-        fill="none"
-        stroke={color}
-        strokeWidth="6"
-        strokeLinecap="round"
-        strokeDasharray={circumference}
-        initial={{ strokeDashoffset: circumference }}
-        animate={{ strokeDashoffset: circumference * (1 - pct) }}
-        transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
-        transform="rotate(-90 32 32)"
-      />
-    </svg>
-  );
-}
 
 export function MissionControlPreview() {
   return (

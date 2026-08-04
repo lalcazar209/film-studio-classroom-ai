@@ -1,7 +1,14 @@
 import Link from "next/link";
 import type { Role } from "@prisma/client";
+import { Clapperboard } from "lucide-react";
 import { auth, signOut, ROLE_HOME } from "@/lib/auth";
 import { cn } from "@/lib/utils/cn";
+
+/** Student portal only, for now — see the Phase 2 cinematic-redesign
+ * rollout: reskinning this header for every role at once would put a new
+ * dark nav bar above 50+ pages whose bodies haven't been redesigned yet.
+ * Each portal migrates its header + real pages together. */
+const CINEMA_ROLES: Role[] = ["STUDENT"];
 
 interface RoleMeta {
   label: string;
@@ -85,26 +92,55 @@ export async function PortalShell({ role, children }: { role: Role; children: Re
   const meta = ROLE_META[role];
   const name = session?.user?.name ?? session?.user?.email ?? "Account";
   const initial = name.charAt(0).toUpperCase();
+  const isCinema = CINEMA_ROLES.includes(role);
 
   return (
     <div className="min-h-screen">
-      <header className="sticky top-0 z-10 border-b border-studio-ink/[0.06] bg-white/80 backdrop-blur dark:border-white/10 dark:bg-studio-950/80">
+      <header
+        className={cn(
+          "sticky top-0 z-10 backdrop-blur",
+          isCinema
+            ? "border-b border-cinema-border bg-cinema-black/70"
+            : "border-b border-studio-ink/[0.06] bg-white/80 dark:border-white/10 dark:bg-studio-950/80",
+        )}
+      >
         <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-3 gap-y-2 px-4 py-3">
           <Link
             href={ROLE_HOME[role]}
-            className="flex items-center gap-2 font-display text-base font-extrabold tracking-tight"
+            className={cn(
+              "flex items-center gap-2 font-display text-base font-extrabold tracking-tight",
+              isCinema && "text-cinema-white",
+            )}
           >
-            <span className={cn("h-2.5 w-2.5 rounded-full", meta.dot)} aria-hidden />
+            {isCinema ? (
+              <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-cinema-panel">
+                <Clapperboard className="h-4 w-4 text-cinema-red" aria-hidden />
+              </span>
+            ) : (
+              <span className={cn("h-2.5 w-2.5 rounded-full", meta.dot)} aria-hidden />
+            )}
             Film Studio Classroom
           </Link>
-          <span className={cn("rounded-full px-2.5 py-1 text-xs font-bold", meta.badge)}>{meta.label}</span>
+          <span
+            className={cn(
+              "rounded-full px-2.5 py-1 text-xs font-bold",
+              isCinema ? "bg-cinema-red/15 text-cinema-red" : meta.badge,
+            )}
+          >
+            {meta.label}
+          </span>
 
           <nav className="flex flex-1 flex-wrap items-center gap-1">
             {meta.navItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className="rounded-full px-3 py-1.5 text-sm font-medium text-studio-ink/70 transition-colors hover:bg-studio-ink/5 hover:text-studio-ink dark:text-white/70 dark:hover:bg-white/10 dark:hover:text-white"
+                className={cn(
+                  "rounded-full px-3 py-1.5 text-sm font-medium transition-colors",
+                  isCinema
+                    ? "text-cinema-muted hover:bg-white/5 hover:text-cinema-white"
+                    : "text-studio-ink/70 hover:bg-studio-ink/5 hover:text-studio-ink dark:text-white/70 dark:hover:bg-white/10 dark:hover:text-white",
+                )}
               >
                 {item.label}
               </Link>
@@ -112,11 +148,16 @@ export async function PortalShell({ role, children }: { role: Role; children: Re
           </nav>
 
           <div className="flex items-center gap-2">
-            <span className="hidden items-center gap-2 text-sm font-medium text-studio-ink/70 dark:text-white/70 sm:flex">
+            <span
+              className={cn(
+                "hidden items-center gap-2 text-sm font-medium sm:flex",
+                isCinema ? "text-cinema-muted" : "text-studio-ink/70 dark:text-white/70",
+              )}
+            >
               <span
                 className={cn(
                   "flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold text-white",
-                  meta.avatar,
+                  isCinema ? "bg-cinema-red" : meta.avatar,
                 )}
               >
                 {initial}
@@ -126,7 +167,12 @@ export async function PortalShell({ role, children }: { role: Role; children: Re
             <form action={signOutAction}>
               <button
                 type="submit"
-                className="rounded-full px-3 py-1.5 text-sm font-medium text-studio-ink/60 transition-colors hover:bg-studio-ink/5 hover:text-studio-ink dark:text-white/60 dark:hover:bg-white/10 dark:hover:text-white"
+                className={cn(
+                  "rounded-full px-3 py-1.5 text-sm font-medium transition-colors",
+                  isCinema
+                    ? "text-cinema-muted hover:bg-white/5 hover:text-cinema-white"
+                    : "text-studio-ink/60 hover:bg-studio-ink/5 hover:text-studio-ink dark:text-white/60 dark:hover:bg-white/10 dark:hover:text-white",
+                )}
               >
                 Sign out
               </button>
