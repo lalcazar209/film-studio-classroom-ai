@@ -29,6 +29,13 @@ beforeAll(async () => {
   await db.rubric.create({ data: { projectId: project.id, title: "PSA Rubric", criteria: [{ name: "Clarity", weightPercent: 100, levels: [] }] } });
   await db.quiz.create({ data: { projectId: project.id, title: "PSA Quiz", questions: [{ prompt: "What is a PSA?", type: "short_answer", answer: "Public service announcement" }] } });
   await db.vocabularyTerm.create({ data: { projectId: project.id, term: "PSA", definition: "Public service announcement" } });
+  await db.storyboard.create({
+    data: {
+      projectId: project.id,
+      visualTheme: { palette: ["#2C3E50", "#ECF0F1"], lighting: "Soft natural light", lensCharacter: "Wide-angle", aesthetic: "Documentary-style" },
+      shots: [{ number: 1, description: "Establishing shot of the school hallway", shotType: "Wide", movement: "Static", lighting: "Natural", audio: "Ambient", durationSec: 4 }],
+    },
+  });
   projectId = project.id;
 });
 
@@ -46,6 +53,7 @@ async function loadFullProject() {
       rubric: true,
       quiz: true,
       vocabulary: true,
+      storyboard: true,
     },
   });
 }

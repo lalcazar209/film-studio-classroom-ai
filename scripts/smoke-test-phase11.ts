@@ -64,6 +64,7 @@ async function main() {
       rubric: true,
       quiz: true,
       vocabulary: true,
+      storyboard: true,
     },
   });
 

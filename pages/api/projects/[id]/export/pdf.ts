@@ -52,6 +52,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       rubric: true,
       quiz: true,
       vocabulary: true,
+      storyboard: true,
     },
   });
   if (!project) {

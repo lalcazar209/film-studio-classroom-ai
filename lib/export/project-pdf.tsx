@@ -9,6 +9,7 @@ type ProjectForExport = Prisma.ProjectGetPayload<{
     rubric: true;
     quiz: true;
     vocabulary: true;
+    storyboard: true;
   };
 }>;
 
@@ -42,10 +43,26 @@ interface QuizQuestion {
   answer: string;
 }
 
+interface VisualTheme {
+  palette: string[];
+  lighting: string;
+  lensCharacter: string;
+  aesthetic: string;
+}
+
+interface StoryboardShot {
+  number: number;
+  description: string;
+  shotType: string;
+  durationSec: number;
+}
+
 export function renderProjectPdf(project: ProjectForExport): Promise<Buffer> {
   const lessons = [...project.lessons].sort((a, b) => DAY_ORDER.indexOf(a.day) - DAY_ORDER.indexOf(b.day));
   const criteria = (project.rubric?.criteria as unknown as RubricCriterion[] | undefined) ?? [];
   const questions = (project.quiz?.questions as unknown as QuizQuestion[] | undefined) ?? [];
+  const visualTheme = project.storyboard?.visualTheme as unknown as VisualTheme | undefined;
+  const shots = (project.storyboard?.shots as unknown as StoryboardShot[] | undefined) ?? [];
 
   return renderToBuffer(
     <Document>
@@ -100,6 +117,28 @@ export function renderProjectPdf(project: ProjectForExport): Promise<Buffer> {
               <Text key={i} style={styles.paragraph}>
                 {i + 1}. {q.prompt}
               </Text>
+            ))}
+          </View>
+        )}
+
+        {project.storyboard && (
+          <View wrap={false}>
+            <View style={styles.divider} />
+            <Text style={styles.sectionTitle}>Storyboard</Text>
+            {visualTheme && (
+              <Text style={styles.paragraph}>
+                <Text style={styles.label}>Visual theme: </Text>
+                {visualTheme.aesthetic} — {visualTheme.lighting} lighting, {visualTheme.lensCharacter} lens,
+                palette: {visualTheme.palette.join(", ")}
+              </Text>
+            )}
+            {shots.map((shot) => (
+              <View key={shot.number} style={styles.row}>
+                <Text>
+                  {shot.number}. {shot.shotType} — {shot.description}
+                </Text>
+                <Text>{shot.durationSec}s</Text>
+              </View>
             ))}
           </View>
         )}

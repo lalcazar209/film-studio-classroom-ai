@@ -55,6 +55,12 @@ test("a teacher can download a generated project as a PDF", async ({ page }) => 
       rubric: { create: { title: "PSA Rubric", criteria: [{ name: "Clarity", weightPercent: 100, levels: [] }] } },
       quiz: { create: { title: "PSA Quiz", questions: [{ prompt: "What is a PSA?", type: "short_answer", answer: "Public service announcement" }] } },
       vocabulary: { create: [{ term: "PSA", definition: "Public service announcement" }] },
+      storyboard: {
+        create: {
+          visualTheme: { palette: ["#2C3E50", "#ECF0F1"], lighting: "Soft natural light", lensCharacter: "Wide-angle", aesthetic: "Documentary-style" },
+          shots: [{ number: 1, description: "Establishing shot of the school hallway", shotType: "Wide", movement: "Static", lighting: "Natural", audio: "Ambient", durationSec: 4 }],
+        },
+      },
     },
   });
   createdProjectId = project.id;
