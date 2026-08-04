@@ -26,7 +26,15 @@ export class AIJsonParseError extends Error {
   }
 }
 
-function snippet(text: string, maxLength = 800): string {
+/**
+ * Truncates raw AI response text for safe inclusion in error messages/logs.
+ * Exported so services can attach "what the model actually returned" to a
+ * Zod validation failure — parseAIJson succeeding but the result not
+ * matching the schema (e.g. the model nested the bundle under a wrapper
+ * key) is a different failure mode than malformed JSON, and needs the same
+ * raw-text visibility to diagnose.
+ */
+export function snippet(text: string, maxLength = 800): string {
   return text.length > maxLength ? `${text.slice(0, maxLength)}…` : text;
 }
 

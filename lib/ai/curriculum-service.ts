@@ -1,7 +1,7 @@
 import { db } from "@/lib/db";
 import { getAIProvider } from "./registry";
 import { projectBundleSchema, type ProjectBundle } from "./schemas";
-import { parseAIJson, AIJsonParseError } from "./json-parsing";
+import { parseAIJson, AIJsonParseError, snippet } from "./json-parsing";
 import { dispatchWebhookEvent } from "@/lib/integrations/webhooks";
 import type { Prisma, ProjectCategory } from "@prisma/client";
 
@@ -136,6 +136,7 @@ async function requestBundle(input: GenerateProjectInput, attempt = 1): Promise<
     if (attempt >= 3) {
       throw new Error(
         `AI curriculum generation produced invalid output after ${attempt} attempts: ${validated.error.message}`,
+        { cause: new Error(`Raw model response: ${snippet(result.text)}`) },
       );
     }
     return requestBundle(input, attempt + 1);

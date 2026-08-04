@@ -1,7 +1,7 @@
 import { db } from "@/lib/db";
 import { getAIProvider } from "./registry";
 import { skillsUsaBundleSchema, type SkillsUsaBundle } from "./schemas";
-import { parseAIJson, AIJsonParseError } from "./json-parsing";
+import { parseAIJson, AIJsonParseError, snippet } from "./json-parsing";
 
 export interface GenerateSkillsUsaInput {
   contestName: string;
@@ -68,7 +68,9 @@ async function requestBundle(input: GenerateSkillsUsaInput, attempt = 1): Promis
 
   if (!validated.success) {
     if (attempt >= 3) {
-      throw new Error(`SkillsUSA practice generation produced invalid output after ${attempt} attempts: ${validated.error.message}`);
+      throw new Error(`SkillsUSA practice generation produced invalid output after ${attempt} attempts: ${validated.error.message}`, {
+        cause: new Error(`Raw model response: ${snippet(result.text)}`),
+      });
     }
     return requestBundle(input, attempt + 1);
   }

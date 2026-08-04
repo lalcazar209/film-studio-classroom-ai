@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { db } from "@/lib/db";
 import { getAIProvider } from "./registry";
-import { parseAIJson } from "./json-parsing";
+import { parseAIJson, snippet } from "./json-parsing";
 
 export const resumeContentSchema = z.object({
   summary: z.string(),
@@ -57,7 +57,14 @@ export async function generateResume(studentId: string) {
   });
 
   const parsed = parseAIJson(result.text);
-  const validated = resumeContentSchema.parse(parsed);
+  let validated: ResumeContent;
+  try {
+    validated = resumeContentSchema.parse(parsed);
+  } catch (error) {
+    throw new Error(`Resume generation produced invalid output: ${error instanceof Error ? error.message : String(error)}`, {
+      cause: new Error(`Raw model response: ${snippet(result.text)}`),
+    });
+  }
 
   const existing = await db.portfolioItem.findFirst({ where: { userId: studentId, type: "RESUME" } });
 

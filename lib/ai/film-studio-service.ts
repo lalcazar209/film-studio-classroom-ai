@@ -1,7 +1,7 @@
 import { db } from "@/lib/db";
 import { getAIProvider } from "./registry";
 import { filmStudioBundleSchema, type FilmStudioBundle } from "./schemas";
-import { parseAIJson, AIJsonParseError } from "./json-parsing";
+import { parseAIJson, AIJsonParseError, snippet } from "./json-parsing";
 
 export interface GenerateFilmStudioInput {
   concept: string;
@@ -74,7 +74,9 @@ async function requestBundle(input: GenerateFilmStudioInput, attempt = 1): Promi
 
   if (!validated.success) {
     if (attempt >= 3) {
-      throw new Error(`AI Film Studio generation produced invalid output after ${attempt} attempts: ${validated.error.message}`);
+      throw new Error(`AI Film Studio generation produced invalid output after ${attempt} attempts: ${validated.error.message}`, {
+        cause: new Error(`Raw model response: ${snippet(result.text)}`),
+      });
     }
     return requestBundle(input, attempt + 1);
   }

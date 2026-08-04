@@ -2,7 +2,7 @@ import { db } from "@/lib/db";
 import { getAIProvider } from "./registry";
 import { tutorialVideoBundleSchema, type TutorialVideoBundle } from "./schemas";
 import { segmentsToSrt, segmentsToTranscript } from "@/lib/captions";
-import { parseAIJson, AIJsonParseError } from "./json-parsing";
+import { parseAIJson, AIJsonParseError, snippet } from "./json-parsing";
 import type { TutorialCategory } from "@prisma/client";
 
 export interface GenerateTutorialInput {
@@ -66,7 +66,9 @@ async function requestBundle(input: GenerateTutorialInput, attempt = 1): Promise
 
   if (!validated.success) {
     if (attempt >= 3) {
-      throw new Error(`Video Academy generation produced invalid output after ${attempt} attempts: ${validated.error.message}`);
+      throw new Error(`Video Academy generation produced invalid output after ${attempt} attempts: ${validated.error.message}`, {
+        cause: new Error(`Raw model response: ${snippet(result.text)}`),
+      });
     }
     return requestBundle(input, attempt + 1);
   }

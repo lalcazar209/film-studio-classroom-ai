@@ -4,7 +4,7 @@ import { videoReviewSchema, type VideoReview } from "./schemas";
 import type { AIContentBlock } from "./provider";
 import { getVideoThumbnailUrls } from "@/lib/integrations/cloudinary";
 import { fetchImageAsDataUri } from "./media";
-import { parseAIJson } from "./json-parsing";
+import { parseAIJson, snippet } from "./json-parsing";
 
 const FRAME_OFFSETS_SECONDS = [1, 4, 8, 14, 22];
 
@@ -71,7 +71,14 @@ export async function generateVideoReview(submissionId: string) {
   });
 
   const parsed = parseAIJson(result.text);
-  const validated = videoReviewSchema.parse(parsed);
+  let validated: VideoReview;
+  try {
+    validated = videoReviewSchema.parse(parsed);
+  } catch (error) {
+    throw new Error(`Video review generation produced invalid output: ${error instanceof Error ? error.message : String(error)}`, {
+      cause: new Error(`Raw model response: ${snippet(result.text)}`),
+    });
+  }
 
   await db.submission.update({
     where: { id: submissionId },
