@@ -1,6 +1,7 @@
 import { db } from "@/lib/db";
 import { getAIProvider } from "./registry";
 import { projectBundleSchema, type ProjectBundle } from "./schemas";
+import { parseAIJson, AIJsonParseError } from "./json-parsing";
 import { dispatchWebhookEvent } from "@/lib/integrations/webhooks";
 import type { Prisma, ProjectCategory } from "@prisma/client";
 
@@ -110,11 +111,25 @@ async function requestBundle(input: GenerateProjectInput, attempt = 1): Promise<
       { role: "system", content: SYSTEM_PROMPT },
       { role: "user", content: userPrompt },
     ],
-    maxTokens: 8192,
+    // This is the largest schema of any AI feature here (5 full lessons,
+    // each with an agenda/worksheet/differentiation, plus a rubric, quiz,
+    // storyboard, and production plan) — 8192 was tight enough to
+    // truncate the response mid-JSON in production.
+    maxTokens: 16384,
     temperature: 0.6,
   });
 
-  const parsed = safeParseJson(result.text);
+  let parsed: unknown;
+  try {
+    parsed = parseAIJson(result.text);
+  } catch (error) {
+    if (attempt >= 3) {
+      const reason = error instanceof AIJsonParseError ? error.message : String(error);
+      throw new Error(`AI curriculum generation produced invalid output after ${attempt} attempts: ${reason}`);
+    }
+    return requestBundle(input, attempt + 1);
+  }
+
   const validated = projectBundleSchema.safeParse(parsed);
 
   if (!validated.success) {
@@ -127,15 +142,6 @@ async function requestBundle(input: GenerateProjectInput, attempt = 1): Promise<
   }
 
   return validated.data;
-}
-
-function safeParseJson(text: string): unknown {
-  const trimmed = text.trim().replace(/^```(?:json)?/, "").replace(/```$/, "");
-  try {
-    return JSON.parse(trimmed);
-  } catch {
-    return {};
-  }
 }
 
 async function persistBundle(input: GenerateProjectInput, bundle: ProjectBundle) {

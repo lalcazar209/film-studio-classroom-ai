@@ -4,6 +4,7 @@ import { videoReviewSchema, type VideoReview } from "./schemas";
 import type { AIContentBlock } from "./provider";
 import { getVideoThumbnailUrls } from "@/lib/integrations/cloudinary";
 import { fetchImageAsDataUri } from "./media";
+import { parseAIJson } from "./json-parsing";
 
 const FRAME_OFFSETS_SECONDS = [1, 4, 8, 14, 22];
 
@@ -69,7 +70,7 @@ export async function generateVideoReview(submissionId: string) {
     temperature: 0.4,
   });
 
-  const parsed = safeParseJson(result.text);
+  const parsed = parseAIJson(result.text);
   const validated = videoReviewSchema.parse(parsed);
 
   await db.submission.update({
@@ -78,9 +79,4 @@ export async function generateVideoReview(submissionId: string) {
   });
 
   return validated as VideoReview;
-}
-
-function safeParseJson(text: string): unknown {
-  const trimmed = text.trim().replace(/^```(?:json)?/, "").replace(/```$/, "");
-  return JSON.parse(trimmed);
 }

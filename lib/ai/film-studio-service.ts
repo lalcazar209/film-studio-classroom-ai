@@ -1,6 +1,7 @@
 import { db } from "@/lib/db";
 import { getAIProvider } from "./registry";
 import { filmStudioBundleSchema, type FilmStudioBundle } from "./schemas";
+import { parseAIJson, AIJsonParseError } from "./json-parsing";
 
 export interface GenerateFilmStudioInput {
   concept: string;
@@ -50,11 +51,25 @@ async function requestBundle(input: GenerateFilmStudioInput, attempt = 1): Promi
       { role: "system", content: SYSTEM_PROMPT },
       { role: "user", content: userPrompt },
     ],
-    maxTokens: 8192,
+    // A full production package (screenplay + shot list + call sheet +
+    // budget + equipment + locations + casting + marketing) is as large
+    // a schema as the curriculum builder's — 8192 was tight enough to
+    // truncate the response mid-JSON in production.
+    maxTokens: 16384,
     temperature: 0.7,
   });
 
-  const parsed = safeParseJson(result.text);
+  let parsed: unknown;
+  try {
+    parsed = parseAIJson(result.text);
+  } catch (error) {
+    if (attempt >= 3) {
+      const reason = error instanceof AIJsonParseError ? error.message : String(error);
+      throw new Error(`AI Film Studio generation produced invalid output after ${attempt} attempts: ${reason}`);
+    }
+    return requestBundle(input, attempt + 1);
+  }
+
   const validated = filmStudioBundleSchema.safeParse(parsed);
 
   if (!validated.success) {
@@ -65,15 +80,6 @@ async function requestBundle(input: GenerateFilmStudioInput, attempt = 1): Promi
   }
 
   return validated.data;
-}
-
-function safeParseJson(text: string): unknown {
-  const trimmed = text.trim().replace(/^```(?:json)?/, "").replace(/```$/, "");
-  try {
-    return JSON.parse(trimmed);
-  } catch {
-    return {};
-  }
 }
 
 async function persistBundle(input: GenerateFilmStudioInput, bundle: FilmStudioBundle) {

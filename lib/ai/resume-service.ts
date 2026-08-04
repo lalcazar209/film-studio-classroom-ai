@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { db } from "@/lib/db";
 import { getAIProvider } from "./registry";
+import { parseAIJson } from "./json-parsing";
 
 export const resumeContentSchema = z.object({
   summary: z.string(),
@@ -55,7 +56,7 @@ export async function generateResume(studentId: string) {
     temperature: 0.5,
   });
 
-  const parsed = safeParseJson(result.text);
+  const parsed = parseAIJson(result.text);
   const validated = resumeContentSchema.parse(parsed);
 
   const existing = await db.portfolioItem.findFirst({ where: { userId: studentId, type: "RESUME" } });
@@ -75,9 +76,4 @@ export async function generateResume(studentId: string) {
       metadata: validated,
     },
   });
-}
-
-function safeParseJson(text: string): unknown {
-  const trimmed = text.trim().replace(/^```(?:json)?/, "").replace(/```$/, "");
-  return JSON.parse(trimmed);
 }

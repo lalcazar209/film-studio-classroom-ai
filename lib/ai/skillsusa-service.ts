@@ -1,6 +1,7 @@
 import { db } from "@/lib/db";
 import { getAIProvider } from "./registry";
 import { skillsUsaBundleSchema, type SkillsUsaBundle } from "./schemas";
+import { parseAIJson, AIJsonParseError } from "./json-parsing";
 
 export interface GenerateSkillsUsaInput {
   contestName: string;
@@ -52,7 +53,17 @@ async function requestBundle(input: GenerateSkillsUsaInput, attempt = 1): Promis
     temperature: 0.6,
   });
 
-  const parsed = safeParseJson(result.text);
+  let parsed: unknown;
+  try {
+    parsed = parseAIJson(result.text);
+  } catch (error) {
+    if (attempt >= 3) {
+      const reason = error instanceof AIJsonParseError ? error.message : String(error);
+      throw new Error(`SkillsUSA practice generation produced invalid output after ${attempt} attempts: ${reason}`);
+    }
+    return requestBundle(input, attempt + 1);
+  }
+
   const validated = skillsUsaBundleSchema.safeParse(parsed);
 
   if (!validated.success) {
@@ -63,15 +74,6 @@ async function requestBundle(input: GenerateSkillsUsaInput, attempt = 1): Promis
   }
 
   return validated.data;
-}
-
-function safeParseJson(text: string): unknown {
-  const trimmed = text.trim().replace(/^```(?:json)?/, "").replace(/```$/, "");
-  try {
-    return JSON.parse(trimmed);
-  } catch {
-    return {};
-  }
 }
 
 async function persistBundle(input: GenerateSkillsUsaInput, bundle: SkillsUsaBundle) {
