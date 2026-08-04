@@ -50,7 +50,10 @@ export class AnthropicProvider implements AIProvider {
       const response = await this.client.messages.create({
         model: DEFAULT_MODEL,
         max_tokens: options.maxTokens ?? 4096,
-        temperature: options.temperature ?? 0.7,
+        // `temperature` is deprecated for claude-sonnet-5 and the API
+        // rejects any value for it (a 400, not just a warning) — unlike
+        // OpenAI/Gemini's providers, this one can't forward
+        // options.temperature at all.
         system,
         messages: conversation,
       });
