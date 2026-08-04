@@ -63,12 +63,19 @@ export function DemoReelBuilder({
   return (
     <div className="space-y-4">
       <div>
-        <Label htmlFor="title">Reel title</Label>
-        <Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} />
+        <Label htmlFor="title" className="text-cinema-white">
+          Reel title
+        </Label>
+        <Input
+          id="title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          className="!border-cinema-border !bg-cinema-black/40 !text-cinema-white placeholder:!text-cinema-muted focus:!border-cinema-red focus:!ring-cinema-red/30"
+        />
       </div>
 
       {availableClips.length === 0 ? (
-        <p className="text-sm text-studio-ink/60 dark:text-white/60">
+        <p className="text-sm text-cinema-muted">
           No submitted work with a video link yet — submit a project first.
         </p>
       ) : (
@@ -80,7 +87,12 @@ export function DemoReelBuilder({
                 checked={selected.includes(clip.submissionId)}
                 onChange={() => toggle(clip.submissionId)}
               />
-              <a href={clip.videoUrl} target="_blank" rel="noreferrer" className="text-sm hover:text-studio-accent">
+              <a
+                href={clip.videoUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="text-sm text-cinema-white/90 hover:text-cinema-red"
+              >
                 {clip.title}
               </a>
             </li>
@@ -95,7 +107,7 @@ export function DemoReelBuilder({
       )}
       {saved && <p className="text-sm text-green-600 dark:text-green-400">Saved.</p>}
 
-      <Button onClick={handleSave} isLoading={isSaving} disabled={selected.length === 0}>
+      <Button variant="cinema" onClick={handleSave} isLoading={isSaving} disabled={selected.length === 0}>
         Save demo reel
       </Button>
     </div>

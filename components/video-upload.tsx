@@ -45,18 +45,18 @@ export function VideoUpload({
   return (
     <div className="space-y-2">
       <label>
-        <span className="mb-1 block text-sm font-medium">Or upload a video file</span>
+        <span className="mb-1 block text-sm font-medium text-cinema-white">Or upload a video file</span>
         <input
           type="file"
           accept="video/*"
           disabled={isUploading}
           onChange={handleFileChange}
-          className="text-sm"
+          className="text-sm text-cinema-muted file:mr-3 file:rounded-full file:border-0 file:bg-cinema-red file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-cinema-white"
         />
       </label>
       {isUploading && (
-        <div className="h-1.5 w-full max-w-xs rounded bg-studio-ink/10 dark:bg-white/10">
-          <div className="h-1.5 rounded bg-studio-accent transition-all" style={{ width: `${progress}%` }} />
+        <div className="h-1.5 w-full max-w-xs rounded bg-white/10">
+          <div className="h-1.5 rounded bg-cinema-red transition-all" style={{ width: `${progress}%` }} />
         </div>
       )}
       {error && (

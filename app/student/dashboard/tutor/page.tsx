@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { getTutorHistory } from "@/lib/ai/tutor-service";
 import { TutorChat } from "@/components/tutor-chat";
+import { CinemaPage } from "@/components/ui/cinema-page";
 
 export default async function TutorPage() {
   const session = await auth();
@@ -10,11 +11,10 @@ export default async function TutorPage() {
   const history = await getTutorHistory(session.user.id);
 
   return (
-    <main className="mx-auto max-w-2xl space-y-6 px-4 py-10">
-      <h1 className="font-display text-3xl font-extrabold">AI Tutor</h1>
-      <TutorChat
-        initialHistory={history.map((m) => ({ id: m.id, role: m.role, content: m.content }))}
-      />
+    <main className="mx-auto max-w-2xl px-4 py-6">
+      <CinemaPage eyebrow="Student Portal" title="AI Tutor">
+        <TutorChat initialHistory={history.map((m) => ({ id: m.id, role: m.role, content: m.content }))} />
+      </CinemaPage>
     </main>
   );
 }

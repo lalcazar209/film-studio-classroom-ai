@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { ResumeGenerator } from "@/components/resume-generator";
+import { CinemaPage } from "@/components/ui/cinema-page";
 import type { ResumeContent } from "@/lib/ai/resume-service";
 
 export default async function ResumePage() {
@@ -13,15 +14,14 @@ export default async function ResumePage() {
   });
 
   return (
-    <main className="mx-auto max-w-2xl space-y-6 px-4 py-10">
-      <div>
-        <h1 className="font-display text-3xl font-extrabold">Resume Builder</h1>
-        <p className="text-studio-ink/60 dark:text-white/60">
-          Generated from your completed projects. Regenerate any time you submit new work.
-        </p>
-      </div>
-
-      <ResumeGenerator initialResume={existing ? (existing.metadata as unknown as ResumeContent) : null} />
+    <main className="mx-auto max-w-2xl px-4 py-6">
+      <CinemaPage
+        eyebrow="Student Portal"
+        title="Resume Builder"
+        description="Generated from your completed projects. Regenerate any time you submit new work."
+      >
+        <ResumeGenerator initialResume={existing ? (existing.metadata as unknown as ResumeContent) : null} />
+      </CinemaPage>
     </main>
   );
 }

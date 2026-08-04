@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils/cn";
 import type { NarratedSegment } from "@/lib/ai/video-narration-service";
 
 /**
@@ -17,13 +18,18 @@ export function TutorialNarrationPlayer({
   initialSegments,
   initialNarrationGenerated,
   canGenerate,
+  theme = "default",
 }: {
   tutorialId: string;
   initialSegments: NarratedSegment[];
   initialNarrationGenerated: boolean;
   /** Only teachers/admins can trigger generation — students just play it back. */
   canGenerate: boolean;
+  /** Shared across Teacher and Student portals — see AssistantsDirectory for
+   * why this is opt-in per caller. */
+  theme?: "default" | "cinema";
 }) {
+  const isCinema = theme === "cinema";
   const [segments, setSegments] = useState(initialSegments);
   const [narrationGenerated, setNarrationGenerated] = useState(initialNarrationGenerated);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -73,13 +79,19 @@ export function TutorialNarrationPlayer({
     }
   }
 
+  const secondaryVariant = isCinema ? "cinema-secondary" : "secondary";
+
   if (!narrationGenerated) {
     if (!canGenerate) {
-      return <p className="text-sm text-studio-ink/60 dark:text-white/60">Narration audio hasn&apos;t been generated for this tutorial yet.</p>;
+      return (
+        <p className={cn("text-sm", isCinema ? "text-cinema-muted" : "text-studio-ink/60 dark:text-white/60")}>
+          Narration audio hasn&apos;t been generated for this tutorial yet.
+        </p>
+      );
     }
     return (
       <div className="flex items-center gap-2">
-        <Button variant="secondary" onClick={handleGenerate} isLoading={isGenerating}>
+        <Button variant={secondaryVariant} onClick={handleGenerate} isLoading={isGenerating}>
           {isGenerating ? "Generating narration audio..." : "Generate narration audio"}
         </Button>
         {error && <span className="text-sm text-red-600 dark:text-red-400">{error}</span>}
@@ -91,12 +103,21 @@ export function TutorialNarrationPlayer({
   if (!currentSegment) return null;
 
   return (
-    <div className="space-y-3 rounded-2xl border border-studio-ink/10 bg-studio-paper p-4 shadow-soft dark:border-white/10">
-      <p className="text-xs font-bold uppercase tracking-wide text-studio-accent">
+    <div
+      className={cn(
+        "space-y-3 rounded-2xl border p-4",
+        isCinema
+          ? "border-cinema-border bg-cinema-black/40 shadow-cinema-panel"
+          : "border-studio-ink/10 bg-studio-paper shadow-soft dark:border-white/10",
+      )}
+    >
+      <p className={cn("text-xs font-bold uppercase tracking-wide", isCinema ? "text-cinema-red" : "text-studio-accent")}>
         Segment {currentIndex + 1} of {segments.length}
       </p>
-      <p className="text-base font-medium">{currentSegment.visualGuide}</p>
-      <p className="text-sm text-studio-ink/70 dark:text-white/70">{currentSegment.narration}</p>
+      <p className={cn("text-base font-medium", isCinema && "text-cinema-white")}>{currentSegment.visualGuide}</p>
+      <p className={cn("text-sm", isCinema ? "text-cinema-muted" : "text-studio-ink/70 dark:text-white/70")}>
+        {currentSegment.narration}
+      </p>
 
       <audio
         ref={audioRef}
@@ -110,18 +131,18 @@ export function TutorialNarrationPlayer({
       />
 
       <div className="flex flex-wrap items-center gap-2">
-        <Button variant="secondary" onClick={() => goToSegment(currentIndex - 1)} disabled={currentIndex === 0}>
+        <Button variant={secondaryVariant} onClick={() => goToSegment(currentIndex - 1)} disabled={currentIndex === 0}>
           Previous
         </Button>
         <Button
-          variant="secondary"
+          variant={secondaryVariant}
           onClick={() => goToSegment(currentIndex + 1)}
           disabled={currentIndex === segments.length - 1}
         >
           Next
         </Button>
         {canGenerate && (
-          <Button variant="secondary" onClick={handleGenerate} isLoading={isGenerating}>
+          <Button variant={secondaryVariant} onClick={handleGenerate} isLoading={isGenerating}>
             Regenerate narration
           </Button>
         )}

@@ -1,7 +1,7 @@
 import { notFound, redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CinemaCard, CinemaCardHeader, CinemaCardTitle, CinemaCardContent } from "@/components/ui/cinema-card";
 import { SubmissionForm } from "@/components/submission-form";
 import { PROJECT_CATEGORY_LABELS } from "@/lib/constants/project-categories";
 
@@ -43,60 +43,63 @@ export default async function StudentProjectPage({ params }: { params: Promise<{
   );
 
   return (
-    <main className="mx-auto max-w-3xl space-y-6 px-4 py-10">
-      <header>
-        <p className="text-sm uppercase tracking-wide text-studio-accent">
-          {PROJECT_CATEGORY_LABELS[project.category]}
-        </p>
-        <h1 className="font-display text-3xl font-extrabold">{project.title}</h1>
-        <p className="mt-1 text-studio-ink/60 dark:text-white/60">{project.classPeriod.name}</p>
-      </header>
+    <main className="relative mx-auto max-w-3xl overflow-hidden rounded-3xl bg-cinema-charcoal px-4 py-6 text-cinema-white shadow-cinema-panel sm:px-6">
+      <div className="pointer-events-none absolute inset-0 bg-cinema-radial" aria-hidden />
+      <div className="relative space-y-6">
+        <header>
+          <p className="text-sm uppercase tracking-wide text-cinema-red">
+            {PROJECT_CATEGORY_LABELS[project.category]}
+          </p>
+          <h1 className="font-display text-3xl font-extrabold">{project.title}</h1>
+          <p className="mt-1 text-cinema-muted">{project.classPeriod.name}</p>
+        </header>
 
-      {lessons.map((lesson) => (
-        <Card key={lesson.id}>
-          <CardHeader>
-            <CardTitle>{DAY_LABELS[lesson.day]}: {lesson.title}</CardTitle>
-          </CardHeader>
-          <CardContent className="text-sm">
-            <p>{lesson.iCanStatement}</p>
-          </CardContent>
-        </Card>
-      ))}
+        {lessons.map((lesson) => (
+          <CinemaCard key={lesson.id}>
+            <CinemaCardHeader>
+              <CinemaCardTitle>
+                {DAY_LABELS[lesson.day]}: {lesson.title}
+              </CinemaCardTitle>
+            </CinemaCardHeader>
+            <CinemaCardContent className="text-sm">
+              <p>{lesson.iCanStatement}</p>
+            </CinemaCardContent>
+          </CinemaCard>
+        ))}
 
-      {project.rubric && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Rubric — {project.rubric.title}</CardTitle>
-          </CardHeader>
-          <CardContent className="text-sm text-studio-ink/70 dark:text-white/70">
-            {(project.rubric.criteria as Array<{ name: string; weightPercent: number }>).map((c) => (
-              <div key={c.name} className="flex justify-between py-1">
-                <span>{c.name}</span>
-                <span>{c.weightPercent}%</span>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
-      )}
+        {project.rubric && (
+          <CinemaCard>
+            <CinemaCardHeader>
+              <CinemaCardTitle>Rubric — {project.rubric.title}</CinemaCardTitle>
+            </CinemaCardHeader>
+            <CinemaCardContent className="text-sm text-cinema-muted">
+              {(project.rubric.criteria as Array<{ name: string; weightPercent: number }>).map((c) => (
+                <div key={c.name} className="flex justify-between py-1">
+                  <span>{c.name}</span>
+                  <span>{c.weightPercent}%</span>
+                </div>
+              ))}
+            </CinemaCardContent>
+          </CinemaCard>
+        )}
 
-      <Card>
-        <CardHeader>
-          <CardTitle>{submission?.status === "SUBMITTED" ? "Your submission" : "Submit your work"}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {submission ? (
-            <SubmissionForm
-              submissionId={submission.id}
-              initialVideoUrl={submission.videoUrl}
-              initialReflection={submission.reflection}
-            />
-          ) : (
-            <p className="text-sm text-studio-ink/60 dark:text-white/60">
-              No submission record found for this project yet.
-            </p>
-          )}
-        </CardContent>
-      </Card>
+        <CinemaCard>
+          <CinemaCardHeader>
+            <CinemaCardTitle>{submission?.status === "SUBMITTED" ? "Your submission" : "Submit your work"}</CinemaCardTitle>
+          </CinemaCardHeader>
+          <CinemaCardContent>
+            {submission ? (
+              <SubmissionForm
+                submissionId={submission.id}
+                initialVideoUrl={submission.videoUrl}
+                initialReflection={submission.reflection}
+              />
+            ) : (
+              <p className="text-sm text-cinema-muted">No submission record found for this project yet.</p>
+            )}
+          </CinemaCardContent>
+        </CinemaCard>
+      </div>
     </main>
   );
 }

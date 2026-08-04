@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { DemoReelBuilder } from "@/components/demo-reel-builder";
+import { CinemaPage } from "@/components/ui/cinema-page";
 import type { DemoReelClip } from "@/lib/demo-reel";
 
 export default async function DemoReelPage() {
@@ -21,21 +22,20 @@ export default async function DemoReelPage() {
   const existingClips = existingMetadata?.clips ?? [];
 
   return (
-    <main className="mx-auto max-w-2xl space-y-6 px-4 py-10">
-      <div>
-        <h1 className="font-display text-3xl font-extrabold">Demo Reel Builder</h1>
-        <p className="text-studio-ink/60 dark:text-white/60">
-          Pick your best submitted clips to showcase together.
-        </p>
-      </div>
-
-      <DemoReelBuilder
-        availableClips={submissions
-          .filter((s) => s.videoUrl)
-          .map((s) => ({ submissionId: s.id, title: s.project.title, videoUrl: s.videoUrl! }))}
-        initialTitle={existing?.title ?? "My Demo Reel"}
-        initialSelectedIds={existingClips.map((c) => c.submissionId)}
-      />
+    <main className="mx-auto max-w-2xl px-4 py-6">
+      <CinemaPage
+        eyebrow="Student Portal"
+        title="Demo Reel Builder"
+        description="Pick your best submitted clips to showcase together."
+      >
+        <DemoReelBuilder
+          availableClips={submissions
+            .filter((s) => s.videoUrl)
+            .map((s) => ({ submissionId: s.id, title: s.project.title, videoUrl: s.videoUrl! }))}
+          initialTitle={existing?.title ?? "My Demo Reel"}
+          initialSelectedIds={existingClips.map((c) => c.submissionId)}
+        />
+      </CinemaPage>
     </main>
   );
 }

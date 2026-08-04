@@ -32,7 +32,7 @@ export function ResumeGenerator({ initialResume }: { initialResume: ResumeConten
 
   return (
     <div className="space-y-6">
-      <Button onClick={handleGenerate} isLoading={isGenerating}>
+      <Button variant="cinema" onClick={handleGenerate} isLoading={isGenerating}>
         {resume ? "Regenerate resume" : "Generate resume"}
       </Button>
       {error && (
@@ -42,11 +42,11 @@ export function ResumeGenerator({ initialResume }: { initialResume: ResumeConten
       )}
 
       {resume && (
-        <article className="space-y-4 rounded-xl border border-studio-ink/10 p-6 dark:border-white/10">
+        <article className="space-y-4 rounded-xl border border-cinema-border bg-cinema-panel/70 p-6 text-cinema-white backdrop-blur">
           <p>{resume.summary}</p>
           <div>
             <h3 className="font-medium">Skills</h3>
-            <p className="text-sm text-studio-ink/70 dark:text-white/70">{resume.skills.join(" · ")}</p>
+            <p className="text-sm text-cinema-muted">{resume.skills.join(" · ")}</p>
           </div>
           <div>
             <h3 className="font-medium">Experience</h3>
@@ -54,14 +54,14 @@ export function ResumeGenerator({ initialResume }: { initialResume: ResumeConten
               {resume.experience.map((exp, i) => (
                 <li key={i}>
                   <p className="font-medium">{exp.title}</p>
-                  <p className="text-studio-ink/70 dark:text-white/70">{exp.description}</p>
+                  <p className="text-cinema-muted">{exp.description}</p>
                 </li>
               ))}
             </ul>
           </div>
           <div>
             <h3 className="font-medium">Education</h3>
-            <p className="text-sm text-studio-ink/70 dark:text-white/70">{resume.education}</p>
+            <p className="text-sm text-cinema-muted">{resume.education}</p>
           </div>
         </article>
       )}

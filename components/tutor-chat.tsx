@@ -46,10 +46,10 @@ export function TutorChat({ initialHistory }: { initialHistory: ChatMessage[] })
   }
 
   return (
-    <div className="flex h-[60vh] flex-col rounded-xl border border-studio-ink/10 dark:border-white/10">
+    <div className="flex h-[60vh] flex-col rounded-xl border border-cinema-border bg-cinema-panel/70 backdrop-blur">
       <div className="flex-1 space-y-3 overflow-y-auto p-4">
         {messages.length === 0 && (
-          <p className="text-sm text-studio-ink/50 dark:text-white/50">
+          <p className="text-sm text-cinema-muted">
             Ask about your project, a technique, or where you&apos;re stuck — I&apos;ll help you work
             through it rather than just give you the answer.
           </p>
@@ -58,9 +58,7 @@ export function TutorChat({ initialHistory }: { initialHistory: ChatMessage[] })
           <div
             key={message.id}
             className={`max-w-[80%] rounded-lg px-3 py-2 text-sm ${
-              message.role === "USER"
-                ? "ml-auto bg-studio-accent text-white"
-                : "bg-studio-ink/5 dark:bg-white/10"
+              message.role === "USER" ? "ml-auto bg-cinema-red text-cinema-white" : "bg-white/5 text-cinema-white"
             }`}
           >
             {message.content}
@@ -74,14 +72,14 @@ export function TutorChat({ initialHistory }: { initialHistory: ChatMessage[] })
         </p>
       )}
 
-      <form onSubmit={handleSubmit} className="flex gap-2 border-t border-studio-ink/10 p-3 dark:border-white/10">
+      <form onSubmit={handleSubmit} className="flex gap-2 border-t border-cinema-border p-3">
         <Input
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Ask the AI Tutor..."
-          className="flex-1"
+          className="flex-1 !border-cinema-border !bg-cinema-black/40 !text-cinema-white placeholder:!text-cinema-muted focus:!border-cinema-red focus:!ring-cinema-red/30"
         />
-        <Button type="submit" isLoading={isSending} disabled={!input.trim()}>
+        <Button type="submit" variant="cinema" isLoading={isSending} disabled={!input.trim()}>
           Send
         </Button>
       </form>

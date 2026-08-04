@@ -8,6 +8,10 @@ const VARIANTS = {
     "bg-studio-accent/10 text-studio-accent hover:bg-studio-accent/15 hover:-translate-y-0.5 focus-visible:ring-studio-accent dark:bg-white/10 dark:text-white dark:hover:bg-white/15",
   ghost:
     "bg-transparent text-current hover:bg-studio-ink/5 dark:hover:bg-white/10",
+  cinema:
+    "bg-cinema-red text-cinema-white shadow-cinema-glow hover:-translate-y-0.5 hover:bg-cinema-red/90 focus-visible:ring-cinema-red",
+  "cinema-secondary":
+    "border border-cinema-border bg-cinema-panel/80 text-cinema-white backdrop-blur hover:border-cinema-red/50 focus-visible:ring-cinema-red",
 } as const;
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {

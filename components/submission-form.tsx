@@ -52,10 +52,15 @@ export function SubmissionForm({
     }
   }
 
+  const fieldClass =
+    "!border-cinema-border !bg-cinema-black/40 !text-cinema-white placeholder:!text-cinema-muted focus:!border-cinema-red focus:!ring-cinema-red/30";
+
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <Label htmlFor="videoUrl">Video link (YouTube, Vimeo, Drive share link, etc.)</Label>
+        <Label htmlFor="videoUrl" className="text-cinema-white">
+          Video link (YouTube, Vimeo, Drive share link, etc.)
+        </Label>
         <Input
           id="videoUrl"
           type="url"
@@ -63,20 +68,26 @@ export function SubmissionForm({
           onChange={(e) => setVideoUrl(e.target.value)}
           required
           placeholder="https://..."
+          className={fieldClass}
         />
       </div>
       <VideoUpload submissionId={submissionId} onUploaded={(secureUrl) => setVideoUrl(secureUrl)} />
       <div>
-        <Label htmlFor="reflection">Reflection</Label>
+        <Label htmlFor="reflection" className="text-cinema-white">
+          Reflection
+        </Label>
         <Textarea
           id="reflection"
           value={reflection}
           onChange={(e) => setReflection(e.target.value)}
           placeholder="What worked, what you'd change next time..."
+          className={fieldClass}
         />
       </div>
       <div>
-        <Label htmlFor="rating">Self-assessment (1-5)</Label>
+        <Label htmlFor="rating" className="text-cinema-white">
+          Self-assessment (1-5)
+        </Label>
         <Input
           id="rating"
           type="number"
@@ -84,12 +95,14 @@ export function SubmissionForm({
           max={5}
           value={rating}
           onChange={(e) => setRating(Number(e.target.value))}
-          className="w-20"
+          className={`w-20 ${fieldClass}`}
         />
       </div>
       <div>
-        <Label htmlFor="notes">Self-assessment notes</Label>
-        <Textarea id="notes" value={notes} onChange={(e) => setNotes(e.target.value)} />
+        <Label htmlFor="notes" className="text-cinema-white">
+          Self-assessment notes
+        </Label>
+        <Textarea id="notes" value={notes} onChange={(e) => setNotes(e.target.value)} className={fieldClass} />
       </div>
 
       {error && (
@@ -99,7 +112,7 @@ export function SubmissionForm({
       )}
       {success && <p className="text-sm text-green-600 dark:text-green-400">Submitted! Added to your portfolio.</p>}
 
-      <Button type="submit" isLoading={isSubmitting}>
+      <Button type="submit" variant="cinema" isLoading={isSubmitting}>
         Submit
       </Button>
     </form>

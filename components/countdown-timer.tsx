@@ -2,8 +2,12 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils/cn";
 
-export function CountdownTimer({ minutes }: { minutes: number }) {
+/** Shared across Teacher and Student portals — see AssistantsDirectory for
+ * why `theme` is opt-in per caller. */
+export function CountdownTimer({ minutes, theme = "default" }: { minutes: number; theme?: "default" | "cinema" }) {
+  const isCinema = theme === "cinema";
   const totalSeconds = minutes * 60;
   const [remaining, setRemaining] = useState(totalSeconds);
   const [isRunning, setIsRunning] = useState(false);
@@ -45,9 +49,19 @@ export function CountdownTimer({ minutes }: { minutes: number }) {
   const isTimeUp = remaining === 0;
 
   return (
-    <div className="flex items-center gap-4 rounded-2xl border border-studio-ink/10 bg-white p-4 shadow-soft dark:border-white/10 dark:bg-studio-900">
+    <div
+      className={cn(
+        "flex items-center gap-4 rounded-2xl border p-4",
+        isCinema
+          ? "border-cinema-border bg-cinema-panel/70 shadow-cinema-panel backdrop-blur"
+          : "border-studio-ink/10 bg-white shadow-soft dark:border-white/10 dark:bg-studio-900",
+      )}
+    >
       <span
-        className={`font-display text-4xl tabular-nums ${isTimeUp ? "text-red-600 dark:text-red-400" : ""}`}
+        className={cn(
+          "font-display text-4xl tabular-nums",
+          isTimeUp ? "text-red-600 dark:text-red-400" : isCinema && "text-cinema-white",
+        )}
       >
         {String(mins).padStart(2, "0")}:{String(secs).padStart(2, "0")}
       </span>
@@ -56,13 +70,15 @@ export function CountdownTimer({ minutes }: { minutes: number }) {
       ) : (
         <div className="flex gap-2">
           {isRunning ? (
-            <Button variant="secondary" onClick={pause}>
+            <Button variant={isCinema ? "cinema-secondary" : "secondary"} onClick={pause}>
               Pause
             </Button>
           ) : (
-            <Button onClick={start}>Start</Button>
+            <Button variant={isCinema ? "cinema" : "primary"} onClick={start}>
+              Start
+            </Button>
           )}
-          <Button variant="ghost" onClick={reset}>
+          <Button variant="ghost" onClick={reset} className={isCinema ? "text-cinema-muted hover:bg-white/5 hover:text-cinema-white" : undefined}>
             Reset
           </Button>
         </div>
