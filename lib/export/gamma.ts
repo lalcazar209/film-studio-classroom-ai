@@ -4,12 +4,14 @@
  * generation takes tens of seconds, so callers get a generationId back
  * immediately and poll rather than blocking a request for the whole time.
  *
- * Verify the endpoint path/version (currently v0.2) against Gamma's
- * current API docs before deploying — like any third-party API, this can
- * change.
+ * v0.2 was sunset by Gamma (confirmed via a live 410 response: "This
+ * endpoint has been sunset. Please use POST /v1.0/generations instead.")
+ * — on v1.0 now. If Gamma changes the request/response shape again under
+ * v1.0, responseBodySnippet() below will surface the real rejection
+ * reason directly in the UI rather than a bare status code.
  */
 
-const API_BASE = "https://public-api.gamma.app/v0.2";
+const API_BASE = "https://public-api.gamma.app/v1.0";
 
 export class GammaError extends Error {}
 
