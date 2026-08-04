@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { GammaExportButton } from "@/components/gamma-export-button";
 import { GoogleDocsExportButton } from "@/components/google-docs-export-button";
 import { ClassroomExportButton } from "@/components/classroom-export-button";
+import { CoverImagePanel } from "@/components/cover-image-panel";
+import { StoryboardShots } from "@/components/storyboard-shots";
 import { PROJECT_CATEGORY_LABELS } from "@/lib/constants/project-categories";
 
 const DAY_LABELS: Record<string, string> = {
@@ -65,6 +67,8 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
           </Link>
         </div>
       </header>
+
+      <CoverImagePanel projectId={project.id} initialCoverImageUrl={project.coverImageUrl} />
 
       <div className="grid gap-6 md:grid-cols-5">
         {lessons.map((lesson) => (
@@ -169,15 +173,22 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
           <CardHeader>
             <CardTitle>Storyboard</CardTitle>
           </CardHeader>
-          <CardContent className="text-sm text-studio-ink/70 dark:text-white/70">
-            {(project.storyboard.shots as Array<{ number: number; description: string }>).map(
-              (shot) => (
-                <p key={shot.number}>
-                  <span className="font-medium">Shot {shot.number}: </span>
-                  {shot.description}
-                </p>
-              ),
-            )}
+          <CardContent>
+            <StoryboardShots
+              projectId={project.id}
+              shots={
+                project.storyboard.shots as unknown as Array<{
+                  number: number;
+                  description: string;
+                  shotType: string;
+                  movement: string;
+                  lighting: string;
+                  audio: string;
+                  durationSec: number;
+                  imageUrl?: string;
+                }>
+              }
+            />
           </CardContent>
         </Card>
       )}

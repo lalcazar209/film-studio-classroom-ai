@@ -2,7 +2,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import type { AIGenerateOptions, AIGenerateResult, AIProvider } from "../provider";
 import { AIProviderError, toContentBlocks, parseDataUri } from "../provider";
 
-const DEFAULT_MODEL = "claude-sonnet-4-5";
+const DEFAULT_MODEL = "claude-sonnet-5";
 
 function toAnthropicContent(
   content: Parameters<typeof toContentBlocks>[0],

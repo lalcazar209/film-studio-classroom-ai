@@ -27,6 +27,8 @@ export default async function TeacherFilmStudioDetailPage({ params }: { params: 
         locationPlan={project.locationPlan as unknown as FilmStudioBundle["locationPlan"]}
         castingSheet={project.castingSheet as unknown as FilmStudioBundle["castingSheet"]}
         marketingPlan={project.marketingPlan as unknown as FilmStudioBundle["marketingPlan"]}
+        filmStudioProjectId={project.id}
+        posterImageUrl={project.posterImageUrl}
       />
     </main>
   );

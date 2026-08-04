@@ -313,6 +313,9 @@ model Project {
   /// Set after this project's teacher guide has been pushed as a Google
   /// Classroom assignment (lib/integrations/google-classroom.ts).
   classroomUrl  String?
+  /// AI-generated cover image (lib/ai/image-generation-service.ts),
+  /// hosted on Cloudinary. Null until a teacher generates one.
+  coverImageUrl String?
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
 
@@ -746,6 +749,9 @@ model FilmStudioProject {
   locationPlan   Json // [{ name, address?, notes, permitsNeeded }]
   castingSheet   Json // [{ character, description, notes }]
   marketingPlan  Json // { targetAudience, keyMessages: [], channels: [], posterConcept, trailerConcept }
+  /// AI-generated poster art from marketingPlan.posterConcept
+  /// (lib/ai/image-generation-service.ts), hosted on Cloudinary.
+  posterImageUrl String?
   createdAt      DateTime @default(now())
 
   organization Organization @relation(fields: [organizationId], references: [id])

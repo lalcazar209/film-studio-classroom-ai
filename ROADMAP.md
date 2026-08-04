@@ -691,3 +691,76 @@ Phase 10.
       immediately here, this is the first schema change since that
       baseline and it worked exactly like a normal project's migration
       history from here on.
+
+## Bug fix — Anthropic model ID
+`lib/ai/providers/anthropic.ts`'s `DEFAULT_MODEL` was hardcoded to
+`"claude-sonnet-4-5"`, a model ID from before the Claude 5 family existed
+— the direct cause of every real AI generation call failing in production
+(the generic "Generation failed" error the UI shows on purpose hides the
+underlying API rejection). Fixed to `"claude-sonnet-5"`, the current
+model. Not independently re-verified against a live Anthropic API from
+this environment (no real key here), but this is a concrete, targeted fix
+for a concrete bug, not a guess — every other provider's `DEFAULT_MODEL`
+(`gpt-4.1`, `gemini-2.0-flash`) was checked at the same time and neither
+had the same problem.
+
+## Phase 16 — AI image generation ✅
+Storyboard shot reference images, poster/marketing concept art, and
+project cover images — real AI-generated images, not the text-only
+descriptions AI Film Studio produced before. AI video generation was
+explicitly scoped out after discussing it with the user: the leading
+option (Google Veo) needs Vertex AI, which conflicts with the
+Vercel + Supabase decision from Phase 15, and no other video-generation
+API was an obvious fit — left as a flagged follow-up rather than forced
+in.
+- [x] `lib/ai/image-provider.ts` + `lib/ai/image-registry.ts`: a second,
+      parallel provider abstraction to `lib/ai/provider.ts`'s text
+      interface, not an extension of it — image generation isn't a
+      capability every text provider has (Claude doesn't generate images
+      at all), so bolting it onto `AIProvider` would mean two of three
+      implementations exist only to throw. `lib/ai/providers/openai-image.ts`
+      implements it against `gpt-image-1`.
+- [x] `lib/integrations/cloudinary.ts` gained `uploadGeneratedImage` — a
+      plain server-side SDK upload for a base64 image, distinct from the
+      existing `createSignedUploadParams` (a signed-URL flow for browser
+      video uploads); an OpenAI-returned image never touches the browser,
+      so there's nothing to sign.
+- [x] `lib/ai/image-generation-service.ts` ties provider + Cloudinary
+      together per use case, with the actual prompt-building logic
+      factored into separate, pure, exported functions
+      (`buildStoryboardShotPrompt`/`buildPosterPrompt`/
+      `buildProjectCoverPrompt`) — the same "deterministic logic is
+      real-tested, the live API call isn't" split every other AI/export
+      feature in this codebase already uses (Gamma, Google Docs). Covered
+      by `tests/unit/image-generation.test.ts`.
+- [x] Three new routes, one per use case, each user-triggered (a button,
+      not automatic during curriculum generation, to keep cost/latency
+      out of the main generation path):
+      `app/api/projects/[id]/cover-image`,
+      `app/api/projects/[id]/storyboard/shots/[shotNumber]/image`,
+      `app/api/film-studio/[id]/poster-image`. The poster-image route's
+      access check was caught and fixed during review — an early draft
+      only checked organization membership with no role gate, which
+      would have let students/parents in the same org trigger paid image
+      generation; fixed to match `app/api/film-studio/generate`'s actual
+      access model (TEACHER/ADMIN/MENTOR + same org).
+- [x] New Prisma columns: `Project.coverImageUrl`,
+      `FilmStudioProject.posterImageUrl` (a normal migration, same as
+      Phase 15's). Storyboard shot images don't get their own column —
+      `Storyboard.shots` is already a JSON array, so a generated image's
+      URL merges into that shot's existing JSON object instead of adding
+      a new relational model for a single optional field.
+      `components/{cover-image-panel,storyboard-shots,poster-image-panel}.tsx`
+      render the image (via Cloudinary, already an allowed `next/image`
+      remote pattern) with a generate/regenerate button, wired into the
+      teacher project page, the teacher/mentor Film Studio pages, and the
+      storyboard section (which also gained the shot metadata —
+      movement/lighting/audio/duration — the old rendering silently
+      dropped).
+- [x] Verified end to end: `npx tsc --noEmit`, `npx eslint .`,
+      `npm run test` (85 Vitest tests — 81 prior + 4 new prompt-builder
+      tests), `npx next build` (all three new routes present in the
+      build output), and `npx playwright test` all pass clean. The
+      actual OpenAI image API call itself isn't exercised in any
+      automated test — same honest boundary as every other live external
+      API in this codebase (no real `OPENAI_API_KEY` in this sandbox).

@@ -1,4 +1,6 @@
+import Image from "next/image";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { PosterImagePanel } from "@/components/poster-image-panel";
 import type {
   FilmStudioBundle,
 } from "@/lib/ai/schemas";
@@ -18,6 +20,8 @@ export function FilmStudioProjectView({
   locationPlan,
   castingSheet,
   marketingPlan,
+  filmStudioProjectId,
+  posterImageUrl,
 }: {
   title: string;
   logline: string;
@@ -30,6 +34,11 @@ export function FilmStudioProjectView({
   locationPlan: FilmStudioBundle["locationPlan"];
   castingSheet: FilmStudioBundle["castingSheet"];
   marketingPlan: FilmStudioBundle["marketingPlan"];
+  /** Only passed on the teacher/creator's own view — omit to render
+   * view-only (e.g. the mentor portal), showing the image if one exists
+   * but no generate button. */
+  filmStudioProjectId?: string;
+  posterImageUrl?: string | null;
 }) {
   return (
     <div className="space-y-6">
@@ -184,6 +193,18 @@ export function FilmStudioProjectView({
             <span className="font-medium">Trailer concept: </span>
             {marketingPlan.trailerConcept}
           </p>
+          {filmStudioProjectId ? (
+            <PosterImagePanel
+              filmStudioProjectId={filmStudioProjectId}
+              initialPosterImageUrl={posterImageUrl ?? null}
+            />
+          ) : (
+            posterImageUrl && (
+              <div className="relative aspect-[2/3] w-40 overflow-hidden rounded-xl shadow-soft">
+                <Image src={posterImageUrl} alt="Poster concept art" fill className="object-cover" unoptimized />
+              </div>
+            )
+          )}
         </CardContent>
       </Card>
     </div>

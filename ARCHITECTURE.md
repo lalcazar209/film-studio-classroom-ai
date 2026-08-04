@@ -334,12 +334,17 @@ the same `SisRosterSection` shape `lib/roster-sync.ts` consumes, so
 wiring its preview into the same reconciliation function is a small
 follow-up, not a redesign).
 
-Also out of scope by design, not oversight: visual diagram generation
-(camera diagrams, lighting diagrams, floor plans, blocking, animatics) and
-actual poster/trailer images. AI Film Studio (Phase 8) describes those in
-prose instead of inventing an image — producing real diagrams/images needs
-an image-generation integration (Adobe Firefly, DALL-E) this app doesn't
-have wired up.
+Storyboard shot reference images, poster/marketing concept art, and
+project cover images are real AI-generated images as of Phase 16
+(`lib/ai/image-generation-service.ts`, OpenAI's `gpt-image-1`, hosted on
+Cloudinary) — AI Film Studio no longer only describes these in prose.
+Still out of scope by design: camera/lighting diagrams, floor plans,
+blocking, and animatics (structured technical diagrams, not photographic
+reference images — a different generation approach than a single image
+prompt), and AI video generation (evaluated in Phase 16; the leading
+option, Google Veo, needs Vertex AI/GCP, which conflicts with the
+Vercel + Supabase decision from Phase 15 — left as a flagged follow-up
+rather than forced onto infrastructure that doesn't fit).
 
 Equipment checkout now has a real QR-based flow (Phase 4): the QR encodes
 the asset tag, and a school's existing USB/handheld barcode scanner can

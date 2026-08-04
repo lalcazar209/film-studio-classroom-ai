@@ -35,6 +35,35 @@ export function createSignedUploadParams(input: { folder: string; publicId: stri
 }
 
 /**
+ * Uploads an AI-generated image (base64, from lib/ai/providers/openai-image.ts)
+ * directly via the server-side SDK — unlike the video path above, there's no
+ * browser involved and no large file to route around Next.js body limits, so
+ * a plain server-side upload is simpler than the signed-URL dance.
+ */
+export async function uploadGeneratedImage(input: {
+  base64: string;
+  mediaType: string;
+  folder: string;
+  publicId: string;
+}): Promise<{ secureUrl: string }> {
+  assertConfigured();
+  cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+  });
+
+  const result = await cloudinary.uploader.upload(`data:${input.mediaType};base64,${input.base64}`, {
+    folder: input.folder,
+    public_id: input.publicId,
+    resource_type: "image",
+    overwrite: true,
+  });
+
+  return { secureUrl: result.secure_url };
+}
+
+/**
  * Cloudinary generates video-frame thumbnails on the fly via URL
  * transformation — no separate extraction job needed. Returns null for
  * non-Cloudinary URLs (e.g. a student pasted a YouTube link instead of
