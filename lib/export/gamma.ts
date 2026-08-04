@@ -19,6 +19,16 @@ function apiKey(): string {
   return key;
 }
 
+/** A non-ok response's body (Gamma's actual rejection reason — invalid
+ * key, wrong plan, bad payload shape, etc.) is far more diagnosable than
+ * the bare HTTP status code alone, and this integration has never been
+ * verified against a live Gamma account. */
+async function responseBodySnippet(response: Response): Promise<string> {
+  const text = await response.text().catch(() => "");
+  if (!text) return "";
+  return text.length > 500 ? `— ${text.slice(0, 500)}…` : `— ${text}`;
+}
+
 export interface GammaGenerateInput {
   title: string;
   /** Outline text — one line/paragraph per intended card/slide. Gamma expands this into a full designed presentation. */
@@ -40,7 +50,7 @@ export async function startGammaGeneration(input: GammaGenerateInput): Promise<{
   });
 
   if (!response.ok) {
-    throw new GammaError(`Gamma generation request failed: ${response.status}`);
+    throw new GammaError(`Gamma generation request failed: ${response.status} ${await responseBodySnippet(response)}`);
   }
 
   const data = (await response.json()) as { generationId: string };
@@ -58,7 +68,7 @@ export async function getGammaGenerationStatus(generationId: string): Promise<Ga
   });
 
   if (!response.ok) {
-    throw new GammaError(`Gamma generation status check failed: ${response.status}`);
+    throw new GammaError(`Gamma generation status check failed: ${response.status} ${await responseBodySnippet(response)}`);
   }
 
   return (await response.json()) as GammaGenerationStatus;
