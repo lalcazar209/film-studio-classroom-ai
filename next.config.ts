@@ -7,12 +7,6 @@ const nextConfig: NextConfig = {
   // node_modules it actually needs) so the Docker image doesn't have to
   // ship the whole node_modules tree. See Dockerfile.
   output: "standalone",
-  // @react-pdf/renderer (project PDF export) bundles pdfkit, which relies
-  // on dynamic requires that webpack can't statically trace — bundling it
-  // into the route's webpack chunk is a well-known cause of PDF export
-  // working in local `next dev`/plain Node but throwing at runtime once
-  // deployed. Forcing it to stay an ordinary Node require sidesteps that.
-  serverExternalPackages: ["@react-pdf/renderer", "@react-pdf/pdfkit"],
   experimental: {
     serverActions: {
       bodySizeLimit: "10mb",
