@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CinemaCard, CinemaCardContent, CinemaCardHeader, CinemaCardTitle } from "@/components/ui/cinema-card";
 import { Input, Label, Textarea } from "@/components/ui/field";
 
 export interface LessonData {
@@ -118,31 +118,34 @@ export function ProjectEditForm({
   return (
     <div className="space-y-6">
       {lessons.map((lesson) => (
-        <Card key={lesson.id}>
-          <CardHeader>
-            <CardTitle>
+        <CinemaCard key={lesson.id}>
+          <CinemaCardHeader>
+            <CinemaCardTitle>
               {DAY_LABELS[lesson.day] ?? lesson.day}: {lesson.title}
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
+            </CinemaCardTitle>
+          </CinemaCardHeader>
+          <CinemaCardContent className="space-y-3">
             <div>
-              <Label>Objective</Label>
+              <Label theme="cinema">Objective</Label>
               <Textarea
+                theme="cinema"
                 value={lesson.objective}
                 onChange={(e) => updateLesson(lesson.id, { objective: e.target.value })}
               />
             </div>
             <div>
-              <Label>&quot;I can&quot; statement</Label>
+              <Label theme="cinema">&quot;I can&quot; statement</Label>
               <Textarea
+                theme="cinema"
                 value={lesson.iCanStatement}
                 onChange={(e) => updateLesson(lesson.id, { iCanStatement: e.target.value })}
               />
             </div>
             <div className="grid gap-3 sm:grid-cols-3">
               <div>
-                <Label>Accommodations (one per line)</Label>
+                <Label theme="cinema">Accommodations (one per line)</Label>
                 <Textarea
+                  theme="cinema"
                   value={lesson.differentiation.accommodations.join("\n")}
                   onChange={(e) =>
                     updateLesson(lesson.id, {
@@ -152,8 +155,9 @@ export function ProjectEditForm({
                 />
               </div>
               <div>
-                <Label>Extensions (one per line)</Label>
+                <Label theme="cinema">Extensions (one per line)</Label>
                 <Textarea
+                  theme="cinema"
                   value={lesson.differentiation.extensions.join("\n")}
                   onChange={(e) =>
                     updateLesson(lesson.id, {
@@ -163,8 +167,9 @@ export function ProjectEditForm({
                 />
               </div>
               <div>
-                <Label>Interventions (one per line)</Label>
+                <Label theme="cinema">Interventions (one per line)</Label>
                 <Textarea
+                  theme="cinema"
                   value={lesson.differentiation.interventions.join("\n")}
                   onChange={(e) =>
                     updateLesson(lesson.id, {
@@ -174,48 +179,50 @@ export function ProjectEditForm({
                 />
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </CinemaCardContent>
+        </CinemaCard>
       ))}
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Rubric — {rubric.title}</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3">
+      <CinemaCard>
+        <CinemaCardHeader>
+          <CinemaCardTitle>Rubric — {rubric.title}</CinemaCardTitle>
+        </CinemaCardHeader>
+        <CinemaCardContent className="space-y-3">
           {rubric.criteria.map((criterion, i) => (
             <div key={i} className="flex items-center gap-3">
               <Input
+                theme="cinema"
                 value={criterion.name}
                 onChange={(e) => updateCriterion(i, { name: e.target.value })}
                 className="flex-1"
               />
               <Input
+                theme="cinema"
                 type="number"
                 value={criterion.weightPercent}
                 onChange={(e) => updateCriterion(i, { weightPercent: Number(e.target.value) })}
                 className="w-20"
               />
-              <span className="text-sm text-studio-ink/50 dark:text-white/50">%</span>
+              <span className="text-sm text-cinema-muted">%</span>
             </div>
           ))}
-        </CardContent>
-      </Card>
+        </CinemaCardContent>
+      </CinemaCard>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Quiz — {quiz.title}</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
+      <CinemaCard>
+        <CinemaCardHeader>
+          <CinemaCardTitle>Quiz — {quiz.title}</CinemaCardTitle>
+        </CinemaCardHeader>
+        <CinemaCardContent className="space-y-4">
           {quiz.questions.map((question, i) => (
-            <div key={i} className="space-y-1 border-b border-studio-ink/10 pb-3 dark:border-white/10">
-              <Textarea value={question.prompt} onChange={(e) => updateQuestion(i, { prompt: e.target.value })} />
-              <Label>Answer</Label>
-              <Input value={question.answer} onChange={(e) => updateQuestion(i, { answer: e.target.value })} />
+            <div key={i} className="space-y-1 border-b border-cinema-border pb-3">
+              <Textarea theme="cinema" value={question.prompt} onChange={(e) => updateQuestion(i, { prompt: e.target.value })} />
+              <Label theme="cinema">Answer</Label>
+              <Input theme="cinema" value={question.answer} onChange={(e) => updateQuestion(i, { answer: e.target.value })} />
             </div>
           ))}
-        </CardContent>
-      </Card>
+        </CinemaCardContent>
+      </CinemaCard>
 
       {error && (
         <p role="alert" className="text-sm text-red-600 dark:text-red-400">
@@ -224,7 +231,7 @@ export function ProjectEditForm({
       )}
       {saved && <p className="text-sm text-green-600 dark:text-green-400">Saved.</p>}
 
-      <Button onClick={handleSave} isLoading={isSaving}>
+      <Button variant="cinema" onClick={handleSave} isLoading={isSaving}>
         Save changes
       </Button>
     </div>

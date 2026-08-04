@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import { getAssistant } from "@/lib/ai/assistants";
 import { getAssistantHistory } from "@/lib/ai/assistant-chat-service";
 import { AssistantChat } from "@/components/assistant-chat";
+import { CinemaPage } from "@/components/ui/cinema-page";
 
 export default async function TeacherAssistantChatPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -15,16 +16,13 @@ export default async function TeacherAssistantChatPage({ params }: { params: Pro
   const history = await getAssistantHistory(session.user.id, id);
 
   return (
-    <main className="mx-auto max-w-2xl space-y-4 px-4 py-10">
-      <div>
-        <h1 className="font-display text-2xl font-extrabold">{assistant.name}</h1>
-        <p className="text-studio-ink/60 dark:text-white/60">{assistant.tagline}</p>
-      </div>
+    <CinemaPage title={assistant.name} description={assistant.tagline}>
       <AssistantChat
         assistantId={id}
         assistantName={assistant.name}
         initialHistory={history.map((m) => ({ id: m.id, role: m.role, content: m.content }))}
+        theme="cinema"
       />
-    </main>
+    </CinemaPage>
   );
 }

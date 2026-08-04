@@ -4,9 +4,13 @@ import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CinemaCard, CinemaCardHeader, CinemaCardTitle, CinemaCardContent } from "@/components/ui/cinema-card";
 import { Input, Label, Textarea } from "@/components/ui/field";
+import { cn } from "@/lib/utils/cn";
 
-export function FilmStudioGeneratorForm({ basePath }: { basePath: string }) {
+/** Shared across Teacher and Mentor portals — see AssistantsDirectory for
+ * why `theme` is opt-in per caller. */
+export function FilmStudioGeneratorForm({ basePath, theme = "default" }: { basePath: string; theme?: "default" | "cinema" }) {
   const router = useRouter();
   const [concept, setConcept] = useState("");
   const [genre, setGenre] = useState("");
@@ -44,21 +48,29 @@ export function FilmStudioGeneratorForm({ basePath }: { basePath: string }) {
     }
   }
 
+  const isCinema = theme === "cinema";
+  const [SectionCard, SectionHeader, SectionTitle, SectionContent] = isCinema
+    ? [CinemaCard, CinemaCardHeader, CinemaCardTitle, CinemaCardContent]
+    : [Card, CardHeader, CardTitle, CardContent];
+
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Generate a production package</CardTitle>
-        <p className="mt-1 text-sm text-studio-ink/60 dark:text-white/60">
+    <SectionCard>
+      <SectionHeader>
+        <SectionTitle>Generate a production package</SectionTitle>
+        <p className={cn("mt-1 text-sm", isCinema ? "text-cinema-muted" : "text-studio-ink/60 dark:text-white/60")}>
           Screenplay, shot list, call sheet, budget, equipment list, location plan, casting
           sheet, and marketing plan — all at once.
         </p>
-      </CardHeader>
-      <CardContent>
+      </SectionHeader>
+      <SectionContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <Label htmlFor="concept">Concept</Label>
+            <Label htmlFor="concept" theme={theme}>
+              Concept
+            </Label>
             <Textarea
               id="concept"
+              theme={theme}
               value={concept}
               onChange={(e) => setConcept(e.target.value)}
               placeholder="A short documentary about a local small business surviving a tough year..."
@@ -68,16 +80,22 @@ export function FilmStudioGeneratorForm({ basePath }: { basePath: string }) {
           </div>
           <div className="grid grid-cols-3 gap-4">
             <div>
-              <Label htmlFor="genre">Genre</Label>
-              <Input id="genre" value={genre} onChange={(e) => setGenre(e.target.value)} required placeholder="Documentary" />
+              <Label htmlFor="genre" theme={theme}>
+                Genre
+              </Label>
+              <Input id="genre" theme={theme} value={genre} onChange={(e) => setGenre(e.target.value)} required placeholder="Documentary" />
             </div>
             <div>
-              <Label htmlFor="castSize">Cast size</Label>
-              <Input id="castSize" type="number" min={1} value={castSize} onChange={(e) => setCastSize(e.target.value)} />
+              <Label htmlFor="castSize" theme={theme}>
+                Cast size
+              </Label>
+              <Input id="castSize" theme={theme} type="number" min={1} value={castSize} onChange={(e) => setCastSize(e.target.value)} />
             </div>
             <div>
-              <Label htmlFor="shootDays">Shoot days</Label>
-              <Input id="shootDays" type="number" min={1} value={shootDays} onChange={(e) => setShootDays(e.target.value)} />
+              <Label htmlFor="shootDays" theme={theme}>
+                Shoot days
+              </Label>
+              <Input id="shootDays" theme={theme} type="number" min={1} value={shootDays} onChange={(e) => setShootDays(e.target.value)} />
             </div>
           </div>
           {error && (
@@ -85,11 +103,11 @@ export function FilmStudioGeneratorForm({ basePath }: { basePath: string }) {
               {error}
             </p>
           )}
-          <Button type="submit" isLoading={isSubmitting}>
+          <Button type="submit" variant={isCinema ? "cinema" : "primary"} isLoading={isSubmitting}>
             {isSubmitting ? "Generating production package..." : "Generate"}
           </Button>
         </form>
-      </CardContent>
-    </Card>
+      </SectionContent>
+    </SectionCard>
   );
 }

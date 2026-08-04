@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { CinemaPage } from "@/components/ui/cinema-page";
 import { ProjectGeneratorForm } from "@/components/project-generator-form";
 
 export default async function ProjectGeneratorPage() {
@@ -14,24 +15,19 @@ export default async function ProjectGeneratorPage() {
   });
 
   return (
-    <main className="mx-auto max-w-2xl px-4 py-10">
-      <p className="text-sm font-bold uppercase tracking-wide text-studio-accent">AI-powered</p>
-      <h1 className="font-display text-2xl font-extrabold">Project Generator</h1>
-      <p className="mt-1 text-studio-ink/60 dark:text-white/60">
-        Every project you generate here cascades into slides, worksheets, a rubric, a quiz,
-        vocabulary, a storyboard, and a production plan for the whole class week.
-      </p>
-
-      <div className="mt-6">
-        {classPeriods.length === 0 ? (
-          <p className="rounded-xl border border-studio-ink/10 p-4 text-sm dark:border-white/10">
-            You don&apos;t have any class periods yet. Create one from the Teacher Portal before
-            generating a project.
-          </p>
-        ) : (
-          <ProjectGeneratorForm classPeriods={classPeriods} />
-        )}
-      </div>
-    </main>
+    <CinemaPage
+      eyebrow="AI-powered"
+      title="Project Generator"
+      description="Every project you generate here cascades into slides, worksheets, a rubric, a quiz, vocabulary, a storyboard, and a production plan for the whole class week."
+    >
+      {classPeriods.length === 0 ? (
+        <p className="rounded-xl border border-cinema-border bg-cinema-black/40 p-4 text-sm text-cinema-white">
+          You don&apos;t have any class periods yet. Create one from the Teacher Portal before
+          generating a project.
+        </p>
+      ) : (
+        <ProjectGeneratorForm classPeriods={classPeriods} />
+      )}
+    </CinemaPage>
   );
 }

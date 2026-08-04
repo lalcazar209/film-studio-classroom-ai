@@ -1,7 +1,7 @@
 import { notFound, redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CinemaCard, CinemaCardContent, CinemaCardHeader, CinemaCardTitle } from "@/components/ui/cinema-card";
 import { GammaExportButton } from "@/components/gamma-export-button";
 import { TUTORIAL_CATEGORY_LABELS } from "@/lib/constants/tutorial-categories";
 import { TutorialNarrationPlayer } from "@/components/tutorial-narration-player";
@@ -21,96 +21,98 @@ export default async function TutorialDetailPage({ params }: { params: Promise<{
   const quiz = tutorial.quiz as { title: string; questions: Array<{ prompt: string; answer: string }> };
 
   return (
-    <main className="mx-auto max-w-3xl space-y-6 px-4 py-10">
-      <header>
-        <p className="text-sm uppercase tracking-wide text-studio-accent">
-          {TUTORIAL_CATEGORY_LABELS[tutorial.category]}
-        </p>
-        <h1 className="font-display text-3xl font-extrabold">{tutorial.title}</h1>
-        <p className="mt-1 text-studio-ink/60 dark:text-white/60">{tutorial.learningObjective}</p>
-        <div className="mt-3 flex gap-4 text-sm">
-          <a href={`/api/video-academy/${tutorial.id}/transcript`} className="text-studio-accent hover:underline">
-            Download transcript
-          </a>
-          <a href={`/api/video-academy/${tutorial.id}/captions`} className="text-studio-accent hover:underline">
-            Download captions (.srt)
-          </a>
-        </div>
-        <div className="mt-3">
-          <GammaExportButton
-            exportUrl={`/api/video-academy/${tutorial.id}/export/gamma`}
-            initialGammaUrl={tutorial.gammaUrl}
-          />
-        </div>
-      </header>
+    <main className="relative mx-auto max-w-3xl space-y-6 overflow-hidden rounded-3xl bg-cinema-charcoal px-4 py-10 shadow-cinema-panel">
+      <div className="pointer-events-none absolute inset-0 bg-cinema-radial" />
+      <div className="relative space-y-6">
+        <header>
+          <p className="text-sm uppercase tracking-wide text-cinema-red">
+            {TUTORIAL_CATEGORY_LABELS[tutorial.category]}
+          </p>
+          <h1 className="text-3xl font-extrabold text-cinema-white">{tutorial.title}</h1>
+          <p className="mt-1 text-cinema-muted">{tutorial.learningObjective}</p>
+          <div className="mt-3 flex gap-4 text-sm">
+            <a href={`/api/video-academy/${tutorial.id}/transcript`} className="text-cinema-red hover:underline">
+              Download transcript
+            </a>
+            <a href={`/api/video-academy/${tutorial.id}/captions`} className="text-cinema-red hover:underline">
+              Download captions (.srt)
+            </a>
+          </div>
+          <div className="mt-3">
+            <GammaExportButton
+              exportUrl={`/api/video-academy/${tutorial.id}/export/gamma`}
+              initialGammaUrl={tutorial.gammaUrl}
+            />
+          </div>
+        </header>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Watch / generate narration</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <TutorialNarrationPlayer
-            tutorialId={tutorial.id}
-            initialSegments={segments}
-            initialNarrationGenerated={tutorial.narrationGeneratedAt !== null}
-            canGenerate={true}
-          />
-        </CardContent>
-      </Card>
+        <CinemaCard>
+          <CinemaCardHeader>
+            <CinemaCardTitle>Watch / generate narration</CinemaCardTitle>
+          </CinemaCardHeader>
+          <CinemaCardContent>
+            <TutorialNarrationPlayer
+              tutorialId={tutorial.id}
+              initialSegments={segments}
+              initialNarrationGenerated={tutorial.narrationGeneratedAt !== null}
+              canGenerate={true}
+              theme="cinema"
+            />
+          </CinemaCardContent>
+        </CinemaCard>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Teacher script</CardTitle>
-        </CardHeader>
-        <CardContent className="whitespace-pre-wrap text-sm">{tutorial.teacherScript}</CardContent>
-      </Card>
+        <CinemaCard>
+          <CinemaCardHeader>
+            <CinemaCardTitle>Teacher script</CinemaCardTitle>
+          </CinemaCardHeader>
+          <CinemaCardContent className="whitespace-pre-wrap text-sm text-cinema-white/80">
+            {tutorial.teacherScript}
+          </CinemaCardContent>
+        </CinemaCard>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Shot list / narration segments</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {segments.map((segment, i) => (
-            <div key={i} className="border-b border-studio-ink/10 pb-3 text-sm last:border-0 dark:border-white/10">
-              <p className="font-medium">
-                {formatTime(segment.startSeconds)}–{formatTime(segment.endSeconds)}
-                {segment.shotType ? ` · ${segment.shotType}` : ""}
+        <CinemaCard>
+          <CinemaCardHeader>
+            <CinemaCardTitle>Shot list / narration segments</CinemaCardTitle>
+          </CinemaCardHeader>
+          <CinemaCardContent className="space-y-4">
+            {segments.map((segment, i) => (
+              <div key={i} className="border-b border-cinema-border pb-3 text-sm last:border-0">
+                <p className="font-medium text-cinema-white">
+                  {formatTime(segment.startSeconds)}–{formatTime(segment.endSeconds)}
+                  {segment.shotType ? ` · ${segment.shotType}` : ""}
+                </p>
+                <p className="mt-1 text-cinema-white/80">{segment.narration}</p>
+                <p className="mt-1 text-cinema-muted">Visual: {segment.visualGuide}</p>
+                {segment.graphicsNote && <p className="text-cinema-muted">Graphics: {segment.graphicsNote}</p>}
+                {segment.animationSuggestion && <p className="text-cinema-muted">Animation: {segment.animationSuggestion}</p>}
+              </div>
+            ))}
+          </CinemaCardContent>
+        </CinemaCard>
+
+        <CinemaCard>
+          <CinemaCardHeader>
+            <CinemaCardTitle>Practice activity — {practiceActivity.title}</CinemaCardTitle>
+          </CinemaCardHeader>
+          <CinemaCardContent className="text-sm text-cinema-white/80">
+            <p>{practiceActivity.instructions}</p>
+            <p className="mt-1 text-cinema-muted">~{practiceActivity.estimatedMinutes} minutes</p>
+          </CinemaCardContent>
+        </CinemaCard>
+
+        <CinemaCard>
+          <CinemaCardHeader>
+            <CinemaCardTitle>Embedded quiz — {quiz.title}</CinemaCardTitle>
+          </CinemaCardHeader>
+          <CinemaCardContent className="space-y-2 text-sm text-cinema-white/80">
+            {quiz.questions.map((q, i) => (
+              <p key={i}>
+                {i + 1}. {q.prompt}
               </p>
-              <p className="mt-1">{segment.narration}</p>
-              <p className="mt-1 text-studio-ink/60 dark:text-white/60">Visual: {segment.visualGuide}</p>
-              {segment.graphicsNote && (
-                <p className="text-studio-ink/60 dark:text-white/60">Graphics: {segment.graphicsNote}</p>
-              )}
-              {segment.animationSuggestion && (
-                <p className="text-studio-ink/60 dark:text-white/60">Animation: {segment.animationSuggestion}</p>
-              )}
-            </div>
-          ))}
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Practice activity — {practiceActivity.title}</CardTitle>
-        </CardHeader>
-        <CardContent className="text-sm">
-          <p>{practiceActivity.instructions}</p>
-          <p className="mt-1 text-studio-ink/60 dark:text-white/60">~{practiceActivity.estimatedMinutes} minutes</p>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Embedded quiz — {quiz.title}</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-2 text-sm">
-          {quiz.questions.map((q, i) => (
-            <p key={i}>
-              {i + 1}. {q.prompt}
-            </p>
-          ))}
-        </CardContent>
-      </Card>
+            ))}
+          </CinemaCardContent>
+        </CinemaCard>
+      </div>
     </main>
   );
 }

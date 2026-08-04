@@ -1,6 +1,8 @@
 import Image from "next/image";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CinemaCard, CinemaCardHeader, CinemaCardTitle, CinemaCardContent } from "@/components/ui/cinema-card";
 import { PosterImagePanel } from "@/components/poster-image-panel";
+import { cn } from "@/lib/utils/cn";
 import type {
   FilmStudioBundle,
 } from "@/lib/ai/schemas";
@@ -8,6 +10,8 @@ import type {
 type ScreenplayScene = FilmStudioBundle["screenplay"]["scenes"][number];
 type ShotListEntry = FilmStudioBundle["shotList"]["shots"][number];
 
+/** Shared across Teacher and Mentor portals — see AssistantsDirectory for
+ * why `theme` is opt-in per caller. */
 export function FilmStudioProjectView({
   title,
   logline,
@@ -22,6 +26,7 @@ export function FilmStudioProjectView({
   marketingPlan,
   filmStudioProjectId,
   posterImageUrl,
+  theme = "default",
 }: {
   title: string;
   logline: string;
@@ -39,22 +44,30 @@ export function FilmStudioProjectView({
    * but no generate button. */
   filmStudioProjectId?: string;
   posterImageUrl?: string | null;
+  theme?: "default" | "cinema";
 }) {
+  const isCinema = theme === "cinema";
+  const [SectionCard, SectionHeader, SectionTitle, SectionContent] = isCinema
+    ? [CinemaCard, CinemaCardHeader, CinemaCardTitle, CinemaCardContent]
+    : [Card, CardHeader, CardTitle, CardContent];
+  const mutedClass = isCinema ? "text-cinema-muted" : "text-studio-ink/60 dark:text-white/60";
+  const dividerClass = isCinema ? "border-b border-white/10 pb-3 last:border-0" : "border-b border-studio-ink/10 pb-3 last:border-0 dark:border-white/10";
+
   return (
     <div className="space-y-6">
       <header>
-        <p className="text-sm uppercase tracking-wide text-studio-accent">{genre}</p>
-        <h1 className="font-display text-3xl font-extrabold">{title}</h1>
-        <p className="mt-1 text-studio-ink/60 dark:text-white/60">{logline}</p>
+        <p className={cn("text-sm uppercase tracking-wide", isCinema ? "text-cinema-red" : "text-studio-accent")}>{genre}</p>
+        <h1 className={cn("font-display text-3xl font-extrabold", isCinema && "text-cinema-white")}>{title}</h1>
+        <p className={cn("mt-1", mutedClass)}>{logline}</p>
       </header>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Screenplay</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4 text-sm">
+      <SectionCard>
+        <SectionHeader>
+          <SectionTitle>Screenplay</SectionTitle>
+        </SectionHeader>
+        <SectionContent className="space-y-4 text-sm">
           {screenplay.scenes.map((scene) => (
-            <div key={scene.sceneNumber} className="border-b border-studio-ink/10 pb-3 last:border-0 dark:border-white/10">
+            <div key={scene.sceneNumber} className={dividerClass}>
               <p className="font-mono font-medium">{scene.heading}</p>
               <p className="mt-1">{scene.action}</p>
               {scene.dialogue.map((line, i) => (
@@ -65,14 +78,14 @@ export function FilmStudioProjectView({
               ))}
             </div>
           ))}
-        </CardContent>
-      </Card>
+        </SectionContent>
+      </SectionCard>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Shot list</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-2 text-sm">
+      <SectionCard>
+        <SectionHeader>
+          <SectionTitle>Shot list</SectionTitle>
+        </SectionHeader>
+        <SectionContent className="space-y-2 text-sm">
           {shotList.shots.map((shot) => (
             <p key={shot.number}>
               <span className="font-medium">
@@ -81,14 +94,14 @@ export function FilmStudioProjectView({
               {shot.description} — {shot.lens}, {shot.movement}, ~{shot.durationSeconds}s
             </p>
           ))}
-        </CardContent>
-      </Card>
+        </SectionContent>
+      </SectionCard>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Call sheet</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-2 text-sm">
+      <SectionCard>
+        <SectionHeader>
+          <SectionTitle>Call sheet</SectionTitle>
+        </SectionHeader>
+        <SectionContent className="space-y-2 text-sm">
           <p>
             {callSheet.shootDate} · General call: {callSheet.generalCallTime} · {callSheet.location}
           </p>
@@ -105,15 +118,15 @@ export function FilmStudioProjectView({
               {c.role} — {c.callTime}
             </p>
           ))}
-          <p className="text-studio-ink/60 dark:text-white/60">{callSheet.notes}</p>
-        </CardContent>
-      </Card>
+          <p className={mutedClass}>{callSheet.notes}</p>
+        </SectionContent>
+      </SectionCard>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Budget — ${budget.totalEstimate.toLocaleString()} estimated</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-1 text-sm">
+      <SectionCard>
+        <SectionHeader>
+          <SectionTitle>Budget — ${budget.totalEstimate.toLocaleString()} estimated</SectionTitle>
+        </SectionHeader>
+        <SectionContent className="space-y-1 text-sm">
           {budget.lineItems.map((item, i) => (
             <div key={i} className="flex justify-between">
               <span>
@@ -122,28 +135,28 @@ export function FilmStudioProjectView({
               <span>${item.estimatedCost.toLocaleString()}</span>
             </div>
           ))}
-        </CardContent>
-      </Card>
+        </SectionContent>
+      </SectionCard>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Equipment</CardTitle>
-        </CardHeader>
-        <CardContent className="text-sm">
+      <SectionCard>
+        <SectionHeader>
+          <SectionTitle>Equipment</SectionTitle>
+        </SectionHeader>
+        <SectionContent className="text-sm">
           {equipmentList.map((item, i) => (
             <p key={i}>
               {item.quantity}x {item.itemType}
               {item.notes ? ` — ${item.notes}` : ""}
             </p>
           ))}
-        </CardContent>
-      </Card>
+        </SectionContent>
+      </SectionCard>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Locations</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-2 text-sm">
+      <SectionCard>
+        <SectionHeader>
+          <SectionTitle>Locations</SectionTitle>
+        </SectionHeader>
+        <SectionContent className="space-y-2 text-sm">
           {locationPlan.map((loc, i) => (
             <p key={i}>
               <span className="font-medium">{loc.name}</span>
@@ -151,28 +164,28 @@ export function FilmStudioProjectView({
               {loc.permitsNeeded && <span className="ml-2 text-amber-600 dark:text-amber-400">Permit needed</span>}
             </p>
           ))}
-        </CardContent>
-      </Card>
+        </SectionContent>
+      </SectionCard>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Casting</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-1 text-sm">
+      <SectionCard>
+        <SectionHeader>
+          <SectionTitle>Casting</SectionTitle>
+        </SectionHeader>
+        <SectionContent className="space-y-1 text-sm">
           {castingSheet.map((role, i) => (
             <p key={i}>
               <span className="font-medium">{role.character}: </span>
               {role.description}
             </p>
           ))}
-        </CardContent>
-      </Card>
+        </SectionContent>
+      </SectionCard>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Marketing</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-2 text-sm">
+      <SectionCard>
+        <SectionHeader>
+          <SectionTitle>Marketing</SectionTitle>
+        </SectionHeader>
+        <SectionContent className="space-y-2 text-sm">
           <p>
             <span className="font-medium">Audience: </span>
             {marketingPlan.targetAudience}
@@ -205,8 +218,8 @@ export function FilmStudioProjectView({
               </div>
             )
           )}
-        </CardContent>
-      </Card>
+        </SectionContent>
+      </SectionCard>
     </div>
   );
 }

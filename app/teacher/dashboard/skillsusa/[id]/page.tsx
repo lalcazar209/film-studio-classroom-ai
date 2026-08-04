@@ -23,6 +23,7 @@ export default async function TeacherSkillsUsaDetailPage({ params }: { params: P
         judgeSheet={practice.judgeSheet as unknown as SkillsUsaBundle["judgeSheet"]}
         mockCompetitionSchedule={practice.mockCompetitionSchedule as unknown as SkillsUsaBundle["mockCompetitionSchedule"]}
         scenarioBank={practice.scenarioBank as unknown as SkillsUsaBundle["scenarioBank"]}
+        theme="cinema"
       />
     </main>
   );

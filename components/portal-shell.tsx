@@ -4,11 +4,11 @@ import { Clapperboard } from "lucide-react";
 import { auth, signOut, ROLE_HOME } from "@/lib/auth";
 import { cn } from "@/lib/utils/cn";
 
-/** Student portal only, for now — see the Phase 2 cinematic-redesign
+/** Migrated portals only, for now — see the Phase 2 cinematic-redesign
  * rollout: reskinning this header for every role at once would put a new
  * dark nav bar above 50+ pages whose bodies haven't been redesigned yet.
  * Each portal migrates its header + real pages together. */
-const CINEMA_ROLES: Role[] = ["STUDENT"];
+const CINEMA_ROLES: Role[] = ["STUDENT", "TEACHER"];
 
 interface RoleMeta {
   label: string;

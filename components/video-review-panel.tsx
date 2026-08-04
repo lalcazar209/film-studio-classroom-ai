@@ -53,10 +53,10 @@ export function VideoReviewPanel({
 
   return (
     <div className="space-y-3">
-      <Button variant="secondary" onClick={handleRun} isLoading={isRunning} disabled={!hasVideo}>
+      <Button variant="cinema-secondary" onClick={handleRun} isLoading={isRunning} disabled={!hasVideo}>
         {review ? "Re-run AI Review" : "Run AI Review"}
       </Button>
-      {!hasVideo && <p className="text-xs text-studio-ink/50 dark:text-white/50">No video submitted yet.</p>}
+      {!hasVideo && <p className="text-xs text-cinema-muted">No video submitted yet.</p>}
       {error && (
         <p role="alert" className="text-sm text-red-600 dark:text-red-400">
           {error}
@@ -64,26 +64,26 @@ export function VideoReviewPanel({
       )}
 
       {review && (
-        <div className="space-y-3 rounded-2xl border border-studio-ink/10 bg-white p-4 text-sm shadow-soft dark:border-white/10 dark:bg-studio-900">
-          <p className="font-medium">
+        <div className="space-y-3 rounded-2xl border border-cinema-border bg-cinema-panel/70 p-4 text-sm shadow-cinema-panel backdrop-blur">
+          <p className="font-medium text-cinema-white">
             Overall: {review.overallScore}/10
             {!review.analyzedVisualFrames && (
-              <span className="ml-2 text-xs text-amber-600 dark:text-amber-400">
+              <span className="ml-2 text-xs text-amber-500">
                 (metadata only — no video frames analyzed)
               </span>
             )}
           </p>
-          <p className="text-studio-ink/70 dark:text-white/70">{review.overallSummary}</p>
+          <p className="text-cinema-white/70">{review.overallSummary}</p>
 
           <div className="grid gap-2 sm:grid-cols-2">
             {Object.entries(CATEGORY_LABELS).map(([key, label]) => {
               const category = review[key as keyof VideoReview] as { score: number; feedback: string };
               return (
                 <div key={key}>
-                  <p className="font-medium">
+                  <p className="font-medium text-cinema-white">
                     {label}: {category.score}/10
                   </p>
-                  <p className="text-xs text-studio-ink/60 dark:text-white/60">{category.feedback}</p>
+                  <p className="text-xs text-cinema-muted">{category.feedback}</p>
                 </div>
               );
             })}
@@ -91,8 +91,8 @@ export function VideoReviewPanel({
 
           {review.copyrightConcerns.length > 0 && (
             <div>
-              <p className="font-medium text-red-600 dark:text-red-400">Copyright concerns</p>
-              <ul className="list-inside list-disc text-xs">
+              <p className="font-medium text-cinema-red">Copyright concerns</p>
+              <ul className="list-inside list-disc text-xs text-cinema-white/80">
                 {review.copyrightConcerns.map((c, i) => (
                   <li key={i}>{c}</li>
                 ))}
@@ -101,8 +101,8 @@ export function VideoReviewPanel({
           )}
 
           <div>
-            <p className="font-medium">Next steps</p>
-            <ul className="list-inside list-disc text-xs">
+            <p className="font-medium text-cinema-white">Next steps</p>
+            <ul className="list-inside list-disc text-xs text-cinema-white/80">
               {review.nextSteps.map((s, i) => (
                 <li key={i}>{s}</li>
               ))}

@@ -40,7 +40,7 @@ export function CoverImagePanel({
         </div>
       )}
       <div className="flex items-center gap-2">
-        <Button variant="secondary" onClick={handleGenerate} isLoading={isGenerating}>
+        <Button variant="cinema-secondary" onClick={handleGenerate} isLoading={isGenerating}>
           {isGenerating ? "Generating cover image..." : coverImageUrl ? "Regenerate cover image" : "Generate cover image"}
         </Button>
         {error && <span className="text-sm text-red-600 dark:text-red-400">{error}</span>}

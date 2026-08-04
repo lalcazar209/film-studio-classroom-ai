@@ -28,11 +28,11 @@ export function GammaExportButton({ exportUrl, initialGammaUrl }: { exportUrl: s
 
   return (
     <div className="flex items-center gap-2">
-      <Button variant="secondary" onClick={handleExport} isLoading={isGenerating}>
+      <Button variant="cinema-secondary" onClick={handleExport} isLoading={isGenerating}>
         {isGenerating ? "Generating in Gamma (can take a minute)..." : gammaUrl ? "Regenerate in Gamma" : "Export to Gamma"}
       </Button>
       {gammaUrl && (
-        <a href={gammaUrl} target="_blank" rel="noreferrer" className="text-sm text-studio-accent hover:underline">
+        <a href={gammaUrl} target="_blank" rel="noreferrer" className="text-sm text-cinema-red hover:underline">
           View presentation
         </a>
       )}

@@ -1,19 +1,20 @@
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CinemaPage } from "@/components/ui/cinema-page";
+import { CinemaCard, CinemaCardContent, CinemaCardHeader, CinemaCardTitle } from "@/components/ui/cinema-card";
 
 function Bar({ label, value, total, colorClass }: { label: string; value: number; total: number; colorClass: string }) {
   const pct = total > 0 ? Math.round((value / total) * 100) : 0;
   return (
     <div className="space-y-1">
-      <div className="flex justify-between text-xs">
+      <div className="flex justify-between text-xs text-cinema-white">
         <span>{label}</span>
         <span>
           {value} ({pct}%)
         </span>
       </div>
-      <div className="h-2 w-full rounded bg-studio-ink/10 dark:bg-white/10">
+      <div className="h-2 w-full rounded bg-white/10">
         <div className={`h-2 rounded ${colorClass}`} style={{ width: `${pct}%` }} />
       </div>
     </div>
@@ -34,44 +35,42 @@ export default async function TeacherAnalyticsPage() {
   });
 
   return (
-    <main className="mx-auto max-w-4xl space-y-6 px-4 py-10">
-      <h1 className="font-display text-3xl font-extrabold">Analytics</h1>
-
+    <CinemaPage title="Analytics">
       {classPeriods.length === 0 ? (
-        <p className="text-sm text-studio-ink/60 dark:text-white/60">No class periods yet.</p>
+        <p className="text-sm text-cinema-muted">No class periods yet.</p>
       ) : (
-        classPeriods.map((cp) => {
-          const submissions = cp.projects.flatMap((p) => p.submissions);
-          const submissionTotal = submissions.length;
-          const submitted = submissions.filter((s) => s.status !== "NOT_STARTED").length;
-          const graded = submissions.filter((s) => s.status === "GRADED").length;
-          const grades = submissions
-            .map((s) => (s.grade as { total?: number } | null)?.total)
-            .filter((n): n is number => typeof n === "number");
-          const avgGrade = grades.length ? Math.round(grades.reduce((a, b) => a + b, 0) / grades.length) : null;
+        <div className="space-y-6">
+          {classPeriods.map((cp) => {
+            const submissions = cp.projects.flatMap((p) => p.submissions);
+            const submissionTotal = submissions.length;
+            const submitted = submissions.filter((s) => s.status !== "NOT_STARTED").length;
+            const graded = submissions.filter((s) => s.status === "GRADED").length;
+            const grades = submissions
+              .map((s) => (s.grade as { total?: number } | null)?.total)
+              .filter((n): n is number => typeof n === "number");
+            const avgGrade = grades.length ? Math.round(grades.reduce((a, b) => a + b, 0) / grades.length) : null;
 
-          const attendanceTotal = cp.attendance.length;
-          const present = cp.attendance.filter((a) => a.status === "PRESENT").length;
+            const attendanceTotal = cp.attendance.length;
+            const present = cp.attendance.filter((a) => a.status === "PRESENT").length;
 
-          return (
-            <Card key={cp.id}>
-              <CardHeader>
-                <CardTitle>
-                  {cp.name} · {cp._count.enrollments} students
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <Bar label="Work started" value={submitted} total={submissionTotal} colorClass="bg-studio-accent" />
-                <Bar label="Graded" value={graded} total={submissionTotal} colorClass="bg-studio-gold" />
-                <Bar label="Attendance (present, last 30 days)" value={present} total={attendanceTotal} colorClass="bg-green-600" />
-                {avgGrade !== null && (
-                  <p className="text-sm text-studio-ink/60 dark:text-white/60">Average grade: {avgGrade}/100</p>
-                )}
-              </CardContent>
-            </Card>
-          );
-        })
+            return (
+              <CinemaCard key={cp.id}>
+                <CinemaCardHeader>
+                  <CinemaCardTitle>
+                    {cp.name} · {cp._count.enrollments} students
+                  </CinemaCardTitle>
+                </CinemaCardHeader>
+                <CinemaCardContent className="space-y-4">
+                  <Bar label="Work started" value={submitted} total={submissionTotal} colorClass="bg-cinema-blue" />
+                  <Bar label="Graded" value={graded} total={submissionTotal} colorClass="bg-cinema-orange" />
+                  <Bar label="Attendance (present, last 30 days)" value={present} total={attendanceTotal} colorClass="bg-green-500" />
+                  {avgGrade !== null && <p className="text-sm text-cinema-muted">Average grade: {avgGrade}/100</p>}
+                </CinemaCardContent>
+              </CinemaCard>
+            );
+          })}
+        </div>
       )}
-    </main>
+    </CinemaPage>
   );
 }

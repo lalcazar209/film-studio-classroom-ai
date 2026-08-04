@@ -2,7 +2,8 @@ import QRCode from "qrcode";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CinemaPage } from "@/components/ui/cinema-page";
+import { CinemaCard, CinemaCardContent, CinemaCardHeader, CinemaCardTitle } from "@/components/ui/cinema-card";
 import { EquipmentRow } from "@/components/equipment-row";
 
 export default async function EquipmentPage() {
@@ -56,25 +57,22 @@ export default async function EquipmentPage() {
   );
 
   return (
-    <main className="mx-auto max-w-3xl space-y-6 px-4 py-10">
-      <h1 className="font-display text-3xl font-extrabold">Equipment Manager</h1>
-      <p className="text-studio-ink/60 dark:text-white/60">
-        Each item&apos;s QR code encodes its asset tag — scan with a USB/handheld scanner (it types
-        the tag like a keyboard) or print the code for a physical checkout log.
-      </p>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Inventory</CardTitle>
-        </CardHeader>
-        <CardContent>
+    <CinemaPage
+      title="Equipment Manager"
+      description="Each item's QR code encodes its asset tag — scan with a USB/handheld scanner (it types the tag like a keyboard) or print the code for a physical checkout log."
+    >
+      <CinemaCard>
+        <CinemaCardHeader>
+          <CinemaCardTitle>Inventory</CinemaCardTitle>
+        </CinemaCardHeader>
+        <CinemaCardContent>
           {rows.length === 0 ? (
-            <p className="text-sm text-studio-ink/60 dark:text-white/60">No equipment registered yet.</p>
+            <p className="text-sm text-cinema-muted">No equipment registered yet.</p>
           ) : (
             rows.map((item) => <EquipmentRow key={item.id} item={item} users={users} />)
           )}
-        </CardContent>
-      </Card>
-    </main>
+        </CinemaCardContent>
+      </CinemaCard>
+    </CinemaPage>
   );
 }

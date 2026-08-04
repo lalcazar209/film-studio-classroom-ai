@@ -3,7 +3,7 @@
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CinemaCard, CinemaCardContent, CinemaCardHeader, CinemaCardTitle } from "@/components/ui/cinema-card";
 import { Input, Label, Select, Textarea } from "@/components/ui/field";
 import { PROJECT_CATEGORY_OPTIONS } from "@/lib/constants/project-categories";
 import type { ProjectCategory } from "@prisma/client";
@@ -50,19 +50,20 @@ export function ProjectGeneratorForm({ classPeriods }: { classPeriods: ClassPeri
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Generate a Project</CardTitle>
-        <p className="mt-1 text-sm text-studio-ink/60 dark:text-white/60">
+    <CinemaCard>
+      <CinemaCardHeader>
+        <CinemaCardTitle>Generate a Project</CinemaCardTitle>
+        <p className="mt-1 text-sm text-cinema-muted">
           One brief becomes a full Monday–Friday PBL week: lessons, rubric, quiz, vocabulary,
           storyboard, and production plan — standards-aligned automatically.
         </p>
-      </CardHeader>
-      <CardContent>
+      </CinemaCardHeader>
+      <CinemaCardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <Label htmlFor="title">Project title</Label>
+            <Label theme="cinema" htmlFor="title">Project title</Label>
             <Input
+              theme="cinema"
               id="title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
@@ -74,8 +75,9 @@ export function ProjectGeneratorForm({ classPeriods }: { classPeriods: ClassPeri
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="category">Category</Label>
+              <Label theme="cinema" htmlFor="category">Category</Label>
               <Select
+                theme="cinema"
                 id="category"
                 value={category}
                 onChange={(e) => setCategory(e.target.value as ProjectCategory)}
@@ -89,8 +91,9 @@ export function ProjectGeneratorForm({ classPeriods }: { classPeriods: ClassPeri
             </div>
 
             <div>
-              <Label htmlFor="classPeriod">Class period</Label>
+              <Label theme="cinema" htmlFor="classPeriod">Class period</Label>
               <Select
+                theme="cinema"
                 id="classPeriod"
                 value={classPeriodId}
                 onChange={(e) => setClassPeriodId(e.target.value)}
@@ -106,8 +109,9 @@ export function ProjectGeneratorForm({ classPeriods }: { classPeriods: ClassPeri
           </div>
 
           <div>
-            <Label htmlFor="brief">Brief</Label>
+            <Label theme="cinema" htmlFor="brief">Brief</Label>
             <Textarea
+              theme="cinema"
               id="brief"
               value={brief}
               onChange={(e) => setBrief(e.target.value)}
@@ -123,11 +127,11 @@ export function ProjectGeneratorForm({ classPeriods }: { classPeriods: ClassPeri
             </p>
           )}
 
-          <Button type="submit" isLoading={isSubmitting} disabled={!classPeriodId}>
+          <Button variant="cinema" type="submit" isLoading={isSubmitting} disabled={!classPeriodId}>
             {isSubmitting ? "Generating full project week..." : "Generate Project"}
           </Button>
         </form>
-      </CardContent>
-    </Card>
+      </CinemaCardContent>
+    </CinemaCard>
   );
 }

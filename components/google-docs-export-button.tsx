@@ -34,11 +34,11 @@ export function GoogleDocsExportButton({
 
   return (
     <div className="flex items-center gap-2">
-      <Button variant="secondary" onClick={handleExport} isLoading={isGenerating}>
+      <Button variant="cinema-secondary" onClick={handleExport} isLoading={isGenerating}>
         {isGenerating ? "Creating Google Doc..." : googleDocUrl ? "Regenerate Google Doc" : "Export to Google Docs"}
       </Button>
       {googleDocUrl && (
-        <a href={googleDocUrl} target="_blank" rel="noreferrer" className="text-sm text-studio-accent hover:underline">
+        <a href={googleDocUrl} target="_blank" rel="noreferrer" className="text-sm text-cinema-red hover:underline">
           Open doc
         </a>
       )}

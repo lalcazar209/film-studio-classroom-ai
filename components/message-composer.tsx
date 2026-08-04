@@ -40,19 +40,19 @@ export function MessageComposer({ classPeriodId }: { classPeriodId: string }) {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <Label htmlFor="subject">Subject</Label>
-        <Input id="subject" value={subject} onChange={(e) => setSubject(e.target.value)} required minLength={2} />
+        <Label theme="cinema" htmlFor="subject">Subject</Label>
+        <Input theme="cinema" id="subject" value={subject} onChange={(e) => setSubject(e.target.value)} required minLength={2} />
       </div>
       <div>
-        <Label htmlFor="body">Message</Label>
-        <Textarea id="body" value={body} onChange={(e) => setBody(e.target.value)} required minLength={2} />
+        <Label theme="cinema" htmlFor="body">Message</Label>
+        <Textarea theme="cinema" id="body" value={body} onChange={(e) => setBody(e.target.value)} required minLength={2} />
       </div>
       {error && (
         <p role="alert" className="text-sm text-red-600 dark:text-red-400">
           {error}
         </p>
       )}
-      <Button type="submit" isLoading={isSubmitting}>
+      <Button variant="cinema" type="submit" isLoading={isSubmitting}>
         Send to all parents in this class
       </Button>
     </form>

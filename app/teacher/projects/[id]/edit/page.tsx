@@ -1,6 +1,7 @@
 import { notFound, redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { CinemaPage } from "@/components/ui/cinema-page";
 import { ProjectEditForm, type RubricCriterion, type QuizQuestion } from "@/components/project-edit-form";
 
 export default async function ProjectEditPage({ params }: { params: Promise<{ id: string }> }) {
@@ -20,14 +21,7 @@ export default async function ProjectEditPage({ params }: { params: Promise<{ id
   if (!project.rubric || !project.quiz) notFound();
 
   return (
-    <main className="mx-auto max-w-3xl space-y-6 px-4 py-10">
-      <div>
-        <h1 className="font-display text-2xl font-extrabold">Edit: {project.title}</h1>
-        <p className="text-studio-ink/60 dark:text-white/60">
-          Everything the AI generated is a starting point — change anything below.
-        </p>
-      </div>
-
+    <CinemaPage title={`Edit: ${project.title}`} description="Everything the AI generated is a starting point — change anything below.">
       <ProjectEditForm
         projectId={project.id}
         initialLessons={project.lessons.map((l) => ({
@@ -51,6 +45,6 @@ export default async function ProjectEditPage({ params }: { params: Promise<{ id
           questions: project.quiz.questions as unknown as QuizQuestion[],
         }}
       />
-    </main>
+    </CinemaPage>
   );
 }

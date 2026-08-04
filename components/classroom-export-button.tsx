@@ -34,11 +34,11 @@ export function ClassroomExportButton({
 
   return (
     <div className="flex items-center gap-2">
-      <Button variant="secondary" onClick={handlePush} isLoading={isPushing}>
+      <Button variant="cinema-secondary" onClick={handlePush} isLoading={isPushing}>
         {isPushing ? "Pushing to Classroom..." : classroomUrl ? "Re-push to Classroom" : "Push to Google Classroom"}
       </Button>
       {classroomUrl && (
-        <a href={classroomUrl} target="_blank" rel="noreferrer" className="text-sm text-studio-accent hover:underline">
+        <a href={classroomUrl} target="_blank" rel="noreferrer" className="text-sm text-cinema-red hover:underline">
           Open in Classroom
         </a>
       )}

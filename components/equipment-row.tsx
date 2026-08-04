@@ -75,50 +75,51 @@ export function EquipmentRow({ item, users }: { item: EquipmentRowData; users: U
   }
 
   return (
-    <div className="flex items-start gap-4 border-b border-studio-ink/10 py-4 dark:border-white/10">
+    <div className="flex items-start gap-4 border-b border-cinema-border py-4">
       {/* eslint-disable-next-line @next/next/no-img-element -- data: URI QR code, not an optimizable remote asset */}
       <img src={item.qrDataUrl} alt={`QR code for ${item.assetTag}`} width={72} height={72} />
 
       <div className="flex-1">
-        <p className="font-medium">
-          {item.name} <span className="text-xs text-studio-ink/50 dark:text-white/50">({item.assetTag})</span>
+        <p className="font-medium text-cinema-white">
+          {item.name} <span className="text-xs text-cinema-muted">({item.assetTag})</span>
         </p>
-        <p className="text-xs text-studio-ink/50 dark:text-white/50">Status: {item.status}</p>
+        <p className="text-xs text-cinema-muted">Status: {item.status}</p>
 
         {item.activeCheckout ? (
           <div className="mt-2 space-y-2">
-            <p className="text-sm">
+            <p className="text-sm text-cinema-white/90">
               Checked out to <strong>{item.activeCheckout.borrowerName}</strong>
               {item.activeCheckout.dueAt && ` · due ${item.activeCheckout.dueAt}`}
             </p>
             <div className="flex items-center gap-2">
               <Input
+                theme="cinema"
                 placeholder="Damage notes (optional)"
                 value={damageNotes}
                 onChange={(e) => setDamageNotes(e.target.value)}
                 className="max-w-xs"
               />
-              <Button variant="secondary" onClick={handleReturn} isLoading={isSubmitting}>
+              <Button variant="cinema-secondary" onClick={handleReturn} isLoading={isSubmitting}>
                 Return
               </Button>
             </div>
           </div>
         ) : item.status === "AVAILABLE" ? (
           <div className="mt-2 flex items-center gap-2">
-            <Select value={userId} onChange={(e) => setUserId(e.target.value)} className="max-w-xs">
+            <Select theme="cinema" value={userId} onChange={(e) => setUserId(e.target.value)} className="max-w-xs">
               {users.map((u) => (
                 <option key={u.id} value={u.id}>
                   {u.name ?? u.email}
                 </option>
               ))}
             </Select>
-            <Input type="date" value={dueAt} onChange={(e) => setDueAt(e.target.value)} className="max-w-40" />
-            <Button onClick={handleCheckout} isLoading={isSubmitting} disabled={!userId}>
+            <Input theme="cinema" type="date" value={dueAt} onChange={(e) => setDueAt(e.target.value)} className="max-w-40" />
+            <Button variant="cinema" onClick={handleCheckout} isLoading={isSubmitting} disabled={!userId}>
               Check out
             </Button>
           </div>
         ) : (
-          <p className="mt-2 text-sm text-studio-ink/50 dark:text-white/50">Not available for checkout.</p>
+          <p className="mt-2 text-sm text-cinema-muted">Not available for checkout.</p>
         )}
 
         {error && (

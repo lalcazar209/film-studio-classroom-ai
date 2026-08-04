@@ -40,21 +40,21 @@ function ShotCard({ projectId, shot }: { projectId: string; shot: StoryboardShot
   }
 
   return (
-    <div className="rounded-2xl border border-studio-ink/[0.06] p-3 dark:border-white/10">
+    <div className="rounded-2xl border border-cinema-border bg-cinema-black/40 p-3">
       {imageUrl && (
         <div className="relative mb-2 aspect-video w-full overflow-hidden rounded-xl">
           <Image src={imageUrl} alt={`Shot ${shot.number}`} fill className="object-cover" unoptimized />
         </div>
       )}
-      <p className="text-sm">
+      <p className="text-sm text-cinema-white">
         <span className="font-semibold">Shot {shot.number} — {shot.shotType}: </span>
         {shot.description}
       </p>
-      <p className="mt-1 text-xs text-studio-ink/50 dark:text-white/50">
+      <p className="mt-1 text-xs text-cinema-muted">
         {shot.movement} · {shot.lighting} · {shot.audio} · {shot.durationSec}s
       </p>
       <div className="mt-2 flex items-center gap-2">
-        <Button variant="ghost" onClick={handleGenerate} isLoading={isGenerating} className="px-2 py-1 text-xs">
+        <Button variant="cinema-secondary" onClick={handleGenerate} isLoading={isGenerating} className="px-2 py-1 text-xs">
           {isGenerating ? "Generating..." : imageUrl ? "Regenerate image" : "Generate image"}
         </Button>
         {error && <span className="text-xs text-red-600 dark:text-red-400">{error}</span>}

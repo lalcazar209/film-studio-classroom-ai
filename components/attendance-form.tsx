@@ -69,10 +69,10 @@ export function AttendanceForm({
 
   return (
     <div className="space-y-4">
-      <ul className="divide-y divide-black/10 dark:divide-white/10">
+      <ul className="divide-y divide-cinema-border">
         {students.map((student) => (
           <li key={student.id} className="flex items-center justify-between gap-3 py-3">
-            <span className="text-sm">{student.name ?? student.email}</span>
+            <span className="text-sm text-cinema-white">{student.name ?? student.email}</span>
             <div className="flex gap-1">
               {STATUS_OPTIONS.map((status) => (
                 <button
@@ -80,7 +80,7 @@ export function AttendanceForm({
                   type="button"
                   onClick={() => setStatus(student.id, status)}
                   className={`rounded px-2 py-1 text-xs font-medium ${
-                    student.status === status ? STATUS_STYLES[status] : "bg-studio-ink/5 dark:bg-white/10"
+                    student.status === status ? STATUS_STYLES[status] : "bg-white/5 text-cinema-muted"
                   }`}
                 >
                   {status[0]}
@@ -98,7 +98,7 @@ export function AttendanceForm({
       )}
       {saved && <p className="text-sm text-green-600 dark:text-green-400">Saved.</p>}
 
-      <Button onClick={handleSave} isLoading={isSaving}>
+      <Button variant="cinema" onClick={handleSave} isLoading={isSaving}>
         Save attendance
       </Button>
     </div>

@@ -40,7 +40,7 @@ export function PosterImagePanel({
         </div>
       )}
       <div className="flex items-center gap-2">
-        <Button variant="ghost" onClick={handleGenerate} isLoading={isGenerating} className="px-2 py-1 text-xs">
+        <Button variant="cinema-secondary" onClick={handleGenerate} isLoading={isGenerating} className="px-2 py-1 text-xs">
           {isGenerating ? "Generating poster..." : posterImageUrl ? "Regenerate poster art" : "Generate poster art"}
         </Button>
         {error && <span className="text-xs text-red-600 dark:text-red-400">{error}</span>}

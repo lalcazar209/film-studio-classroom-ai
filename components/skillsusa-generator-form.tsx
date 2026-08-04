@@ -3,7 +3,7 @@
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CinemaCard, CinemaCardContent, CinemaCardHeader, CinemaCardTitle } from "@/components/ui/cinema-card";
 import { Input, Label, Textarea } from "@/components/ui/field";
 
 export function SkillsUsaGeneratorForm() {
@@ -43,15 +43,16 @@ export function SkillsUsaGeneratorForm() {
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Generate competition practice</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <CinemaCard>
+      <CinemaCardHeader>
+        <CinemaCardTitle>Generate competition practice</CinemaCardTitle>
+      </CinemaCardHeader>
+      <CinemaCardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <Label htmlFor="contestName">Contest</Label>
+            <Label theme="cinema" htmlFor="contestName">Contest</Label>
             <Input
+              theme="cinema"
               id="contestName"
               value={contestName}
               onChange={(e) => setContestName(e.target.value)}
@@ -61,8 +62,9 @@ export function SkillsUsaGeneratorForm() {
             />
           </div>
           <div>
-            <Label htmlFor="studentLevel">Student level (optional)</Label>
+            <Label theme="cinema" htmlFor="studentLevel">Student level (optional)</Label>
             <Input
+              theme="cinema"
               id="studentLevel"
               value={studentLevel}
               onChange={(e) => setStudentLevel(e.target.value)}
@@ -70,8 +72,9 @@ export function SkillsUsaGeneratorForm() {
             />
           </div>
           <div>
-            <Label htmlFor="notes">Notes (optional)</Label>
+            <Label theme="cinema" htmlFor="notes">Notes (optional)</Label>
             <Textarea
+              theme="cinema"
               id="notes"
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
@@ -83,11 +86,11 @@ export function SkillsUsaGeneratorForm() {
               {error}
             </p>
           )}
-          <Button type="submit" isLoading={isSubmitting}>
+          <Button variant="cinema" type="submit" isLoading={isSubmitting}>
             {isSubmitting ? "Generating practice package..." : "Generate"}
           </Button>
         </form>
-      </CardContent>
-    </Card>
+      </CinemaCardContent>
+    </CinemaCard>
   );
 }

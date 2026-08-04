@@ -1,6 +1,7 @@
 import { notFound, redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
+import { CinemaPage } from "@/components/ui/cinema-page";
 import { GradebookGrid, type GradebookColumn, type GradebookRow } from "@/components/gradebook-grid";
 
 export default async function GradebookPage({
@@ -57,19 +58,12 @@ export default async function GradebookPage({
   });
 
   return (
-    <main className="mx-auto max-w-5xl space-y-6 px-4 py-10">
-      <div>
-        <h1 className="font-display text-3xl font-extrabold">Gradebook</h1>
-        <p className="text-studio-ink/60 dark:text-white/60">{classPeriod.name}</p>
-      </div>
-
+    <CinemaPage title="Gradebook" description={classPeriod.name}>
       {columns.length === 0 ? (
-        <p className="text-sm text-studio-ink/60 dark:text-white/60">
-          No projects generated for this class period yet.
-        </p>
+        <p className="text-sm text-cinema-muted">No projects generated for this class period yet.</p>
       ) : (
         <GradebookGrid columns={columns} rows={rows} />
       )}
-    </main>
+    </CinemaPage>
   );
 }

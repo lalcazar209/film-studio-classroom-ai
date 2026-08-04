@@ -3,7 +3,7 @@
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CinemaCard, CinemaCardContent, CinemaCardHeader, CinemaCardTitle } from "@/components/ui/cinema-card";
 import { Input, Label, Select, Textarea } from "@/components/ui/field";
 import { TUTORIAL_CATEGORY_OPTIONS } from "@/lib/constants/tutorial-categories";
 import type { TutorialCategory } from "@prisma/client";
@@ -41,15 +41,16 @@ export function TutorialGeneratorForm() {
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Generate a tutorial</CardTitle>
-      </CardHeader>
-      <CardContent>
+    <CinemaCard>
+      <CinemaCardHeader>
+        <CinemaCardTitle>Generate a tutorial</CinemaCardTitle>
+      </CinemaCardHeader>
+      <CinemaCardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <Label htmlFor="topic">Topic</Label>
+            <Label theme="cinema" htmlFor="topic">Topic</Label>
             <Input
+              theme="cinema"
               id="topic"
               value={topic}
               onChange={(e) => setTopic(e.target.value)}
@@ -59,8 +60,8 @@ export function TutorialGeneratorForm() {
             />
           </div>
           <div>
-            <Label htmlFor="category">Category</Label>
-            <Select id="category" value={category} onChange={(e) => setCategory(e.target.value as TutorialCategory)}>
+            <Label theme="cinema" htmlFor="category">Category</Label>
+            <Select theme="cinema" id="category" value={category} onChange={(e) => setCategory(e.target.value as TutorialCategory)}>
               {TUTORIAL_CATEGORY_OPTIONS.map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label}
@@ -69,8 +70,9 @@ export function TutorialGeneratorForm() {
             </Select>
           </div>
           <div>
-            <Label htmlFor="notes">Notes (optional)</Label>
+            <Label theme="cinema" htmlFor="notes">Notes (optional)</Label>
             <Textarea
+              theme="cinema"
               id="notes"
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
@@ -82,11 +84,11 @@ export function TutorialGeneratorForm() {
               {error}
             </p>
           )}
-          <Button type="submit" isLoading={isSubmitting}>
+          <Button variant="cinema" type="submit" isLoading={isSubmitting}>
             {isSubmitting ? "Generating tutorial..." : "Generate"}
           </Button>
         </form>
-      </CardContent>
-    </Card>
+      </CinemaCardContent>
+    </CinemaCard>
   );
 }

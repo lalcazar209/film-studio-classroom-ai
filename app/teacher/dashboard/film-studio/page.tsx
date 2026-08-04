@@ -2,7 +2,8 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CinemaPage } from "@/components/ui/cinema-page";
+import { CinemaCard, CinemaCardContent, CinemaCardHeader, CinemaCardTitle } from "@/components/ui/cinema-card";
 import { FilmStudioGeneratorForm } from "@/components/film-studio-generator-form";
 
 export default async function TeacherFilmStudioPage() {
@@ -16,38 +17,35 @@ export default async function TeacherFilmStudioPage() {
   });
 
   return (
-    <main className="mx-auto max-w-3xl space-y-6 px-4 py-10">
-      <div>
-        <h1 className="font-display text-3xl font-extrabold">AI Film Studio</h1>
-        <p className="text-studio-ink/60 dark:text-white/60">
-          Full production packages for shoots outside the weekly PBL cycle — festival entries,
-          extracurricular productions, anything you&apos;re planning independently.
-        </p>
+    <CinemaPage
+      title="AI Film Studio"
+      description="Full production packages for shoots outside the weekly PBL cycle — festival entries, extracurricular productions, anything you're planning independently."
+    >
+      <div className="space-y-6">
+        <FilmStudioGeneratorForm basePath="/teacher/dashboard/film-studio" theme="cinema" />
+
+        <CinemaCard>
+          <CinemaCardHeader>
+            <CinemaCardTitle>Library</CinemaCardTitle>
+          </CinemaCardHeader>
+          <CinemaCardContent>
+            {projects.length === 0 ? (
+              <p className="text-sm text-cinema-muted">No productions generated yet.</p>
+            ) : (
+              <ul className="space-y-2 text-sm">
+                {projects.map((project) => (
+                  <li key={project.id} className="flex items-center justify-between">
+                    <Link href={`/teacher/dashboard/film-studio/${project.id}`} className="text-cinema-white hover:text-cinema-red">
+                      {project.title}
+                    </Link>
+                    <span className="text-xs text-cinema-muted">{project.genre}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </CinemaCardContent>
+        </CinemaCard>
       </div>
-
-      <FilmStudioGeneratorForm basePath="/teacher/dashboard/film-studio" />
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Library</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {projects.length === 0 ? (
-            <p className="text-sm text-studio-ink/60 dark:text-white/60">No productions generated yet.</p>
-          ) : (
-            <ul className="space-y-2 text-sm">
-              {projects.map((project) => (
-                <li key={project.id} className="flex items-center justify-between">
-                  <Link href={`/teacher/dashboard/film-studio/${project.id}`} className="hover:text-studio-accent">
-                    {project.title}
-                  </Link>
-                  <span className="text-xs text-studio-ink/50 dark:text-white/50">{project.genre}</span>
-                </li>
-              ))}
-            </ul>
-          )}
-        </CardContent>
-      </Card>
-    </main>
+    </CinemaPage>
   );
 }

@@ -1,7 +1,8 @@
 import { notFound, redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CinemaPage } from "@/components/ui/cinema-page";
+import { CinemaCard, CinemaCardContent, CinemaCardHeader, CinemaCardTitle } from "@/components/ui/cinema-card";
 import { AttendanceForm } from "@/components/attendance-form";
 import type { AttendanceStatus } from "@prisma/client";
 
@@ -48,22 +49,15 @@ export default async function AttendancePage({
   }));
 
   return (
-    <main className="mx-auto max-w-2xl space-y-6 px-4 py-10">
-      <div>
-        <h1 className="font-display text-3xl font-extrabold">Attendance</h1>
-        <p className="text-studio-ink/60 dark:text-white/60">
-          {classPeriod.name} · {targetDate}
-        </p>
-      </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>P = Present · A = Absent · T = Tardy · E = Excused</CardTitle>
-        </CardHeader>
-        <CardContent>
+    <CinemaPage title="Attendance" description={`${classPeriod.name} · ${targetDate}`}>
+      <CinemaCard>
+        <CinemaCardHeader>
+          <CinemaCardTitle>P = Present · A = Absent · T = Tardy · E = Excused</CinemaCardTitle>
+        </CinemaCardHeader>
+        <CinemaCardContent>
           <AttendanceForm classPeriodId={classPeriodId} date={targetDate} initialStudents={students} />
-        </CardContent>
-      </Card>
-    </main>
+        </CinemaCardContent>
+      </CinemaCard>
+    </CinemaPage>
   );
 }
